@@ -11,7 +11,7 @@
 
 <c:set var="contextRoot" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background: #fff;">
 
 <head>
 
@@ -24,7 +24,7 @@
 <meta name="_csrf" content="${_csrf.token}">
 <meta name="_csrf_header" content="${_csrf.headerName}">
 
-<title>Online Shopping - ${title}</title>
+<title>Jaagtey Raho - ${title}</title>
 
 <script>
 	window.menu = '${title}';
@@ -38,6 +38,8 @@
 
 <!-- SmartAdmin Styles : Caution! DO NOT change the order -->
 <link rel="stylesheet" type="text/css" media="screen"
+	href="${css}/smartadmin-skins.min.css">
+<link rel="stylesheet" type="text/css" media="screen"
 	href="${css}/smartadmin-production-plugins.min.css">
 <link rel="stylesheet" type="text/css" media="screen"
 	href="${css}/smartadmin-production.min.css">
@@ -45,53 +47,22 @@
 <script src="${js}/libs/jquery-ui-1.10.3.min.js"></script>
 </head>
 <body
-	class="desktop-detected voice-command-active service-not-allowed pace-done fixed-header fixed-navigation">
-	<header id="header" style="background: #313131 !important;">
-		<div id="logo-group">
-			<!-- PLACE YOUR LOGO HERE -->
-			<span
-				style="color: #fff; font-size: 24px; padding: 10px 0px 0px 9px;"><span
-				style="cursor: pointer;"
-				onclick="window.location.href='${contextRoot}/home'"
-				class="glyphicon glyphicon-book"></span> </span>
+	class="desktop-detected pace-done smart-style-3 pace-done fixed-header fixed-navigation">
+	<header id="header" style="background: #f2f2f2;">
+		<div id="logo-group"
+			style="height: 95px; text-align: center; background: #f2f2f2; border-right: 2px solid #ccc; border-bottom: 2px solid #ccc; padding: 8px;">
+			<img src="${images}/logoeaglelatest.png" alt="SmartAdmin"
+				style="width: 162px;">
 		</div>
-		<div class="hidden-xs" style="border-left: 1px solid #000;">
-			<div style="border-left: 2px solid #4e4d4d; height: 100%;">
-				SALES</div>
+		<div class="hidden-xs" style="">
+			<div style="height: 100%;">
+				<span id="logo" style="font-size: 16px; width: auto;"> <i
+					class="fa fa-lg fa-exchange"></i> &nbsp;ADMIN
+				</span>
+			</div>
 		</div>
 
 		<div class="pull-right">
-			<ul id="mobile-profile-img"
-				class="header-dropdown-list hidden-xs padding-5">
-				<li class=""><a href="#"
-					class="dropdown-toggle no-margin userdropdown"
-					data-toggle="dropdown"> </a>
-					<ul class="dropdown-menu pull-right">
-						<li><a href="javascript:void(0);"
-							class="padding-10 padding-top-0 padding-bottom-0"><i
-								class="fa fa-cog"></i> Setting</a></li>
-						<li class="divider"></li>
-						<li><a href="profile.html"
-							class="padding-10 padding-top-0 padding-bottom-0"> <i
-								class="fa fa-user"></i> <u>P</u>rofile
-						</a></li>
-						<li class="divider"></li>
-						<li><a href="javascript:void(0);"
-							class="padding-10 padding-top-0 padding-bottom-0"
-							data-action="toggleShortcut"><i class="fa fa-arrow-down"></i>
-								<u>S</u>hortcut</a></li>
-						<li class="divider"></li>
-						<li><a href="javascript:void(0);"
-							class="padding-10 padding-top-0 padding-bottom-0"
-							data-action="launchFullscreen"><i class="fa fa-arrows-alt"></i>
-								Full <u>S</u>creen</a></li>
-						<li class="divider"></li>
-						<li><a href="${contextPath}/logout"
-							class="padding-10 padding-top-5 padding-bottom-5"
-							data-action="userLogout"><i class="fa fa-sign-out fa-lg"></i>
-								<strong><u>L</u>ogout</strong></a></li>
-					</ul></li>
-			</ul>
 			<div id="logout" class="btn-header transparent pull-right">
 				<span> <a href="${contextRoot}/logout" title="Sign Out"
 					data-action="userLogout"
@@ -113,7 +84,7 @@
 		</div>
 	</header>
 	<div id="main" role="main" style="margin-left: 0;">
-		<div id="content">
+		<div id="content" style="padding-top: 88px;">
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="col-sm-12">
@@ -146,8 +117,8 @@
 	<div class="page-footer" style="padding-left: 15px;">
 		<div class="row">
 			<div class="col-xs-12 col-sm-6">
-				<span class="txt-color-white">Sales <span class="hidden-xs">
-						- Web Application Framework</span>
+				<span class="txt-color-white">Jaagtey Raho <span
+					class="hidden-xs"> - Web Application Framework</span>
 				</span>
 			</div>
 

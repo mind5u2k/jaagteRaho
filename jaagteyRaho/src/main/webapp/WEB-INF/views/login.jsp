@@ -20,7 +20,7 @@
 <meta name="description"
 	content="Online Shopping Website Using Spring MVC and Hibernate">
 
-<title>Online Shopping - ${title}</title>
+<title>Jaagtey Raho</title>
 
 <script>
 	window.menu = '${title}';

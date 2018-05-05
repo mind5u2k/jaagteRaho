@@ -45,17 +45,9 @@ public class PageController {
 		User user = userDAO.getByEmail(globalController.getUserModel()
 				.getEmail());
 		if (user.getRole().equals(Util.ROLE_SUPERADMIN)) {
-			return "redirect:/su/home";
+			return "redirect:/ad/home";
 		} else if (user.getRole().equals(Util.ROLE_ADMIN)) {
 			return "redirect:/ad/home";
-		} else if (user.getRole().equals(Util.ROLE_SALESMANAGER)) {
-			return "redirect:/sm/home";
-		} else if (user.getRole().equals(Util.ROLE_SALESORGANIZER)) {
-			return "redirect:/so/home";
-		} else if (user.getRole().equals(Util.ROLE_SALESREPRESENTATIVE)) {
-			return "redirect:/sr/home";
-		} else if (user.getRole().equals(Util.ROLE_CLIENT)) {
-			return "redirect:/cl/home";
 		} else {
 			return null;
 		}

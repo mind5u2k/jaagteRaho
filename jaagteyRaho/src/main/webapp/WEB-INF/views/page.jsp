@@ -24,7 +24,7 @@
 <meta name="_csrf" content="${_csrf.token}">
 <meta name="_csrf_header" content="${_csrf.headerName}">
 
-<title>Online Shopping - ${title}</title>
+<title>Jaagtey Raho</title>
 
 <script>
 	window.menu = '${title}';
@@ -38,6 +38,8 @@
 
 <!-- SmartAdmin Styles : Caution! DO NOT change the order -->
 <link rel="stylesheet" type="text/css" media="screen"
+	href="${css}/smartadmin-skins.min.css">
+<link rel="stylesheet" type="text/css" media="screen"
 	href="${css}/smartadmin-production-plugins.min.css">
 <link rel="stylesheet" type="text/css" media="screen"
 	href="${css}/smartadmin-production.min.css">
@@ -45,7 +47,7 @@
 <script src="${js}/libs/jquery-ui-1.10.3.min.js"></script>
 </head>
 <body
-	class="desktop-detected voice-command-active service-not-allowed pace-done fixed-header fixed-navigation">
+	class="desktop-detected pace-done smart-style-3 pace-done fixed-header fixed-navigation">
 	<%@include file="./shared/header.jsp"%>
 	<div id="main" role="main">
 		<c:if test="${userClickProfilePage == true }">

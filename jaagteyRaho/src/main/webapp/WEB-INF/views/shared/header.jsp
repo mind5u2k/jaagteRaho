@@ -40,53 +40,20 @@
 	vertical-align: middle;
 }
 </style>
-<header id="header" style="background: #313131 !important;">
-	<div id="logo-group">
-		<!-- PLACE YOUR LOGO HERE -->
-		<span style="color: #fff; font-size: 24px; padding: 10px 0px 0px 9px;"><span
-			style="cursor: pointer;"
-			onclick="window.location.href='${contextRoot}/home'"
-			class="glyphicon glyphicon-book"></span> </span>
+<header id="header" style="background: #f2f2f2;">
+	<div id="logo-group"
+		style="height: 95px; text-align: center; background: #f2f2f2; border-right: 2px solid #ccc; border-bottom: 2px solid #ccc; padding: 8px;">
+		<img src="${images}/logoeaglelatest.png" alt="SmartAdmin"
+			style="width: 162px;">
 	</div>
-	<div class="hidden-xs" style="border-left: 1px solid #000;">
-		<div style="border-left: 2px solid #4e4d4d; height: 100%;">
-			<span id="logo" style="color: #fff; font-size: 16px; width: auto;">
-				SLATE</span>
+	<div class="hidden-xs" style="">
+		<div style="height: 100%;">
+			<span id="logo" style="font-size: 16px; width: auto;"> <i
+				class="fa fa-lg fa-exchange"></i> &nbsp;ADMIN
+			</span>
 		</div>
 	</div>
-
 	<div class="pull-right">
-		<ul id="mobile-profile-img"
-			class="header-dropdown-list hidden-xs padding-5">
-			<li class=""><a href="#"
-				class="dropdown-toggle no-margin userdropdown"
-				data-toggle="dropdown"> </a>
-				<ul class="dropdown-menu pull-right">
-					<li><a href="javascript:void(0);"
-						class="padding-10 padding-top-0 padding-bottom-0"><i
-							class="fa fa-cog"></i> Setting</a></li>
-					<li class="divider"></li>
-					<li><a href="profile.html"
-						class="padding-10 padding-top-0 padding-bottom-0"> <i
-							class="fa fa-user"></i> <u>P</u>rofile
-					</a></li>
-					<li class="divider"></li>
-					<li><a href="javascript:void(0);"
-						class="padding-10 padding-top-0 padding-bottom-0"
-						data-action="toggleShortcut"><i class="fa fa-arrow-down"></i>
-							<u>S</u>hortcut</a></li>
-					<li class="divider"></li>
-					<li><a href="javascript:void(0);"
-						class="padding-10 padding-top-0 padding-bottom-0"
-						data-action="launchFullscreen"><i class="fa fa-arrows-alt"></i>
-							Full <u>S</u>creen</a></li>
-					<li class="divider"></li>
-					<li><a href="${contextPath}/logout"
-						class="padding-10 padding-top-5 padding-bottom-5"
-						data-action="userLogout"><i class="fa fa-sign-out fa-lg"></i>
-							<strong><u>L</u>ogout</strong></a></li>
-				</ul></li>
-		</ul>
 		<div id="logout" class="btn-header transparent pull-right">
 			<span> <a href="${contextRoot}/logout" title="Sign Out"
 				data-action="userLogout"
@@ -107,93 +74,51 @@
 		</div>
 	</div>
 </header>
-<aside id="left-panel" style="background: #464545 !important;">
-	<div class="login-info row"
-		style="background: linear-gradient(to bottom, #2d2c2c, #797878);">
-		<%-- 	<div class="col-sm-12"
-			style="padding: 5px 0 5px 0px; text-align: center;">
-			<span> <a href="javascript:void(0);"> <span>${userModel.fullName}<br>${userModel.role}
-				</span>
-			</a></span>
-		</div> --%>
-		<div class="col-sm-12"
-			style="padding: 5px 0 5px 0px; text-align: center;">
-			<div class="col-sm-4"
-				style="padding: 5px 0 5px 0px; text-align: center;">
-				<img src="${images}/male.png" alt="me" class=""
-					style="width: 45px; border: 0;">
-			</div>
-			<div class="col-sm-8"
-				style="padding: 5px 0 5px 0px; text-align: center;">
-				<span> <a style="margin: 0;"> <span>${userModel.fullName}<br>${userModel.role}
-					</span>
-				</a></span>
-			</div>
-		</div>
-		<div class="col-sm-12"
-			style="padding: 5px 0 5px 0px; text-align: center;">
-			<div class="col-sm-12"
-				style="padding: 5px 0 5px 0px; text-align: center;">
-				<a class="btn btn-danger" style="margin: 0; color: #fff;"
-					href="${contextRoot}/editProfile">Profile</a> <a
-					class="btn btn-success" href="#" style="margin: 0; color: #fff;">Update
-					Password</a>
-			</div>
-		</div>
-	</div>
+<aside id="left-panel" style="padding-top: 97px;">
 	<nav>
 		<ul>
 			<li id="home"><a href="${contextRoot}/home"><i
 					class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Home
-						Page</span></a></li>
-			<security:authorize access="hasAuthority('SUPER ADMIN')">
-				<li id="users"><a href="${contextRoot}/su/user"><i
-						class="fa fa-lg fa-fw fa-user"></i> <span class="menu-item-parent">User</span></a></li>
-			</security:authorize>
-
-
-			<security:authorize access="hasAuthority('ADMIN')">
-				<li id="adminUsers"><a href="#"><i
-						class="fa fa-lg fa-fw fa-bank"></i> <span class="menu-item-parent">Users</span><b
-						class="collapse-sign"><em class="fa fa-minus-square-o"></em></b></a>
-					<ul id="adminUserBlock" style="display: none;">
-						<li id="salesManager"><a
-							href="${contextRoot}/ad/salesManager">Sales Manager</a></li>
-						<li id="salesOrganization"><a
-							href="${contextRoot}/ad/salesOrganization">Sales Organization</a></li>
-					</ul></li>
-				<li id="products"><a href="${contextRoot}/products"><i
-						class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Products</span></a></li>
-			</security:authorize>
-
-			<security:authorize access="hasAuthority('SALES MANAGER')">
-				<li id="salesRepresentatives"><a
-					href="${contextRoot}/sm/salesRepresentatives"><i
-						class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Sales
-							Representatives</span></a></li>
-			</security:authorize>
-
-			<security:authorize access="hasAuthority('SALES REPRESENTATIVE')">
-				<li id="clients"><a href="${contextRoot}/sr/clients"><i
-						class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Clients</span></a></li>
-				<li id="assignProducts"><a
-					href="${contextRoot}/sr/assignProducts"><i
-						class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Assign
-							Products</span></a></li>
-			</security:authorize>
-			<security:authorize access="hasAuthority('CLIENT')">
-				<li id="paymentHistoryClient"><a
-					href="${contextRoot}/cl/paymentHistory"><i
-						class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Payment
-							History</span></a></li>
-			</security:authorize>
-
-			<li><div class="minifyme"
-					style="background: rgb(123, 120, 120); position: unset; text-align: center; font-size: 24px; padding: 6px 1px 31px; margin-top: 17px; cursor: pointer; width: 100%;"
-					data-action="minifyMenu">
-					<i class="fa fa-arrow-circle-left hit"></i>
-				</div></li>
-
+				</span></a></li>
+			<li id="adminUsers"><a href="#"><i
+					class="fa fa-lg fa-fw fa-user"></i> <span class="menu-item-parent">Manage
+						Employees</span><b class="collapse-sign"><em
+						class="fa fa-minus-square-o"></em></b></a>
+				<ul id="adminUserBlock" style="display: none;">
+					<li id="salesManager"><a href="#">Add Employees</a></li>
+				</ul></li>
+			<li id="adminUsers"><a href="#"><i
+					class="fa fa-lg fa-fw fa-tasks"></i> <span class="menu-item-parent">Client
+						Management</span><b class="collapse-sign"><em
+						class="fa fa-minus-square-o"></em></b></a>
+				<ul id="adminUserBlock" style="display: none;">
+					<li id="salesManager"><a href="#">Manage Client</a></li>
+					<li id="salesOrganization"><a href="#">Manage Site</a></li>
+					<li id="salesOrganization"><a href="#">Employee Site
+							Report</a></li>
+				</ul></li>
+			<li id="adminUsers"><a href="#"><i
+					class="fa fa-lg fa-fw fa-laptop"></i> <span
+					class="menu-item-parent">System Setup</span><b
+					class="collapse-sign"><em class="fa fa-minus-square-o"></em></b></a>
+				<ul id="adminUserBlock" style="display: none;">
+					<li id="salesManager"><a href="#">Manage Designation</a></li>
+					<li id="salesOrganization"><a href="#">Manage CheckList</a></li>
+					<li id="salesManager"><a href="#">Manage Contact</a></li>
+					<li id="salesManager"><a href="#">Auto Checkin Setting</a></li>
+					<li id="salesManager"><a href="#">Device Mapping</a></li>
+				</ul></li>
+			<li id="adminUsers"><a href="#"><i
+					class="fa fa-lg fa-fw fa-retweet"></i> <span
+					class="menu-item-parent">Movement Analysis</span><b
+					class="collapse-sign"><em class="fa fa-minus-square-o"></em></b></a>
+				<ul id="adminUserBlock" style="display: none;">
+					<li id="salesManager"><a href="#">Site Audit Report</a></li>
+					<li id="salesOrganization"><a href="#">Auto Checkin Report</a></li>
+					<li id="salesManager"><a href="#">Selfie Checkin Report</a></li>
+					<li id="salesOrganization"><a
+						href="${contextRoot}/ad/salesOrganization">Geofancing Report</a></li>
+				</ul></li>
 		</ul>
 	</nav>
 </aside>
