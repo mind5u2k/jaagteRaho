@@ -74,7 +74,7 @@
 		</div>
 	</div>
 </header>
-<aside id="left-panel" style="padding-top: 97px;">
+<aside id="left-panel">
 	<nav>
 		<ul>
 			<li id="home"><a href="${contextRoot}/home"><i

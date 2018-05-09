@@ -2,55 +2,70 @@ package com.ghosh.jaagteyRahoBackend.dto;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "user_detail")
 public class User implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(name = "first_name")
-	private String firstName;
+	private String empId;
 
-	@Column(name = "last_name")
+	private String firstName;
+	private String middleName;
 	private String lastName;
 
 	private String email;
 
-	@Column(name = "contact_number")
 	private String contactNumber;
-	private String role;
-
-	private String password;
-	private boolean enabled = true;
-
-	private String dob;
-
-	@Transient
-	private String confirmPassword;
+	private String alternateNumber;
 
 	private String gender;
 
-	private String organizationName;
+	@ManyToOne
+	private Designation designation;
 
-	private boolean twoStepVerfication = false;
-	private boolean allDeatilsStatus = false;
+	private String aadhar;
+	private String aadharImage;
+	private String aadharUploaderName;
 
-	private String verificationCode;
+	private String panNumber;
+	private String panImage;
+	private String panUploaderName;
+
+	private String corredpondenceAddress;
+	private String corredpondencePostalCode;
+	private String corredpondenceCity;
+	private String corredpondenceState;
+	private String corredpondenceCountry;
+
+	private String permanentAddress;
+	private String permanentPostalCode;
+	private String permanentCity;
+	private String permanentState;
+	private String permanentCountry;
+
+	private String profileImage;
+
+	private String role;
+
+	private String password;
+
+	private String dob;
+
+	private boolean enabled = true;
+
+	@Transient
+	private String confirmPassword;
 
 	public String getConfirmPassword() {
 		return confirmPassword;
@@ -140,44 +155,180 @@ public class User implements Serializable {
 		this.gender = gender;
 	}
 
-	public String getOrganizationName() {
-		return organizationName;
-	}
-
-	public void setOrganizationName(String organizationName) {
-		this.organizationName = organizationName;
-	}
-
-	public boolean isTwoStepVerfication() {
-		return twoStepVerfication;
-	}
-
-	public void setTwoStepVerfication(boolean twoStepVerfication) {
-		this.twoStepVerfication = twoStepVerfication;
-	}
-
-	public boolean isAllDeatilsStatus() {
-		return allDeatilsStatus;
-	}
-
-	public void setAllDeatilsStatus(boolean allDeatilsStatus) {
-		this.allDeatilsStatus = allDeatilsStatus;
-	}
-
-	public String getVerificationCode() {
-		return verificationCode;
-	}
-
-	public void setVerificationCode(String verificationCode) {
-		this.verificationCode = verificationCode;
-	}
-
 	public String getDob() {
 		return dob;
 	}
 
 	public void setDob(String dob) {
 		this.dob = dob;
+	}
+
+	public String getEmpId() {
+		return empId;
+	}
+
+	public void setEmpId(String empId) {
+		this.empId = empId;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getAlternateNumber() {
+		return alternateNumber;
+	}
+
+	public void setAlternateNumber(String alternateNumber) {
+		this.alternateNumber = alternateNumber;
+	}
+
+	public String getAadhar() {
+		return aadhar;
+	}
+
+	public void setAadhar(String aadhar) {
+		this.aadhar = aadhar;
+	}
+
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
+	public String getCorredpondenceAddress() {
+		return corredpondenceAddress;
+	}
+
+	public void setCorredpondenceAddress(String corredpondenceAddress) {
+		this.corredpondenceAddress = corredpondenceAddress;
+	}
+
+	public String getCorredpondencePostalCode() {
+		return corredpondencePostalCode;
+	}
+
+	public void setCorredpondencePostalCode(String corredpondencePostalCode) {
+		this.corredpondencePostalCode = corredpondencePostalCode;
+	}
+
+	public String getCorredpondenceCity() {
+		return corredpondenceCity;
+	}
+
+	public void setCorredpondenceCity(String corredpondenceCity) {
+		this.corredpondenceCity = corredpondenceCity;
+	}
+
+	public String getCorredpondenceState() {
+		return corredpondenceState;
+	}
+
+	public void setCorredpondenceState(String corredpondenceState) {
+		this.corredpondenceState = corredpondenceState;
+	}
+
+	public String getCorredpondenceCountry() {
+		return corredpondenceCountry;
+	}
+
+	public void setCorredpondenceCountry(String corredpondenceCountry) {
+		this.corredpondenceCountry = corredpondenceCountry;
+	}
+
+	public String getPermanentAddress() {
+		return permanentAddress;
+	}
+
+	public void setPermanentAddress(String permanentAddress) {
+		this.permanentAddress = permanentAddress;
+	}
+
+	public String getPermanentPostalCode() {
+		return permanentPostalCode;
+	}
+
+	public void setPermanentPostalCode(String permanentPostalCode) {
+		this.permanentPostalCode = permanentPostalCode;
+	}
+
+	public String getPermanentCity() {
+		return permanentCity;
+	}
+
+	public void setPermanentCity(String permanentCity) {
+		this.permanentCity = permanentCity;
+	}
+
+	public String getPermanentState() {
+		return permanentState;
+	}
+
+	public void setPermanentState(String permanentState) {
+		this.permanentState = permanentState;
+	}
+
+	public String getPermanentCountry() {
+		return permanentCountry;
+	}
+
+	public void setPermanentCountry(String permanentCountry) {
+		this.permanentCountry = permanentCountry;
+	}
+
+	public String getAadharUploaderName() {
+		return aadharUploaderName;
+	}
+
+	public void setAadharUploaderName(String aadharUploaderName) {
+		this.aadharUploaderName = aadharUploaderName;
+	}
+
+	public String getPanUploaderName() {
+		return panUploaderName;
+	}
+
+	public void setPanUploaderName(String panUploaderName) {
+		this.panUploaderName = panUploaderName;
+	}
+
+	public Designation getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(Designation designation) {
+		this.designation = designation;
+	}
+
+	public String getProfileImage() {
+		return profileImage;
+	}
+
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
+	}
+
+	public String getAadharImage() {
+		return aadharImage;
+	}
+
+	public void setAadharImage(String aadharImage) {
+		this.aadharImage = aadharImage;
+	}
+
+	public String getPanImage() {
+		return panImage;
+	}
+
+	public void setPanImage(String panImage) {
+		this.panImage = panImage;
 	}
 
 }
