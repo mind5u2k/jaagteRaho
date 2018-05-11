@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ghosh.jaagteyRahoBackend.Util;
 import com.ghosh.jaagteyRahoBackend.dao.UserDAO;
 import com.ghosh.jaagteyRahoBackend.dto.Address;
+import com.ghosh.jaagteyRahoBackend.dto.Designation;
 import com.ghosh.jaagteyRahoBackend.dto.User;
 
 @Repository("userDAO")
@@ -117,8 +119,27 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public List<User> getAllUsers() {
+		String selectQuery = "FROM User WHERE role = :role";
 		return sessionFactory.getCurrentSession()
-				.createQuery("FROM User", User.class).getResultList();
+				.createQuery(selectQuery, User.class)
+				.setParameter("role", Util.ROLE_USER).getResultList();
+	}
+
+	@Override
+	public List<Designation> getAllDesignations() {
+		return sessionFactory.getCurrentSession()
+				.createQuery("FROM Designation", Designation.class)
+				.getResultList();
+	}
+
+	@Override
+	public boolean addDesignation(Designation designation) {
+		try {
+			sessionFactory.getCurrentSession().persist(designation);
+			return true;
+		} catch (Exception ex) {
+			return false;
+		}
 	}
 
 }

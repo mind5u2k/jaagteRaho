@@ -9,6 +9,6 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/jaagteyRaho/target/classes"/>
-        <property name="context-root" value="JaagteyRaho"/>
+        <property name="context-root" value="jaagteyRaho"/>
     </wb-module>
 </project-modules>

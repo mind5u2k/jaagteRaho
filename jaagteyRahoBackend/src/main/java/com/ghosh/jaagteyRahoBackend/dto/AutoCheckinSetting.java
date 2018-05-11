@@ -16,15 +16,55 @@ public class AutoCheckinSetting implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	private int geoRadius;
+	private String geoRadius;
 
-	private int reminderIntTime;
+	private String reminderIntTime;
 
-	private int autoCheckinIntTime;
+	private String autoCheckinIntTime;
 
-	private int startTime;
+	private String startTime;
 
-	private int endTime;
+	private String endTime;
+
+	public String getGeoRadius() {
+		return geoRadius;
+	}
+
+	public void setGeoRadius(String geoRadius) {
+		this.geoRadius = geoRadius;
+	}
+
+	public String getReminderIntTime() {
+		return reminderIntTime;
+	}
+
+	public void setReminderIntTime(String reminderIntTime) {
+		this.reminderIntTime = reminderIntTime;
+	}
+
+	public String getAutoCheckinIntTime() {
+		return autoCheckinIntTime;
+	}
+
+	public void setAutoCheckinIntTime(String autoCheckinIntTime) {
+		this.autoCheckinIntTime = autoCheckinIntTime;
+	}
+
+	public String getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+
+	public String getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
 
 	public int getId() {
 		return id;
@@ -32,46 +72,6 @@ public class AutoCheckinSetting implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public int getGeoRadius() {
-		return geoRadius;
-	}
-
-	public void setGeoRadius(int geoRadius) {
-		this.geoRadius = geoRadius;
-	}
-
-	public int getReminderIntTime() {
-		return reminderIntTime;
-	}
-
-	public void setReminderIntTime(int reminderIntTime) {
-		this.reminderIntTime = reminderIntTime;
-	}
-
-	public int getAutoCheckinIntTime() {
-		return autoCheckinIntTime;
-	}
-
-	public void setAutoCheckinIntTime(int autoCheckinIntTime) {
-		this.autoCheckinIntTime = autoCheckinIntTime;
-	}
-
-	public int getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(int startTime) {
-		this.startTime = startTime;
-	}
-
-	public int getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(int endTime) {
-		this.endTime = endTime;
 	}
 
 }

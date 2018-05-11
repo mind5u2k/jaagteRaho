@@ -50,74 +50,18 @@
 	class="desktop-detected pace-done smart-style-3 pace-done fixed-header fixed-navigation">
 	<%@include file="./shared/header.jsp"%>
 	<div id="main" role="main">
-		<c:if test="${userClickProfilePage == true }">
-			<%@include file="editProfilePage.jsp"%>
-		</c:if>
-		<c:if test="${userClickSuperAdminHome == true }">
-			<%@include file="superAdminHome.jsp"%>
-		</c:if>
+
 		<c:if test="${userClickAdminHome == true }">
 			<%@include file="adminHome.jsp"%>
 		</c:if>
-		<c:if test="${userClickSalesManagerHome == true }">
-			<%@include file="salesManagerHome.jsp"%>
+		<c:if test="${userClickAdminAddEmployees == true }">
+			<%@include file="employees.jsp"%>
 		</c:if>
-		<c:if test="${userClickSalesOrganizerHome == true }">
-			<%@include file="salesOrganizerHome.jsp"%>
+		<c:if test="${userClickAdminManageDesignation == true }">
+			<%@include file="manageDesignation.jsp"%>
 		</c:if>
-		<c:if test="${userClickSalesRepresentativeHome == true }">
-			<%@include file="salesRepresentativeHome.jsp"%>
-		</c:if>
-		<c:if test="${userClickClientHome == true }">
-			<%@include file="clientHome.jsp"%>
-		</c:if>
-		<c:if test="${userClickClientActiveHome == true }">
-			<%@include file="clientActiveHome.jsp"%>
-		</c:if>
-		<c:if test="${userClinkClinetHomeAssigned == true }">
-			<%@include file="clientHomeAssigned.jsp"%>
-		</c:if>
-		<c:if test="${userClickClientTrialOver == true }">
-			<%@include file="clientTrialOver.jsp"%>
-		</c:if>
-		<c:if test="${userClickClientOverDue == true }">
-			<%@include file="clientDueDateOver.jsp"%>
-		</c:if>
-		<c:if test="${userClickUserManagement == true }">
-			<%@include file="user.jsp"%>
-		</c:if>
-		<c:if test="${userClickSaledManagerManagement == true }">
-			<%@include file="salesManager.jsp"%>
-		</c:if>
-		<c:if test="${userClickSaledOrganizerManagement == true }">
-			<%@include file="salesOrganizer.jsp"%>
-		</c:if>
-		<c:if test="${userClickSaledRepresentativeManagement == true }">
-			<%@include file="salesRepresentatives.jsp"%>
-		</c:if>
-		<c:if test="${userClickAssignProductManagementHome == true }">
-			<%@include file="assignProducts.jsp"%>
-		</c:if>
-		<c:if test="${userClickClientsManagement == true }">
-			<%@include file="clients.jsp"%>
-		</c:if>
-		<c:if test="${userClickProductManagement == true }">
-			<%@include file="products.jsp"%>
-		</c:if>
-		<c:if test="${userClickClientPaymentDetails == true }">
-			<%@include file="paymentDeatils.jsp"%>
-		</c:if>
-		<c:if test="${userClickClientPaymentConfirmation == true }">
-			<%@include file="paymentConfirmation.jsp"%>
-		</c:if>
-		<c:if test="${userClickClientCheckoutform == true }">
-			<%@include file="checkout.jsp"%>
-		</c:if>
-		<c:if test="${userClickClientCheckoutConfirmationform == true }">
-			<%@include file="checkoutConfirmation.jsp"%>
-		</c:if>
-		<c:if test="${userClickPaymentHistory == true }">
-			<%@include file="paymentHistoryClient.jsp"%>
+		<c:if test="${userClickAdminAutoCheckinSetting == true }">
+			<%@include file="autoCheckinSetting.jsp"%>
 		</c:if>
 	</div>
 	<%@include file="./shared/footer.jsp"%>
@@ -138,5 +82,8 @@
 	<script src="${js}/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
 	<script src="${js}/plugin/jquery-form/jquery-form.min.js"></script>
 	<script src="${js}/myapp.js"></script>
+	<script type="text/javascript">
+		window.onload = date_time('date_time');
+	</script>
 </body>
 </html>

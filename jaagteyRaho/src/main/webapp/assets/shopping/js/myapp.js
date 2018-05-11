@@ -1,5 +1,7 @@
 $(function() {
 	$(window).load(function() {
+		$("#before").css("display", "none");
+		$("#content").css("display", "block");
 		setTimeout(function() {
 			$(".se-pre-con").fadeOut("slow");
 		}, 500);
@@ -19,41 +21,25 @@ $(function() {
 		}, 3000);
 	}
 
+	$('#dob').datepicker();
+
 	switch (menu) {
 	case 'Home':
 		$('#home').addClass('active');
 		break;
-	case 'Users':
-		$('#users').addClass('active');
+	case 'Employees':
+		$("#employees").css("display", "block");
+		$('#addEmp').addClass('active');
 		break;
-	case 'SalesManager':
-		$("#adminUserBlock").css("display", "block");
-		$('#salesManager').addClass('active');
+	case 'Designation':
+		$("#systemSetup").css("display", "block");
+		$('#manageDesignation').addClass('active');
 		break;
-	case 'SalesOrganizer':
-		$("#adminUserBlock").css("display", "block");
-		$('#salesOrganization').addClass('active');
-		break;
-	case 'SalesRepresentatives':
-		$('#salesRepresentatives').addClass('active');
-		break;
-	case 'Clients':
-		$('#clients').addClass('active');
-		break;
-	case 'Products':
-		$('#products').addClass('active');
-		break;
-	case 'Assign Products':
-		$('#assignProducts').addClass('active');
-		break;
-	case 'Payment History':
-		$('#paymentHistoryClient').addClass('active');
+	case 'Auto Checkin Setting':
+		$("#systemSetup").css("display", "block");
+		$('#autoCheckinSetting').addClass('active');
 		break;
 	default:
-		if (menu == "Home")
-			break;
-		$('#listProducts').addClass('active');
-		$('#a_' + menu).addClass('active');
 		break;
 	}
 
@@ -72,118 +58,41 @@ $(function() {
 
 	pageSetUp();
 
-	var $registerForm = $("#smart-form-register").validate({
-
-		// Rules for form validation
+	var $designationForm = $("#designationForm").validate({
 		rules : {
-			contactNumber : {
+			designationCode : {
 				required : true
 			},
-			email : {
-				required : true,
-				email : true
-			},
-			password : {
-				required : true,
-				minlength : 3,
-				maxlength : 20
-			},
-			confirmPassword : {
-				required : true,
-				minlength : 3,
-				maxlength : 20,
-				equalTo : '#password'
-			},
-			firstName : {
-				required : true
-			},
-			lastName : {
-				required : true
-			},
-			dob : {
-				required : true
-			},
-			addressLineOne : {
-				required : true
-			},
-			city : {
-				required : true
-			},
-			postalCode : {
-				required : true,
-				digits : true
-			},
-			state : {
-				required : true
-			},
-			country : {
-				required : true
-			},
-			addressLineTwo : {
-				required : true
-			},
-			companyName : {
-				required : true
-			},
-			companyUrl : {
-				required : true
-			},
-			termsAndCondition : {
+			designationName : {
 				required : true
 			}
 		},
-
 		messages : {
-			contactNumber : {
-				required : 'Please enter your Contact Number'
+			designationCode : {
+				required : 'Please enter Designation Code'
 			},
-			email : {
-				required : 'Please enter your email address',
-				email : 'Please enter a VALID email address'
-			},
-			password : {
-				required : 'Please enter your password'
-			},
-			confirmPassword : {
-				required : 'Please enter your password one more time',
-				equalTo : 'Please enter the same password as above'
-			},
-			firstName : {
-				required : 'Please select your first name'
-			},
-			lastName : {
-				required : 'Please select your last name'
-			},
-			dob : {
-				required : 'Please select your Date Of Birth'
-			},
-			addressLineOne : {
-				required : 'Please Enter Address Line 1'
-			},
-			addressLineTwo : {
-				required : 'Please enter Address Line 2'
-			},
-			city : {
-				required : 'Please enter city'
-			},
-			postalCode : {
-				required : 'Please enter postal code',
-				digits : 'Digits Only Please'
-			},
-			state : {
-				required : 'please enter state'
-			},
-			country : {
-				required : 'please enter country'
-			},
-			companyName : {
-				required : 'Please enter Company Name'
-			},
-			companyUrl : {
-				required : 'Please enter Company URL'
-			},
-			termsAndCondition : {
-				required : 'You must agree with Terms and Conditions'
+			designationName : {
+				required : 'Please enter Designation Name'
+			}
+		},
+
+		// Do not change code below
+		errorPlacement : function(error, element) {
+			error.insertAfter(element.parent());
+		}
+	});
+
+	var $autoCheckinSettingForm = $("#autoCheckinSettingForm").validate({
+		rules : {
+			geoRadius : {
+				required : true,
+				digits : true
+			}
+		},
+		messages : {
+			geoRadius : {
+				required : 'Please enter Geo Radius',
+				digits : 'Geo Radius must be a number'
 			}
 		},
 
@@ -196,30 +105,36 @@ $(function() {
 	var $checkoutForm1 = $('#checkout-form1').validate({
 		// Rules for form validation
 		rules : {
-			fname : {
+			empId : {
 				required : true
 			},
-			lname : {
+			firstName : {
+				required : true
+			},
+			lastName : {
 				required : true
 			},
 			email : {
 				required : true,
 				email : true
 			},
-			phone : {
+			contactNumber : {
 				required : true
 			},
-			country : {
+			corredpondenceState : {
 				required : true
 			},
-			city : {
+			corredpondenceCity : {
 				required : true
 			},
-			code : {
+			corredpondencePostalCode : {
 				required : true,
 				digits : true
 			},
-			address : {
+			corredpondenceAddress : {
+				required : true
+			},
+			gender : {
 				required : true
 			},
 			name : {
@@ -244,31 +159,37 @@ $(function() {
 
 		// Messages for form validation
 		messages : {
-			fname : {
-				required : 'Please enter your first name'
+			empId : {
+				required : 'Please Enter Employee code'
 			},
-			lname : {
-				required : 'Please enter your last name'
+			firstName : {
+				required : 'Please enter First name'
+			},
+			lastName : {
+				required : 'Please enter Last name'
 			},
 			email : {
-				required : 'Please enter your email address',
+				required : 'Please enter Email address',
 				email : 'Please enter a VALID email address'
 			},
-			phone : {
-				required : 'Please enter your phone number'
+			contactNumber : {
+				required : 'Please enter Contact Number'
 			},
-			country : {
-				required : 'Please select your country'
+			corredpondenceState : {
+				required : 'Please Enter State'
 			},
-			city : {
-				required : 'Please enter your city'
+			corredpondenceCity : {
+				required : 'Please enter City'
 			},
-			code : {
+			corredpondencePostalCode : {
 				required : 'Please enter code',
 				digits : 'Digits only please'
 			},
-			address : {
-				required : 'Please enter your full address'
+			corredpondenceAddress : {
+				required : 'Please enter Full address'
+			},
+			gender : {
+				required : 'Please Select Gender'
 			},
 			name : {
 				required : 'Please enter name on your card'

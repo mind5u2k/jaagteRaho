@@ -10,10 +10,7 @@ public class Util {
 
 	public static final String ROLE_SUPERADMIN = "SUPER ADMIN";
 	public static final String ROLE_ADMIN = "ADMIN";
-	public static final String ROLE_SALESMANAGER = "SALES MANAGER";
-	public static final String ROLE_SALESORGANIZER = "SALES ORGANIZER";
-	public static final String ROLE_SALESREPRESENTATIVE = "SALES REPRESENTATIVE";
-	public static final String ROLE_CLIENT = "CLIENT";
+	public static final String ROLE_USER = "USER";
 
 	public static List<String> superAdminRoles() {
 		List<String> roles = new ArrayList<String>();
@@ -22,41 +19,20 @@ public class Util {
 		return roles;
 	}
 
-	public static List<String> adminRoles() {
-		List<String> roles = new ArrayList<String>();
-		roles.add(ROLE_SALESMANAGER);
-		roles.add(ROLE_SALESORGANIZER);
-		return roles;
-	}
-
 	public static final String STATUS_ASSIGNED = "ASSIGNED";
 	public static final String STATUS_TRIAL = "Trial";
 	public static final String STAUS_ACTIVE = "Active";
 	public static final String STATUS_DEACTIVATE = "Deactivated";
 
-	private static final int MAX_VERIFICATION_CODE = 100000;
-	private static final int MIN_VERIFICATION_CODE = 999999;
+	private static final int MAX_VERIFICATION_CODE = 1000;
+	private static final int MIN_VERIFICATION_CODE = 9999;
 
-	public static String generateVerificationCode() {
+	public static String generateOTP() {
 		Random rand = new Random();
 		Integer code = rand.nextInt(MIN_VERIFICATION_CODE
 				- MAX_VERIFICATION_CODE + 1)
 				+ MAX_VERIFICATION_CODE;
 		return code.toString();
-	}
-
-	public static final String DURATION_MONTHLY = "Monthly";
-	public static final String DURATION_QUARTERLY = "Quarterly";
-	public static final String DURATION_HAlF_YEARLY = "Half Yearly";
-	public static final String DURATION_YEARLY = "Yearly";
-
-	public static List<String> getAllPaymentDuration() {
-		List<String> durations = new ArrayList<String>();
-		durations.add(DURATION_MONTHLY);
-		durations.add(DURATION_QUARTERLY);
-		durations.add(DURATION_HAlF_YEARLY);
-		durations.add(DURATION_YEARLY);
-		return durations;
 	}
 
 	public static String changeTimestampToString3(Timestamp timestamp) {
@@ -67,9 +43,83 @@ public class Util {
 		return string;
 	}
 
+	public static final String INTERVAL_TIME_5MIN = "5 Mins";
+	public static final String INTERVAL_TIME_10MIN = "10 Mins";
+	public static final String INTERVAL_TIME_15MIN = "15 Mins";
+	public static final String INTERVAL_TIME_20MIN = "20 Mins";
+	public static final String INTERVAL_TIME_30MIN = "30 Mins";
+	public static final String INTERVAL_TIME_1HR = "1 Hr";
+	public static final String INTERVAL_TIME_2HRS = "2 Hrs";
+	public static final String INTERVAL_TIME_3HRS = "3 Hrs";
+
+	public static List<String> getIntervalTimes() {
+		List<String> intervals = new ArrayList<String>();
+		intervals.add(INTERVAL_TIME_5MIN);
+		intervals.add(INTERVAL_TIME_10MIN);
+		intervals.add(INTERVAL_TIME_15MIN);
+		intervals.add(INTERVAL_TIME_20MIN);
+		intervals.add(INTERVAL_TIME_30MIN);
+		intervals.add(INTERVAL_TIME_1HR);
+		intervals.add(INTERVAL_TIME_2HRS);
+		intervals.add(INTERVAL_TIME_3HRS);
+		return intervals;
+	}
+
+	public static final String TIME_12AM = "12 AM";
+	public static final String TIME_01AM = "01 AM";
+	public static final String TIME_02AM = "02 AM";
+	public static final String TIME_03AM = "03 AM";
+	public static final String TIME_04AM = "04 AM";
+	public static final String TIME_05AM = "05 AM";
+	public static final String TIME_06AM = "06 AM";
+	public static final String TIME_07AM = "07 AM";
+	public static final String TIME_08AM = "08 AM";
+	public static final String TIME_09AM = "09 AM";
+	public static final String TIME_10AM = "10 AM";
+	public static final String TIME_11AM = "11 AM";
+	public static final String TIME_12PM = "12 PM";
+	public static final String TIME_01PM = "01 PM";
+	public static final String TIME_02PM = "02 PM";
+	public static final String TIME_03PM = "03 PM";
+	public static final String TIME_04PM = "04 PM";
+	public static final String TIME_05PM = "05 PM";
+	public static final String TIME_06PM = "06 PM";
+	public static final String TIME_07PM = "07 PM";
+	public static final String TIME_08PM = "08 PM";
+	public static final String TIME_09PM = "09 PM";
+	public static final String TIME_10PM = "10 PM";
+	public static final String TIME_11PM = "11 PM";
+
+	public static List<String> getTimes() {
+		List<String> times = new ArrayList<String>();
+		times.add(TIME_12AM);
+		times.add(TIME_01AM);
+		times.add(TIME_02AM);
+		times.add(TIME_03AM);
+		times.add(TIME_04AM);
+		times.add(TIME_05AM);
+		times.add(TIME_06AM);
+		times.add(TIME_07AM);
+		times.add(TIME_08AM);
+		times.add(TIME_09AM);
+		times.add(TIME_10AM);
+		times.add(TIME_11AM);
+		times.add(TIME_12PM);
+		times.add(TIME_01PM);
+		times.add(TIME_02PM);
+		times.add(TIME_03PM);
+		times.add(TIME_04PM);
+		times.add(TIME_05PM);
+		times.add(TIME_06PM);
+		times.add(TIME_07PM);
+		times.add(TIME_08PM);
+		times.add(TIME_09PM);
+		times.add(TIME_10PM);
+		times.add(TIME_11PM);
+		return times;
+	}
+
 	public static void main(String[] args) {
-		System.out.println("generated verification code is ---");
-		System.out.println(generateVerificationCode());
 	}
 
 }

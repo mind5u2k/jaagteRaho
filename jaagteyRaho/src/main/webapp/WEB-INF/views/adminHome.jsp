@@ -5,7 +5,12 @@
 			Admin Panel</li>
 	</ol>
 </div>
-<div id="content">
+<div id="before"
+	style="width: 100%; height: 600px; text-align: center; vertical-align: middle; font-size: 17px; padding-top: 194px;">
+	<img src="${images}/qqq.png" style="height: 84px;"><br>
+	Please wait ...
+</div>
+<div id="content" style="display: none;">
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="row">
@@ -679,5 +684,7 @@
 														.respond();
 											}
 										});
+
+						 
 					});
 </script>

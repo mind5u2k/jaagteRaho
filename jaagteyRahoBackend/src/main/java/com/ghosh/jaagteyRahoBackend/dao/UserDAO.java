@@ -3,6 +3,7 @@ package com.ghosh.jaagteyRahoBackend.dao;
 import java.util.List;
 
 import com.ghosh.jaagteyRahoBackend.dto.Address;
+import com.ghosh.jaagteyRahoBackend.dto.Designation;
 import com.ghosh.jaagteyRahoBackend.dto.User;
 
 public interface UserDAO {
@@ -19,6 +20,10 @@ public interface UserDAO {
 	boolean updateUser(User user);
 
 	List<User> getAllUsers();
+
+	List<Designation> getAllDesignations();
+
+	boolean addDesignation(Designation designation);
 
 	Address getAddress(int addressId);
 
