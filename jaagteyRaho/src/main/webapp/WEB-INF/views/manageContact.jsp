@@ -2,8 +2,7 @@
 <%@taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <div id="ribbon">
 	<ol class="breadcrumb">
-		<li style="font-size: 16px;" class="text-primary">Add/Edit
-			Employees</li>
+		<li style="font-size: 16px;" class="text-primary">MANAGE CONTACT</li>
 	</ol>
 </div>
 <c:if test="${not empty msg}">
@@ -29,7 +28,7 @@
 			<div class="row" style="padding: 13px 0 17px 0px;">
 				<div class="col-sm-6">
 					<button class="btn btn-primary" id="dialog_link">Add
-						Employee</button>
+						Contact</button>
 				</div>
 				<div class="col-sm-6" style="text-align: right;">
 					<button class="btn btn-default">
@@ -48,10 +47,7 @@
 					<div class="jarviswidget   jarviswidget-sortable" id="wid-id-1"
 						data-widget-editbutton="false"
 						data-widget-fullscreenbutton="false" role="widget">
-						<header role="heading">
-							<h2>Employees</h2>
-						</header>
-						<div role="content">
+						<div role="content" style="border-top: 1px solid #ccc;">
 							<div class="widget-body no-padding">
 								<div id="datatable_col_reorder_wrapper"
 									class="dataTables_wrapper form-inline no-footer">
@@ -71,48 +67,39 @@
 													aria-controls="datatable_col_reorder" rowspan="1"
 													colspan="1"
 													aria-label="Name: activate to sort column ascending"
-													style="width: 96px;">Emp ID</th>
+													style="width: 96px;">Contact Person</th>
 												<th class="sorting" tabindex="0"
 													aria-controls="datatable_col_reorder" rowspan="1"
 													colspan="1"
 													aria-label="Phone: activate to sort column ascending"
-													style="width: 152px;">Name</th>
+													style="width: 152px;">Contact No</th>
 
 												<th data-hide="phone,tablet" class="sorting" tabindex="0"
 													aria-controls="datatable_col_reorder" rowspan="1"
 													colspan="1"
 													aria-label="Zip: activate to sort column ascending"
-													style="width: 104px;">Action</th>
+													style="width: 104px;">Alternate Contact No</th>
 												<th data-hide="phone,tablet" class="sorting" tabindex="0"
 													aria-controls="datatable_col_reorder" rowspan="1"
 													colspan="1"
 													aria-label="City: activate to sort column ascending"
-													style="width: 213px;">Login Access</th>
-												<th data-hide="phone,tablet" class="sorting" tabindex="0"
-													aria-controls="datatable_col_reorder" rowspan="1"
-													colspan="1"
-													aria-label="Date: activate to sort column ascending"
-													style="width: 90px;">Password Reset</th>
+													style="width: 213px;">Action</th>
 											</tr>
 										</thead>
 										<tbody>
-											<c:forEach items="${users}" var="user">
+											<c:forEach items="${contactPersons}" var="cp">
 												<c:set var="i" value="${i+1}" scope="page" />
 												<tr role="row">
 													<td class="sorting_1">${i}</td>
-													<td><span class="responsiveExpander"></span>${user.empId}</td>
-													<td>${user.firstName}<c:if
-															test="${not empty user.middleName}">&nbsp;${user.middleName}</c:if>
-														${user.lastName}
-													</td>
+													<td><span class="responsiveExpander"></span>${cp.name}</td>
+													<td><span class="responsiveExpander"></span>${cp.contactNo}</td>
+													<td><span class="responsiveExpander"></span>${cp.alternateNo}</td>
 													<td><a class="text-primary"
 														style="cursor: pointer; border-bottom: 1px solid #3276b1;"
-														onclick="editUserDialog('${user.id}');">DETAILS</a></td>
-													<td><a class="text-success"
-														style="cursor: pointer; border-bottom: 1px solid #468847;">ACTIVE</a></td>
-													<td><a class="text-primary"
-														style="cursor: pointer; border-bottom: 1px solid #3276b1;">SEND
-															LINK</a></td>
+														onclick="editContactPerson('${cp.id}');">Edit</a> | <a
+														class="text-primary"
+														href="${contextRoot}/ad/deleteContactPerson?contactPersonId=${cp.id}"
+														style="cursor: pointer; border-bottom: 1px solid #3276b1;">Delete</a></td>
 												</tr>
 											</c:forEach>
 										</tbody>
@@ -127,180 +114,52 @@
 		</div>
 	</div>
 </div>
-<div id="dialog_simple" title="Add New Employee">
+<div id="dialog_simple" title="Add New Contact">
 	<div>
-		<sf:form action="${contextRoot}/ad/addNewEmployee"
-			modelAttribute="user" id="checkout-form1" cssClass="smart-form"
-			method="post">
+		<sf:form action="${contextRoot}/ad/addNewContact"
+			modelAttribute="contactPerson" id="contactPersonForm"
+			cssClass="smart-form" method="post">
 			<fieldset>
 				<div class="row">
 					<section class="col col-4">
-						<label class="label">Employee Code<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <sf:input type="text" path="empId"
-								placeholder="" />
-						</label>
-					</section>
-					<section class="col col-8">
-						<label class="label">E-mail Address<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <i class="icon-append fa fa-envelope-o"></i>
-							<sf:input type="email" path="email" placeholder="" />
-						</label>
-					</section>
-				</div>
-				<div class="row">
-					<section class="col col-4">
-						<label class="label">First Name<span
+						<label class="label">Contact Person Name<span
 							style="color: #f00; padding-left: 4px;">*</span></label> <label
 							class="input"> <i class="icon-append fa fa-user"></i> <sf:input
-								type="text" path="firstName" placeholder="" />
+								type="text" path="name" placeholder="" />
 						</label>
 					</section>
 					<section class="col col-4">
-						<label class="label">Middle Name</label> <label class="input">
-							<i class="icon-append fa fa-user"></i> <sf:input type="text"
-								path="middleName" placeholder="" />
-						</label>
-					</section>
-					<section class="col col-4">
-						<label class="label">Last Name<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <i class="icon-append fa fa-user"></i> <sf:input
-								type="text" path="lastName" placeholder="" />
-						</label>
-					</section>
-				</div>
-				<div class="row">
-					<section class="col col-4">
-						<label class="label">DOB</label> <label class="input"> <i
-							class="icon-append fa fa-calendar"></i> <sf:input type="text"
-								path="dob" placeholder="Date of Birth" class="datepicker"
-								data-dateformat="dd/mm/yy" id="dob" />
-						</label>
-					</section>
-					<section class="col col-4">
-						<label class="label">Contact No<span
+						<label class="label">Contact No.<span
 							style="color: #f00; padding-left: 4px;">*</span></label> <label
 							class="input"> <i class="icon-append fa fa-phone"></i> <sf:input
-								type="text" path="contactNumber" placeholder=""
+								type="text" path="contactNo" placeholder=""
 								data-mask="9999999999" />
 						</label>
 					</section>
 					<section class="col col-4">
-						<label class="label">Alternate No</label> <label class="input">
-							<i class="icon-append fa fa-phone"></i> <sf:input type="text"
-								path="alternateNumber" placeholder="" data-mask="9999999999" />
-						</label>
-					</section>
-				</div>
-				<div class="row">
-					<section class="col col-6">
-						<label class="label">Gender</label>
-						<div class="inline-group">
-							<label class="radio"> <sf:radiobutton path="gender"
-									value="Male" /> <i></i>Male
-							</label> <label class="radio"> <sf:radiobutton path="gender"
-									value="Female" /><i></i>Female
-							</label>
-						</div>
-					</section>
-					<section class="col col-6">
-						<label class="label">Designation<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="select"> <sf:select path="designation.id"
-								items="${designations}" itemLabel="designationName"
-								itemValue="id" /> <i></i>
-						</label>
-					</section>
-				</div>
-			</fieldset>
-			<fieldset>
-				<div class="row">
-					<section class="col col-6">
-						<label class="label"
-							style="border-bottom: 1px solid #ccc; padding-bottom: 7px;">Correspondence
-							Address</label>
-					</section>
-					<section class="col col-6">
-						<label class="label"
-							style="border-bottom: 1px solid #ccc; padding-bottom: 7px;">Permanent
-							Address</label>
-					</section>
-				</div>
-				<div class="row">
-					<section class="col col-6">
-						<label class="label">Address<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="textarea"> <sf:textarea
-								path="corredpondenceAddress" rows="3" />
-						</label>
-					</section>
-					<section class="col col-6">
-						<label class="label">Address</label> <label class="textarea">
-							<sf:textarea path="permanentAddress" rows="3" />
-						</label>
-					</section>
-				</div>
-				<div class="row">
-					<section class="col col-6">
-						<label class="label">Pin Code<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <sf:input type="text"
-								path="corredpondencePostalCode" placeholder="" />
-						</label>
-					</section>
-					<section class="col col-6">
-						<label class="label">Pin Code</label> <label class="input">
-							<sf:input type="text" path="permanentPostalCode" placeholder="" />
-						</label>
-					</section>
-				</div>
-				<div class="row">
-					<section class="col col-6">
-						<label class="label">State<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <sf:input type="text"
-								path="corredpondenceState" placeholder="" />
-						</label>
-					</section>
-					<section class="col col-6">
-						<label class="label">State</label> <label class="input"> <sf:input
-								type="text" path="permanentState" placeholder="" />
-						</label>
-					</section>
-				</div>
-				<div class="row">
-					<section class="col col-6">
-						<label class="label">City<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <sf:input type="text"
-								path="corredpondenceCity" placeholder="" />
-						</label>
-					</section>
-					<section class="col col-6">
-						<label class="label">City</label> <label class="input"> <sf:input
-								type="text" path="permanentCity" placeholder="" />
+						<label class="label">Alternate Contact No.</label> <label
+							class="input"> <i class="icon-append fa fa-phone"></i> <sf:input
+								type="text" path="alternateNo" placeholder=""
+								data-mask="9999999999" />
 						</label>
 					</section>
 				</div>
 				<div class="row">
 					<section class="col col-12" style="float: right;">
-						<label class="input">
+						<label class="input"> <sf:hidden path="id" />
 							<button type="submit" name="submit" class="btn btn-primary"
 								style="padding: 7px 10px 7px 10px; margin-top: 18px;">
 								Submit</button>
 						</label>
 					</section>
-
 				</div>
 			</fieldset>
 		</sf:form>
 	</div>
 </div>
-<div id="editUserDialog" title="Edit Employee">
-	<div id="userDetails">
-		<div style="text-align: center; padding-top: 95px;">
+<div id="editContactPerson" title="Edit Contact Person">
+	<div id="editPersonDiv">
+		<div style="text-align: center; padding-top: 41px;">
 			<img src="${images}/qqq.png" style="height: 84px;"><br>
 			Please wait ...
 		</div>
@@ -382,27 +241,27 @@
 						$('#dialog_simple').dialog({
 							autoOpen : false,
 							width : 850,
-							height : 400,
+							height : 250,
 							resizable : false,
 							modal : true
 						});
-						$('#editUserDialog').dialog({
+						$('#editContactPerson').dialog({
 							autoOpen : false,
 							width : 850,
-							height : 400,
+							height : 250,
 							resizable : false,
 							modal : true
 						});
 
 					});
 
-	function editUserDialog(userId) {
-		$('#editUserDialog').dialog('open');
+	function editContactPerson(contactPersonId) {
+		$('#editContactPerson').dialog('open');
 		$.ajax({
 			type : "GET",
-			url : "editUser?userId=" + userId,
+			url : "editContactPerson?contactPersonId=" + contactPersonId,
 			success : function(response) {
-				$('#editUserDialog').html(response);
+				$('#editPersonDiv').html(response);
 			},
 			error : function(e) {
 				console.log('Error: ' + e);

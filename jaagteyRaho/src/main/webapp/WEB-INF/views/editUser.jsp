@@ -54,13 +54,13 @@
 					style="color: #f00; padding-left: 4px;">*</span></label> <label
 					class="input"> <i class="icon-append fa fa-phone"></i> <sf:input
 						type="text" path="contactNumber" placeholder=""
-						data-mask="(999) 999-9999" />
+						data-mask="9999999999" />
 				</label>
 			</section>
 			<section class="col col-4">
 				<label class="label">Alternate No</label> <label class="input">
 					<i class="icon-append fa fa-phone"></i> <sf:input type="text"
-						path="alternateNumber" placeholder="" data-mask="(999) 999-9999" />
+						path="alternateNumber" placeholder="" data-mask="9999999999" />
 				</label>
 			</section>
 		</div>
@@ -165,3 +165,9 @@
 		</div>
 	</fieldset>
 </sf:form>
+
+<script>
+	$(document).ready(function() {
+		pageSetUp();
+	});
+</script>

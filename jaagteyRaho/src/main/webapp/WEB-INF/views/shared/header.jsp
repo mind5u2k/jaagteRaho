@@ -102,8 +102,10 @@
 				<ul id="systemSetup" style="display: none;">
 					<li id="manageDesignation"><a
 						href="${contextRoot}/ad/manageDesignation">Manage Designation</a></li>
-					<li id="salesOrganization"><a href="#">Manage CheckList</a></li>
-					<li id="salesManager"><a href="#">Manage Contact</a></li>
+					<li id="manageChecklist"><a
+						href="${contextRoot}/ad/manageChecklist">Manage CheckList</a></li>
+					<li id="manageContact"><a
+						href="${contextRoot}/ad/manageContact">Manage Contact</a></li>
 					<li id="autoCheckinSetting"><a
 						href="${contextRoot}/ad/autoCheckinSetting">Auto Checkin
 							Setting</a></li>

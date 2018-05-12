@@ -39,6 +39,14 @@ $(function() {
 		$("#systemSetup").css("display", "block");
 		$('#autoCheckinSetting').addClass('active');
 		break;
+	case 'Manage Checklist':
+		$("#systemSetup").css("display", "block");
+		$('#manageChecklist').addClass('active');
+		break;
+	case 'Manage Contact':
+		$("#systemSetup").css("display", "block");
+		$('#manageContact').addClass('active');
+		break;
 	default:
 		break;
 	}
@@ -73,6 +81,47 @@ $(function() {
 			},
 			designationName : {
 				required : 'Please enter Designation Name'
+			}
+		},
+
+		// Do not change code below
+		errorPlacement : function(error, element) {
+			error.insertAfter(element.parent());
+		}
+	});
+	var $contactPersonForm = $("#contactPersonForm").validate({
+		rules : {
+			name : {
+				required : true
+			},
+			contactNo : {
+				required : true
+			}
+		},
+		messages : {
+			name : {
+				required : 'Please Enter Contact Person Name'
+			},
+			contactNo : {
+				required : 'Please Enter Contact No'
+			}
+		},
+
+		// Do not change code below
+		errorPlacement : function(error, element) {
+			error.insertAfter(element.parent());
+		}
+	});
+
+	var $checklist = $("#checklist").validate({
+		rules : {
+			checklist : {
+				required : true
+			}
+		},
+		messages : {
+			checklist : {
+				required : 'Please Add Checklist'
 			}
 		},
 

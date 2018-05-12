@@ -59,10 +59,10 @@
 				</div>
 				<div class="col-sm-6" style="text-align: right;">
 					<button class="btn btn-default">
-						<i class="fa fa-file-excel-o"></i> &nbsp;Excel
+						<i class="fa fa-file-excel-o"></i> &nbsp;Download Excel
 					</button>
 					<button class="btn btn-default">
-						<i class="fa fa-file-pdf-o"></i> &nbsp;Pdf
+						<i class="fa fa-file-pdf-o"></i> &nbsp;Download Pdf
 					</button>
 				</div>
 			</div>

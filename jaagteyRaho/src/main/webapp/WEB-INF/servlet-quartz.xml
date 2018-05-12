@@ -3,31 +3,113 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans  
      http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="newJob" class="net.ghosh.sales.service.quartzServices.NewJob" />
-
-	<!-- specifing class and method that is going to be called on a specified 
-		time basis -->
+	<bean id="fiveMinIntervalJob"
+		class="com.ghosh.jaagteyRaho.service.quartzServices.FiveMinIntervalJob" />
+	<bean id="tenMinIntervalJob"
+		class="com.ghosh.jaagteyRaho.service.quartzServices.TenMinIntervalJob" />
+	<bean id="fifteenMinIntervalJob"
+		class="com.ghosh.jaagteyRaho.service.quartzServices.FifteenMinIntervalJob" />
+	<bean id="twentyMinIntervalJob"
+		class="com.ghosh.jaagteyRaho.service.quartzServices.TwentyMinIntervalJob" />
+	<bean id="thirtyMinIntervalJob"
+		class="com.ghosh.jaagteyRaho.service.quartzServices.ThirtyMinIntervalJob" />
+	<bean id="oneHrIntervalJob"
+		class="com.ghosh.jaagteyRaho.service.quartzServices.OneHrIntervalJob" />
+	<bean id="twoHrsIntervalJob"
+		class="com.ghosh.jaagteyRaho.service.quartzServices.TwoHrsIntervalJob" />
+	<bean id="threeHrsIntervalJob"
+		class="com.ghosh.jaagteyRaho.service.quartzServices.ThreeHrsIntervalJob" />
 
 	<bean id="myJob1"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="newJob" />
+		<property name="targetObject" ref="fiveMinIntervalJob" />
 		<property name="targetMethod" value="execute" />
 	</bean>
 
-	<!-- simple trigger specify repeat interval and delay time 1000=1s -->
-	<!-- way 1 <bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean"> 
-		<property name="jobDetail" ref="myJob" /> <property name="repeatInterval" 
-		value="1000" /> <property name="startDelay" value="1000" /> </bean> -->
-
-	<!-- way 2 -->
 	<bean id="simpleTrigger1"
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="myJob1" />
-		<property name="cronExpression" value="0 0 0 1/1 * ? *" /> <!-- run very 10s -->
+		<property name="cronExpression" value="0 0/5 * 1/1 * ? *" />
 	</bean>
 
-	<!-- scheduler factory bean to bind,the executing code and time intervals 
-		together -->
+	<bean id="myJob2"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="tenMinIntervalJob" />
+		<property name="targetMethod" value="execute" />
+	</bean>
+
+	<bean id="simpleTrigger2"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="myJob2" />
+		<property name="cronExpression" value="0 0/10 * 1/1 * ? *" />
+	</bean>
+	<bean id="myJob3"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="fifteenMinIntervalJob" />
+		<property name="targetMethod" value="execute" />
+	</bean>
+
+	<bean id="simpleTrigger3"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="myJob3" />
+		<property name="cronExpression" value="0 0/15 * 1/1 * ? *" />
+	</bean>
+	<bean id="myJob4"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="twentyMinIntervalJob" />
+		<property name="targetMethod" value="execute" />
+	</bean>
+
+	<bean id="simpleTrigger4"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="myJob4" />
+		<property name="cronExpression" value="0 0/20 * 1/1 * ? *" />
+	</bean>
+	<bean id="myJob5"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="thirtyMinIntervalJob" />
+		<property name="targetMethod" value="execute" />
+	</bean>
+
+	<bean id="simpleTrigger5"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="myJob5" />
+		<property name="cronExpression" value="0 0/30 * 1/1 * ? *" />
+	</bean>
+	<bean id="myJob6"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="oneHrIntervalJob" />
+		<property name="targetMethod" value="execute" />
+	</bean>
+
+	<bean id="simpleTrigger6"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="myJob6" />
+		<property name="cronExpression" value="0 0 0/1 1/1 * ? *" />
+	</bean>
+	<bean id="myJob7"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="twoHrsIntervalJob" />
+		<property name="targetMethod" value="execute" />
+	</bean>
+
+	<bean id="simpleTrigger7"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="myJob7" />
+		<property name="cronExpression" value="0 0 0/2 1/1 * ? *" />
+	</bean>
+	<bean id="myJob8"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="threeHrsIntervalJob" />
+		<property name="targetMethod" value="execute" />
+	</bean>
+
+	<bean id="simpleTrigger8"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="myJob8" />
+		<property name="cronExpression" value="0 0 0/3 1/1 * ? *" />
+	</bean>
+
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="autoStartup">
 			<value>true</value>
@@ -35,11 +117,25 @@
 		<property name="jobDetails">
 			<list>
 				<ref bean="myJob1" />
+				<ref bean="myJob2" />
+				<ref bean="myJob3" />
+				<ref bean="myJob4" />
+				<ref bean="myJob5" />
+				<ref bean="myJob6" />
+				<ref bean="myJob7" />
+				<ref bean="myJob8" />
 			</list>
 		</property>
 		<property name="triggers">
 			<list>
 				<ref bean="simpleTrigger1" />
+				<ref bean="simpleTrigger2" />
+				<ref bean="simpleTrigger3" />
+				<ref bean="simpleTrigger4" />
+				<ref bean="simpleTrigger5" />
+				<ref bean="simpleTrigger6" />
+				<ref bean="simpleTrigger7" />
+				<ref bean="simpleTrigger8" />
 			</list>
 		</property>
 	</bean>

@@ -17,6 +17,7 @@ import com.ghosh.jaagteyRahoBackend.Util;
 import com.ghosh.jaagteyRahoBackend.dao.SystemSetupDAO;
 import com.ghosh.jaagteyRahoBackend.dao.UserDAO;
 import com.ghosh.jaagteyRahoBackend.dto.AutoCheckinSetting;
+import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
 import com.ghosh.jaagteyRahoBackend.dto.Designation;
 import com.ghosh.jaagteyRahoBackend.dto.User;
 
@@ -198,4 +199,107 @@ public class AdminController {
 			return "redirect:/ad/autoCheckinSetting?status=updateFailure";
 		}
 	}
+
+	@RequestMapping("/manageChecklist")
+	public ModelAndView manageChecklist(
+			@RequestParam(name = "status", required = false) String status) {
+		ModelAndView mv = new ModelAndView("page");
+
+		if (status != null) {
+			if (status.equals("updateSuccess")) {
+				mv.addObject("msg", "Updated Successfully");
+			} else if (status.equals("updateFailure")) {
+				mv.addObject("errorMsg", "Getting Error while Updating");
+			}
+		}
+
+		mv.addObject("title", "Manage Checklist");
+		mv.addObject("userClickAdminManageChecklist", true);
+		return mv;
+	}
+
+	@RequestMapping("/manageContact")
+	public ModelAndView manageContact(
+			@RequestParam(name = "status", required = false) String status) {
+		ModelAndView mv = new ModelAndView("page");
+
+		if (status != null) {
+			if (status.equals("success")) {
+				mv.addObject("msg", "New Contact Added Successfully");
+			} else if (status.equals("failure")) {
+				mv.addObject("errorMsg",
+						"Getting Error while Adding New Contact Person");
+			} else if (status.equals("updateSuccess")) {
+				mv.addObject("msg", "Contact person Updated Successfully");
+			} else if (status.equals("updateFailure")) {
+				mv.addObject("errorMsg",
+						"Getting Error while Updating Contact Person");
+			} else if (status.equals("deleteSuccess")) {
+				mv.addObject("msg", "Contact person Deleted Successfully");
+			} else if (status.equals("deleteFailure")) {
+				mv.addObject("errorMsg",
+						"Getting Error while Deleting Contact Person");
+			}
+		}
+
+		List<ContactPerson> contactPersons = systemSetupDAO
+				.getAllContactPersons();
+		mv.addObject("contactPersons", contactPersons);
+
+		ContactPerson contactPerson = new ContactPerson();
+		mv.addObject("contactPerson", contactPerson);
+		mv.addObject("title", "Manage Contact");
+		mv.addObject("userClickAdminManageContact", true);
+		return mv;
+	}
+
+	@RequestMapping(value = "/addNewContact", method = RequestMethod.POST)
+	public String addNewContact(
+			@ModelAttribute("contactPerson") ContactPerson contactPerson) {
+
+		boolean status = systemSetupDAO.addUpdatedContactPerson(contactPerson);
+		if (status) {
+			return "redirect:/ad/manageContact?status=success";
+		} else {
+			return "redirect:/ad/manageContact?status=failure";
+		}
+	}
+
+	@RequestMapping("/editContactPerson")
+	public ModelAndView editContactPerson(
+			@RequestParam(name = "contactPersonId", required = false) Integer contactPersonId) {
+		ModelAndView mv = new ModelAndView("editContactPerson");
+		ContactPerson selectedContactPerson = systemSetupDAO
+				.getContactPersonById(contactPersonId);
+		mv.addObject("selectedContactPerson", selectedContactPerson);
+		return mv;
+	}
+
+	@RequestMapping(value = "/updatedContactPerson", method = RequestMethod.POST)
+	public String updatedContactPerson(
+			@ModelAttribute("selectedContactPerson") ContactPerson selectedContactPerson) {
+
+		boolean status = systemSetupDAO
+				.addUpdatedContactPerson(selectedContactPerson);
+		if (status) {
+			return "redirect:/ad/manageContact?status=updateSuccess";
+		} else {
+			return "redirect:/ad/manageContact?status=updateFailure";
+		}
+	}
+
+	@RequestMapping(value = "/deleteContactPerson")
+	public String deleteContactPerson(
+			@RequestParam(name = "contactPersonId", required = false) Integer contactPersonId) {
+
+		ContactPerson contactPerson = systemSetupDAO
+				.getContactPersonById(contactPersonId);
+		boolean status = systemSetupDAO.deleteContactPerson(contactPerson);
+		if (status) {
+			return "redirect:/ad/manageContact?status=deleteSuccess";
+		} else {
+			return "redirect:/ad/manageContact?status=deleteFailure";
+		}
+	}
+
 }

@@ -25,7 +25,7 @@
 <meta name="_csrf_header" content="${_csrf.headerName}">
 
 <title>Jaagtey Raho</title>
-
+<link rel="icon" type="image/png" href="${images}/logoeaglelatest.png">
 <script>
 	window.menu = '${title}';
 	window.contextRoot = '${contextRoot}'
@@ -62,6 +62,12 @@
 		</c:if>
 		<c:if test="${userClickAdminAutoCheckinSetting == true }">
 			<%@include file="autoCheckinSetting.jsp"%>
+		</c:if>
+		<c:if test="${userClickAdminManageChecklist == true }">
+			<%@include file="manageChecklist.jsp"%>
+		</c:if>
+		<c:if test="${userClickAdminManageContact == true }">
+			<%@include file="manageContact.jsp"%>
 		</c:if>
 	</div>
 	<%@include file="./shared/footer.jsp"%>

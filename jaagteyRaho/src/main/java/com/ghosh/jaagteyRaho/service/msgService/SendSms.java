@@ -6,18 +6,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class SendSms {
-	public String sendSms() {
+	public String sendSms(String nos) {
 		try {
 
 			System.out.println("hello");
-			// Construct data
 			String apiKey = "apikey="
 					+ "wcL+7qODu9E-MjFusywZMom2yP5Gad6YoD0EpjUMOw";
-			String message = "&message=" + "Hi Navnit !! what's up ? call me once you free";
+			String message = "&message="
+					+ "Hi Navnit !! what's up ? call me once you free";
 			String sender = "&sender=" + "TXTLCL";
-			String numbers = "&numbers=" + "9892641043";
-
-			// Send data
+			String numbers = "&numbers=" + nos;
 			HttpURLConnection conn = (HttpURLConnection) new URL(
 					"https://api.textlocal.in/send/?").openConnection();
 			String data = apiKey + numbers + message + sender;
@@ -44,7 +42,5 @@ public class SendSms {
 
 	public static void main(String[] args) {
 		SendSms sendSms = new SendSms();
-		System.out.println("[" + sendSms.sendSms() + "]");
-
 	}
 }
