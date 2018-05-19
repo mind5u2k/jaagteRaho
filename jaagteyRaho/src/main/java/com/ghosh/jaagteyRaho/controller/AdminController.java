@@ -23,6 +23,8 @@ import com.ghosh.jaagteyRahoBackend.dto.Client;
 import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
 import com.ghosh.jaagteyRahoBackend.dto.Designation;
 import com.ghosh.jaagteyRahoBackend.dto.Site;
+import com.ghosh.jaagteyRahoBackend.dto.SiteContactMapping;
+import com.ghosh.jaagteyRahoBackend.dto.SiteEmployeeMapping;
 import com.ghosh.jaagteyRahoBackend.dto.User;
 
 @Controller
@@ -451,6 +453,174 @@ public class AdminController {
 			return "redirect:/ad/manageSite?status=updateSuccess";
 		} else {
 			return "redirect:/ad/manageSite?status=updateFailure";
+		}
+	}
+
+	@RequestMapping("/assignEmployees")
+	public ModelAndView assignEmployees(
+			@RequestParam(name = "siteId", required = false) Integer siteId,
+			@RequestParam(name = "status", required = false) String status) {
+
+		ModelAndView mv = new ModelAndView("assignEmployees");
+
+		if (status != null) {
+			if (status.equals("success")) {
+				mv.addObject("msg1", "Employee has been assigned successfully");
+			} else if (status.equals("failure")) {
+				mv.addObject("errorMsg1", "Getting Error while Assigning");
+			} else if (status.equals("revokesuccess")) {
+				mv.addObject("msg1", "Revoked Successfully");
+			} else if (status.equals("revokefailure")) {
+				mv.addObject("errorMsg1", "Getting Error while Revoking");
+			}
+		}
+
+		Site selectedSite = clientManagementDao.getSiteById(siteId);
+		mv.addObject("selectedSite", selectedSite);
+
+		List<SiteEmployeeMapping> employeeMappings = clientManagementDao
+				.assignedEmployeestoSite(selectedSite);
+
+		System.out
+				.println("site employees mappings [" + employeeMappings + "]");
+
+		if (employeeMappings != null) {
+			System.out.println("total mapping for site ["
+					+ selectedSite.getSiteName() + "] is ["
+					+ employeeMappings.size() + "]");
+		}
+
+		mv.addObject("employeeMappings", employeeMappings);
+
+		List<User> employees = clientManagementDao
+				.getUnAssignedEmployees(selectedSite);
+		System.out.println("total unassigned employees [" + employees.size()
+				+ "]");
+		mv.addObject("employees", employees);
+
+		return mv;
+	}
+
+	@RequestMapping("/assignEmp")
+	public String assignEmp(
+			@RequestParam(name = "selectedSiteId", required = false) Integer selectedSiteId,
+			@RequestParam(name = "empId", required = false) Integer empId) {
+
+		Site selectedSite = clientManagementDao.getSiteById(selectedSiteId);
+		User user = userDAO.get(empId);
+
+		SiteEmployeeMapping employeeMapping = new SiteEmployeeMapping();
+		employeeMapping.setEmployee(user);
+		employeeMapping.setSite(selectedSite);
+
+		boolean status = clientManagementDao
+				.saveOrUpdateSiteEmployeeMapping(employeeMapping);
+
+		if (status) {
+			return "redirect:/ad/assignEmployees?siteId=" + selectedSiteId
+					+ "&status=success";
+		} else {
+			return "redirect:/ad/assignEmployees?siteId=" + selectedSiteId
+					+ "&status=failure";
+		}
+	}
+
+	@RequestMapping("/revokeEmp")
+	public String revokeEmp(
+			@RequestParam(name = "siteMappingId", required = false) Integer siteMappingId) {
+
+		SiteEmployeeMapping mapping = clientManagementDao
+				.getSiteEmpMappingById(siteMappingId);
+
+		Site site = mapping.getSite();
+
+		boolean status = clientManagementDao.deleteSiteEmpMapping(mapping);
+
+		if (status) {
+			return "redirect:/ad/assignEmployees?siteId=" + site.getId()
+					+ "&status=revokesuccess";
+		} else {
+			return "redirect:/ad/assignEmployees?siteId=" + site.getId()
+					+ "&status=revokefailure";
+		}
+	}
+
+	@RequestMapping("/assignContactperson")
+	public ModelAndView assignContactperson(
+			@RequestParam(name = "siteId", required = false) Integer siteId,
+			@RequestParam(name = "status", required = false) String status) {
+
+		ModelAndView mv = new ModelAndView("assignContactperson");
+
+		if (status != null) {
+			if (status.equals("success")) {
+				mv.addObject("msg1",
+						"Contact Person has been assigned successfully");
+			} else if (status.equals("failure")) {
+				mv.addObject("errorMsg1", "Getting Error while Assigning");
+			} else if (status.equals("revokesuccess")) {
+				mv.addObject("msg1", "Revoked Successfully");
+			} else if (status.equals("revokefailure")) {
+				mv.addObject("errorMsg1", "Getting Error while Revoking");
+			}
+		}
+
+		Site selectedSite = clientManagementDao.getSiteById(siteId);
+		mv.addObject("selectedSite", selectedSite);
+
+		List<SiteContactMapping> contactMappings = clientManagementDao
+				.assignedContactstoSite(selectedSite);
+
+		mv.addObject("contactMappings", contactMappings);
+
+		List<ContactPerson> contactPersons = clientManagementDao
+				.getUnAssignedContacts(selectedSite);
+		mv.addObject("contactPersons", contactPersons);
+
+		return mv;
+	}
+
+	@RequestMapping("/assignContacts")
+	public String assignContacts(
+			@RequestParam(name = "selectedSiteId", required = false) Integer selectedSiteId,
+			@RequestParam(name = "cpId", required = false) Integer cpId) {
+
+		Site selectedSite = clientManagementDao.getSiteById(selectedSiteId);
+		ContactPerson contactPerson = systemSetupDAO.getContactPersonById(cpId);
+
+		SiteContactMapping contactMapping = new SiteContactMapping();
+		contactMapping.setContactPerson(contactPerson);
+		contactMapping.setSite(selectedSite);
+
+		boolean status = clientManagementDao
+				.saveOrUpdateSiteContactMapping(contactMapping);
+
+		if (status) {
+			return "redirect:/ad/assignContactperson?siteId=" + selectedSiteId
+					+ "&status=success";
+		} else {
+			return "redirect:/ad/assignContactperson?siteId=" + selectedSiteId
+					+ "&status=failure";
+		}
+	}
+
+	@RequestMapping("/revokeContactPerson")
+	public String revokeContactPerson(
+			@RequestParam(name = "contactMappingId", required = false) Integer contactMappingId) {
+
+		SiteContactMapping mapping = clientManagementDao
+				.getContactMappingById(contactMappingId);
+
+		Site site = mapping.getSite();
+
+		boolean status = clientManagementDao.deleteSiteContactMapping(mapping);
+
+		if (status) {
+			return "redirect:/ad/assignContactperson?siteId=" + site.getId()
+					+ "&status=revokesuccess";
+		} else {
+			return "redirect:/ad/assignContactperson?siteId=" + site.getId()
+					+ "&status=revokefailure";
 		}
 	}
 

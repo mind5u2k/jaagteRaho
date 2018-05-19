@@ -81,10 +81,12 @@
 													<td>${s.emailId}</td>
 													<td>${s.address}</td>
 													<td><a class="text-primary"
+														onclick="assignEmployee('${s.id}');"
 														style="cursor: pointer; border-bottom: 1px solid #3276b1;">ASSIGN</a>
 														|| <a class="text-primary" onclick="editSite('${s.id}');"
 														style="cursor: pointer; border-bottom: 1px solid #3276b1;">UPDATE</a>
 														|| <a class="text-primary"
+														onclick="assignContactPerson('${s.id}');"
 														style="cursor: pointer; border-bottom: 1px solid #3276b1;">ASSIGN
 															CONTACT</a></td>
 												</tr>
@@ -183,6 +185,24 @@
 	</div>
 </div>
 
+<div id="assignEmployeeDialog" title="Map Employee">
+	<div id="assigEmployees">
+		<div style="text-align: center; padding-top: 142px;">
+			<img src="${images}/qqq.png" style="height: 84px;"><br>
+			Please wait ...
+		</div>
+	</div>
+</div>
+
+<div id="assignContactDialog" title="Map Contact">
+	<div id="assignContacts">
+		<div style="text-align: center; padding-top: 142px;">
+			<img src="${images}/qqq.png" style="height: 84px;"><br>
+			Please wait ...
+		</div>
+	</div>
+</div>
+
 <style>
 .ui-dialog-titlebar {
 	padding: 3px 12px 3px 12px !important;
@@ -269,7 +289,20 @@
 							resizable : false,
 							modal : true
 						});
-
+						$('#assignEmployeeDialog').dialog({
+							autoOpen : false,
+							width : 850,
+							height : 450,
+							resizable : false,
+							modal : true
+						});
+						$('#assignContactDialog').dialog({
+							autoOpen : false,
+							width : 850,
+							height : 450,
+							resizable : false,
+							modal : true
+						});
 					});
 
 	function editSite(siteId) {
@@ -279,6 +312,34 @@
 			url : "editSite?siteId=" + siteId,
 			success : function(response) {
 				$('#siteDetails').html(response);
+			},
+			error : function(e) {
+				console.log('Error: ' + e);
+			}
+		});
+	}
+
+	function assignEmployee(siteId) {
+		$('#assignEmployeeDialog').dialog('open');
+		$.ajax({
+			type : "GET",
+			url : "assignEmployees?siteId=" + siteId,
+			success : function(response) {
+				$('#assigEmployees').html(response);
+			},
+			error : function(e) {
+				console.log('Error: ' + e);
+			}
+		});
+	}
+
+	function assignContactPerson(siteId) {
+		$('#assignContactDialog').dialog('open');
+		$.ajax({
+			type : "GET",
+			url : "assignContactperson?siteId=" + siteId,
+			success : function(response) {
+				$('#assignContacts').html(response);
 			},
 			error : function(e) {
 				console.log('Error: ' + e);
