@@ -31,7 +31,7 @@ public class GlobalDefaultExceptionHandler {
 
 		ModelAndView mv = new ModelAndView("error");
 
-		mv.addObject("errorTitle", "Contact Your Administrator!!");
+		mv.addObject("errorTitle", "Contact Your Administrator");
 
 		/* only for debugging your application */
 		StringWriter sw = new StringWriter();
@@ -39,7 +39,8 @@ public class GlobalDefaultExceptionHandler {
 
 		ex.printStackTrace(pw);
 
-		mv.addObject("errorDescription", sw.toString());
+		mv.addObject("errorDescription",
+				"!!  Seems like You are doing something wrong  !!");
 
 		mv.addObject("title", "Error");
 

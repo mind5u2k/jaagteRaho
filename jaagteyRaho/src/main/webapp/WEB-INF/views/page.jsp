@@ -57,6 +57,12 @@
 		<c:if test="${userClickAdminAddEmployees == true }">
 			<%@include file="employees.jsp"%>
 		</c:if>
+		<c:if test="${userClickAdminManageClient == true }">
+			<%@include file="manageClients.jsp"%>
+		</c:if>
+		<c:if test="${userClickAdminManageSite == true }">
+			<%@include file="manageSites.jsp"%>
+		</c:if>
 		<c:if test="${userClickAdminManageDesignation == true }">
 			<%@include file="manageDesignation.jsp"%>
 		</c:if>
@@ -88,8 +94,6 @@
 	<script src="${js}/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
 	<script src="${js}/plugin/jquery-form/jquery-form.min.js"></script>
 	<script src="${js}/myapp.js"></script>
-	<script type="text/javascript">
-		window.onload = date_time('date_time');
-	</script>
+	 
 </body>
 </html>

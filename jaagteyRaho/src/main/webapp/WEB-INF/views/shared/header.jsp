@@ -87,13 +87,15 @@
 					<li id="addEmp"><a href="${contextRoot}/ad/addEmployees">Add
 							Employees</a></li>
 				</ul></li>
-			<li id=" "><a href="#"><i class="fa fa-lg fa-fw fa-tasks"></i>
+			<li id=""><a href="#"><i class="fa fa-lg fa-fw fa-tasks"></i>
 					<span class="menu-item-parent">Client Management</span><b
 					class="collapse-sign"><em class="fa fa-minus-square-o"></em></b></a>
-				<ul id="adminUserBlock" style="display: none;">
-					<li id="salesManager"><a href="#">Manage Client</a></li>
-					<li id="salesOrganization"><a href="#">Manage Site</a></li>
-					<li id="salesOrganization"><a href="#">Employee Site
+				<ul id="clientManagement" style="display: none;">
+					<li id="manageClient"><a href="${contextRoot}/ad/manageClient">Manage
+							Client</a></li>
+					<li id="manageSite"><a href="${contextRoot}/ad/manageSite">Manage
+							Site</a></li>
+					<li id="employeeSiteReport"><a href="#">Employee Site
 							Report</a></li>
 				</ul></li>
 			<li id=""><a href="#"><i class="fa fa-lg fa-fw fa-laptop"></i>

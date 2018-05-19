@@ -100,13 +100,11 @@
 							<p class="lead semi-bold">
 								<strong>${errorDescription}</strong><br> <br>
 							</p>
-							<ul class="error-search text-left font-md"
+							<div class="error-search text-center font-md"
 								style="list-style: none;">
-								<li><a href="${contextRoot}/home" class="btn btn-primary">
-										Go to Home &nbsp;&nbsp; <i class="fa fa-arrow-right"></i>
-								</a></li>
-
-							</ul>
+								<a href="${contextRoot}/home" class="btn btn-primary"> Go to
+									Home </a>
+							</div>
 						</div>
 
 					</div>

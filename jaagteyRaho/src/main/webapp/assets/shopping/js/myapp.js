@@ -31,6 +31,14 @@ $(function() {
 		$("#employees").css("display", "block");
 		$('#addEmp').addClass('active');
 		break;
+	case 'Clients':
+		$("#clientManagement").css("display", "block");
+		$('#manageClient').addClass('active');
+		break;
+	case 'Sites':
+		$("#clientManagement").css("display", "block");
+		$('#manageSite').addClass('active');
+		break;
 	case 'Designation':
 		$("#systemSetup").css("display", "block");
 		$('#manageDesignation').addClass('active');
@@ -89,6 +97,7 @@ $(function() {
 			error.insertAfter(element.parent());
 		}
 	});
+
 	var $contactPersonForm = $("#contactPersonForm").validate({
 		rules : {
 			name : {
@@ -142,6 +151,112 @@ $(function() {
 			geoRadius : {
 				required : 'Please enter Geo Radius',
 				digits : 'Geo Radius must be a number'
+			}
+		},
+
+		// Do not change code below
+		errorPlacement : function(error, element) {
+			error.insertAfter(element.parent());
+		}
+	});
+
+	var $client = $("#client").validate({
+		rules : {
+			clientCode : {
+				required : true
+			},
+			clientName : {
+				required : true
+			},
+			contactPerson : {
+				required : true
+			},
+			contactNo : {
+				required : true
+			},
+			emailId : {
+				required : true,
+				email : true
+			},
+			address : {
+				required : true
+			}
+		},
+		messages : {
+			clientCode : {
+				required : 'Please Enter Client Code'
+			},
+			clientName : {
+				required : 'Please Enter Client Name'
+			},
+			contactPerson : {
+				required : 'Please Enter Contact Person'
+			},
+			contactNo : {
+				required : 'Please Enter Contact Number'
+			},
+			emailId : {
+				required : 'Please Enter Email Id',
+				email : 'Please Enter a Valid Email Id'
+			},
+			address : {
+				required : 'Please Enter Address'
+			}
+		},
+
+		// Do not change code below
+		errorPlacement : function(error, element) {
+			error.insertAfter(element.parent());
+		}
+	});
+
+	var $site = $("#site").validate({
+		rules : {
+			siteCode : {
+				required : true
+			},
+			siteName : {
+				required : true
+			},
+			contactPerson : {
+				required : true
+			},
+			contactNo : {
+				required : true
+			},
+			emailId : {
+				required : true,
+				email : true
+			},
+			address : {
+				required : true
+			},
+			'client.id' : {
+				required : true
+			}
+		},
+		messages : {
+			siteCode : {
+				required : 'Please Enter Site Code'
+			},
+			siteName : {
+				required : 'Please Enter Site Name'
+			},
+			contactPerson : {
+				required : 'Please Enter Contact Person'
+			},
+			contactNo : {
+				required : 'Please Enter Contact Number'
+			},
+			emailId : {
+				required : 'Please Enter Email Id',
+				email : 'Please Enter a Valid Email Id'
+			},
+			address : {
+				required : 'Please Enter Address'
+			},
+			'client.id' : {
+				required : 'Please select Client'
 			}
 		},
 

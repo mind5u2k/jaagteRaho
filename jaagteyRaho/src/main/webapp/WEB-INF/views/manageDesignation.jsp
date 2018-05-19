@@ -2,8 +2,7 @@
 <%@taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <div id="ribbon">
 	<ol class="breadcrumb">
-		<li style="font-size: 16px;" class="text-primary">Manage
-			Designation</li>
+		<li style="font-size: 16px;" class="text-primary">MANAGE DESIGNATION</li>
 	</ol>
 </div>
 <c:if test="${not empty msg}">

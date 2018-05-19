@@ -8,17 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ghosh.jaagteyRahoBackend.Util;
+import com.ghosh.jaagteyRahoBackend.dao.ClientManagementDao;
 import com.ghosh.jaagteyRahoBackend.dao.SystemSetupDAO;
 import com.ghosh.jaagteyRahoBackend.dao.UserDAO;
 import com.ghosh.jaagteyRahoBackend.dto.AutoCheckinSetting;
+import com.ghosh.jaagteyRahoBackend.dto.Client;
 import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
 import com.ghosh.jaagteyRahoBackend.dto.Designation;
+import com.ghosh.jaagteyRahoBackend.dto.Site;
 import com.ghosh.jaagteyRahoBackend.dto.User;
 
 @Controller
@@ -39,6 +43,9 @@ public class AdminController {
 
 	@Autowired
 	private SystemSetupDAO systemSetupDAO;
+
+	@Autowired
+	private ClientManagementDao clientManagementDao;
 
 	@RequestMapping("/home")
 	public ModelAndView home() {
@@ -299,6 +306,151 @@ public class AdminController {
 			return "redirect:/ad/manageContact?status=deleteSuccess";
 		} else {
 			return "redirect:/ad/manageContact?status=deleteFailure";
+		}
+	}
+
+	@RequestMapping("/manageClient")
+	public ModelAndView manageClient(
+			@RequestParam(name = "status", required = false) String status) {
+		ModelAndView mv = new ModelAndView("page");
+
+		if (status != null) {
+			if (status.equals("success")) {
+				mv.addObject("msg", "Client has been added successfully");
+			} else if (status.equals("failure")) {
+				mv.addObject("errorMsg", "Getting Error while Saving Client");
+			} else if (status.equals("deleteSuccess")) {
+				mv.addObject("msg", "Deleted Successfully");
+			} else if (status.equals("deleteFailure")) {
+				mv.addObject("errorMsg", "Getting Error while Deleting Client");
+			} else if (status.equals("updateSuccess")) {
+				mv.addObject("msg", "Updated Successfully");
+			} else if (status.equals("updateFailure")) {
+				mv.addObject("errorMsg", "Getting Error while Updating Client");
+			}
+		}
+
+		List<Client> clients = clientManagementDao.getAllClients();
+		mv.addObject("clients", clients);
+
+		Client client = new Client();
+		mv.addObject("client", client);
+
+		mv.addObject("title", "Clients");
+		mv.addObject("userClickAdminManageClient", true);
+		return mv;
+	}
+
+	@RequestMapping(value = "/deleteClient/{id}")
+	public String deleteClient(@PathVariable int id) {
+
+		Client client = clientManagementDao.getClientById(id);
+		boolean status = clientManagementDao.deleteClient(client);
+		if (status) {
+			return "redirect:/ad/manageClient?status=deleteSuccess";
+		} else {
+			return "redirect:/ad/manageClient?status=deleteFailure";
+		}
+	}
+
+	@RequestMapping(value = "/addNewClient", method = RequestMethod.POST)
+	public String addNewClient(@ModelAttribute("client") Client client) {
+
+		boolean status = clientManagementDao.saveOrUpdateClient(client);
+		if (status) {
+			return "redirect:/ad/manageClient?status=success";
+		} else {
+			return "redirect:/ad/manageClient?status=failure";
+		}
+	}
+
+	@RequestMapping("/editClient")
+	public ModelAndView editClient(
+			@RequestParam(name = "clientId", required = false) Integer clientId) {
+		ModelAndView mv = new ModelAndView("editClient");
+		Client selectedClient = clientManagementDao.getClientById(clientId);
+		mv.addObject("selectedClient", selectedClient);
+		return mv;
+	}
+
+	@RequestMapping(value = "/updateClient", method = RequestMethod.POST)
+	public String updateClient(
+			@ModelAttribute("selectedClient") Client selectedClient) {
+		boolean status = clientManagementDao.saveOrUpdateClient(selectedClient);
+		if (status) {
+			return "redirect:/ad/manageClient?status=updateSuccess";
+		} else {
+			return "redirect:/ad/manageClient?status=updateFailure";
+		}
+	}
+
+	@RequestMapping("/manageSite")
+	public ModelAndView manageSite(
+			@RequestParam(name = "status", required = false) String status) {
+		ModelAndView mv = new ModelAndView("page");
+
+		if (status != null) {
+			if (status.equals("success")) {
+				mv.addObject("msg", "Site has been added successfully");
+			} else if (status.equals("failure")) {
+				mv.addObject("errorMsg", "Getting Error while Saving Site");
+			} else if (status.equals("updateSuccess")) {
+				mv.addObject("msg", "Updated Successfully");
+			} else if (status.equals("updateFailure")) {
+				mv.addObject("errorMsg", "Getting Error while Updating Site");
+			}
+		}
+
+		List<Site> sites = clientManagementDao.getAllSites();
+		mv.addObject("sites", sites);
+
+		Site site = new Site();
+		mv.addObject("site", site);
+
+		List<Client> clients = clientManagementDao.getAllClients();
+		mv.addObject("clients", clients);
+
+		mv.addObject("title", "Sites");
+		mv.addObject("userClickAdminManageSite", true);
+		return mv;
+	}
+
+	@RequestMapping(value = "/addNewSite", method = RequestMethod.POST)
+	public String addNewSite(@ModelAttribute("site") Site site) {
+
+		Client client = clientManagementDao.getClientById(site.getClient()
+				.getId());
+		site.setClient(client);
+
+		boolean status = clientManagementDao.saveOrUpdateSite(site);
+		if (status) {
+			return "redirect:/ad/manageSite?status=success";
+		} else {
+			return "redirect:/ad/manageSite?status=failure";
+		}
+	}
+
+	@RequestMapping("/editSite")
+	public ModelAndView editSite(
+			@RequestParam(name = "siteId", required = false) Integer siteId) {
+		ModelAndView mv = new ModelAndView("editSite");
+		Site selectedSite = clientManagementDao.getSiteById(siteId);
+		mv.addObject("selectedSite", selectedSite);
+		List<Client> clients = clientManagementDao.getAllClients();
+		mv.addObject("clients", clients);
+		return mv;
+	}
+
+	@RequestMapping(value = "/updateSite", method = RequestMethod.POST)
+	public String updateSite(@ModelAttribute("selectedSite") Site selectedSite) {
+		Client client = clientManagementDao.getClientById(selectedSite
+				.getClient().getId());
+		selectedSite.setClient(client);
+		boolean status = clientManagementDao.saveOrUpdateSite(selectedSite);
+		if (status) {
+			return "redirect:/ad/manageSite?status=updateSuccess";
+		} else {
+			return "redirect:/ad/manageSite?status=updateFailure";
 		}
 	}
 

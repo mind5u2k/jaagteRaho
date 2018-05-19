@@ -2,8 +2,8 @@
 <%@taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <div id="ribbon">
 	<ol class="breadcrumb">
-		<li style="font-size: 16px;" class="text-primary">Add/Edit
-			Employees</li>
+		<li style="font-size: 16px;" class="text-primary">ADD / EDIT
+			EMPLOYEES</li>
 	</ol>
 </div>
 <c:if test="${not empty msg}">
@@ -48,10 +48,7 @@
 					<div class="jarviswidget   jarviswidget-sortable" id="wid-id-1"
 						data-widget-editbutton="false"
 						data-widget-fullscreenbutton="false" role="widget">
-						<header role="heading">
-							<h2>Employees</h2>
-						</header>
-						<div role="content">
+						<div role="content" style="border-top: 1px solid #ccc;">
 							<div class="widget-body no-padding">
 								<div id="datatable_col_reorder_wrapper"
 									class="dataTables_wrapper form-inline no-footer">
