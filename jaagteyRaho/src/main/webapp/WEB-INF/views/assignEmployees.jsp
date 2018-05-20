@@ -59,7 +59,7 @@
 										<td>${emp.contactNumber}</td>
 										<td>${emp.email}</td>
 										<td><a class="text-primary"
-											onclick="assignEmployee('${emp.id}');"
+											onclick="mappingEmployee('${emp.id}');"
 											style="cursor: pointer; border-bottom: 1px solid #3276b1;">ASSIGN</a></td>
 									</tr>
 								</c:forEach>
@@ -138,7 +138,7 @@
 		});
 	});
 
-	function assignEmployee(empId) {
+	function mappingEmployee(empId) {
 		var selectedSiteId = $("#selectedSiteId").val();
 		$('#assigEmployees')
 				.html(

@@ -63,6 +63,9 @@
 		<c:if test="${userClickAdminManageSite == true }">
 			<%@include file="manageSites.jsp"%>
 		</c:if>
+		<c:if test="${userClickAdminEmployeeSiteReport == true }">
+			<%@include file="employeeSiteReport.jsp"%>
+		</c:if>
 		<c:if test="${userClickAdminManageDesignation == true }">
 			<%@include file="manageDesignation.jsp"%>
 		</c:if>
@@ -84,6 +87,7 @@
 					.write('<script src="${contextPath}/comDash/js/libs/jquery-ui-1.10.3.min.js"><\/script>');
 		}
 	</script>
+	<script src="${js}/excellentexport.js"></script> 
 	<script src="${js}/app.config.js"></script>
 	<script src="${js}/bootstrap/bootstrap.min.js"></script>
 	<script src="${js}/notification/SmartNotification.min.js"></script>
@@ -93,7 +97,8 @@
 	<script src="${js}/app.min.js"></script>
 	<script src="${js}/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
 	<script src="${js}/plugin/jquery-form/jquery-form.min.js"></script>
+
 	<script src="${js}/myapp.js"></script>
-	 
+
 </body>
 </html>

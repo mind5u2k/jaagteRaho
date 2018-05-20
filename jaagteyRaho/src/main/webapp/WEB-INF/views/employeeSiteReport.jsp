@@ -2,22 +2,10 @@
 <%@taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <div id="ribbon">
 	<ol class="breadcrumb">
-		<li style="font-size: 16px;" class="text-primary">AUTO CHECKIN
-			SETTING</li>
+		<li style="font-size: 16px;" class="text-primary">EMPLOYEE-SITE
+			REPORT</li>
 	</ol>
 </div>
-<c:if test="${not empty msg}">
-	<div class="card card-login mx-auto mt-5">
-		<div class="alert alert-success"
-			style="margin-bottom: 14px; position: fixed; z-index: 11; width: 31%; top: 10%; left: 42%; text-align: center;">${msg}</div>
-	</div>
-</c:if>
-<c:if test="${not empty errorMsg}">
-	<div class="card card-login mx-auto mt-5">
-		<div class="alert alert-danger"
-			style="margin-bottom: 14px; position: fixed; z-index: 11; width: 31%; top: 10%; left: 42%; text-align: center;">${errorMsg}</div>
-	</div>
-</c:if>
 <div id="before"
 	style="width: 100%; height: 600px; text-align: center; vertical-align: middle; font-size: 17px; padding-top: 194px;">
 	<img src="${images}/qqq.png" style="height: 84px;"><br>
@@ -27,58 +15,61 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="row" style="padding: 13px 0 17px 0px;">
-				<div class="col-sm-12">
-					<sf:form action="${contextRoot}/ad/updateAutoCheckin"
-						modelAttribute="autoCheckinSetting" id="autoCheckinSettingForm"
-						cssClass="smart-form" method="post">
-						<fieldset>
-							<div class="row">
-								<%-- <section class="col col-2">
-									<label class="label">Geo Radius<span
-										style="color: #f00; padding-left: 4px;">*</span></label> <label
-										class="input"> <sf:input type="text" path="geoRadius"
-											placeholder="" />
-									</label>
-								</section>
-								<section class="col col-2">
-									<label class="label">Reminder Int. Time<span
-										style="color: #f00; padding-left: 4px;">*</span></label> <label
-										class="select"> <sf:select path="reminderIntTime"
-											items="${intervalTimes}" /> <i></i>
-									</label>
-								</section> --%>
-								<section class="col col-2">
-									<label class="label">AutoCheckins Int. Time<span
-										style="color: #f00; padding-left: 4px;">*</span></label> <label
-										class="select"> <sf:select path="autoCheckinIntTime"
-											items="${intervalTimes}" /> <i></i>
-									</label>
-								</section>
-								<section class="col col-2">
-									<label class="label">Start Time<span
-										style="color: #f00; padding-left: 4px;">*</span></label> <label
-										class="select"> <sf:select path="startTime"
-											items="${times}" /> <i></i>
-									</label>
-								</section>
-								<section class="col col-2">
-									<label class="label">End Time<span
-										style="color: #f00; padding-left: 4px;">*</span></label> <label
-										class="select"> <sf:select path="endTime"
-											items="${times}" /> <i></i>
-									</label>
-								</section>
-								<section class="col col-2">
-									<label class="label">&nbsp;</label> <label class="input">
-										<sf:hidden path="id" /> <input type="submit" value="Submit"
-										class="btn btn-primary"
-										style="width: 93px; border-radius: 2px; border: 1px solid #073760;" />
-									</label>
-								</section>
-							</div>
-						</fieldset>
-					</sf:form>
+				<div class="col-sm-12" style="text-align: right;">
+					<button class="btn btn-default">
+						<i class="fa fa-file-excel-o"></i> &nbsp;Download Excel
+					</button>
+					<button class="btn btn-default">
+						<i class="fa fa-file-pdf-o"></i> &nbsp;Download Pdf
+					</button>
 				</div>
+			</div>
+		</div>
+		<div class="col-sm-12">
+			<div class="row">
+				<article
+					class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+					<div class="jarviswidget   jarviswidget-sortable" id="wid-id-1"
+						data-widget-editbutton="false"
+						data-widget-fullscreenbutton="false" role="widget">
+						<div role="content" style="border-top: 1px solid #ccc;">
+							<div class="widget-body no-padding">
+								<div id="datatable_col_reorder_wrapper"
+									class="dataTables_wrapper form-inline no-footer">
+									<table id="datatable_col_reorder"
+										class="table table-striped table-bordered table-hover dataTable no-footer"
+										width="100%" role="grid"
+										aria-describedby="datatable_col_reorder_info"
+										style="width: 100%;">
+										<thead>
+											<tr role="row">
+												<th>Sr.</th>
+												<th>Site Code</th>
+												<th>Site Name</th>
+												<th>Site Address</th>
+												<th>Assigned Employee</th>
+											</tr>
+										</thead>
+										<tbody>
+											<c:forEach items="${reports}" var="rp">
+												<c:set var="i" value="${i+1}" scope="page" />
+												<tr role="row">
+													<td class="sorting_1">${i}</td>
+													<td>${rp.site.siteCode}</td>
+													<td>${rp.site.siteName}</td>
+													<td>${rp.site.address}</td>
+													<td><c:forEach items="${rp.mappings}" var="rm">${rm.employee.firstName}<c:if
+																test="${not empty rm.employee.middleName}">&nbsp;${rm.employee.middleName}</c:if>
+														${rm.employee.lastName} ,</c:forEach></td>
+												</tr>
+											</c:forEach>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</article>
 			</div>
 		</div>
 	</div>
@@ -151,8 +142,4 @@
 										});
 
 					});
-
-	function createDesignation() {
-
-	}
 </script>

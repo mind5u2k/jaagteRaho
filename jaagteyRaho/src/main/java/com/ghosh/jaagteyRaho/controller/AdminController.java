@@ -1,5 +1,6 @@
 package com.ghosh.jaagteyRaho.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ghosh.jaagteyRaho.model.SiteEmpReport;
 import com.ghosh.jaagteyRahoBackend.Util;
 import com.ghosh.jaagteyRahoBackend.dao.ClientManagementDao;
 import com.ghosh.jaagteyRahoBackend.dao.SystemSetupDAO;
@@ -622,6 +624,26 @@ public class AdminController {
 			return "redirect:/ad/assignContactperson?siteId=" + site.getId()
 					+ "&status=revokefailure";
 		}
+	}
+
+	@RequestMapping("/employeeSiteReport")
+	public ModelAndView employeeSiteReport() {
+		ModelAndView mv = new ModelAndView("page");
+
+		List<Site> sites = clientManagementDao.getAllSites();
+		List<SiteEmpReport> reports = new ArrayList<SiteEmpReport>();
+		for (Site site : sites) {
+			SiteEmpReport report = new SiteEmpReport();
+			report.setSite(site);
+			report.setMappings(clientManagementDao
+					.assignedEmployeestoSite(site));
+			reports.add(report);
+		}
+
+		mv.addObject("reports", reports);
+		mv.addObject("title", "Employee Site Report");
+		mv.addObject("userClickAdminEmployeeSiteReport", true);
+		return mv;
 	}
 
 }

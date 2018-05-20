@@ -95,7 +95,8 @@
 							Client</a></li>
 					<li id="manageSite"><a href="${contextRoot}/ad/manageSite">Manage
 							Site</a></li>
-					<li id="employeeSiteReport"><a href="#">Employee Site
+					<li id="employeeSiteReport"><a
+						href="${contextRoot}/ad/employeeSiteReport">Employee Site
 							Report</a></li>
 				</ul></li>
 			<li id=""><a href="#"><i class="fa fa-lg fa-fw fa-laptop"></i>
@@ -104,8 +105,8 @@
 				<ul id="systemSetup" style="display: none;">
 					<li id="manageDesignation"><a
 						href="${contextRoot}/ad/manageDesignation">Manage Designation</a></li>
-					<li id="manageChecklist"><a
-						href="${contextRoot}/ad/manageChecklist">Manage CheckList</a></li>
+					<%-- <li id="manageChecklist"><a
+						href="${contextRoot}/ad/manageChecklist">Manage CheckList</a></li> --%>
 					<li id="manageContact"><a
 						href="${contextRoot}/ad/manageContact">Manage Contact</a></li>
 					<li id="autoCheckinSetting"><a

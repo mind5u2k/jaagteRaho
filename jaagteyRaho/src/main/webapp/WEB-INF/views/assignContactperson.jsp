@@ -32,7 +32,7 @@
 				<div class="widget-body no-padding">
 					<div id="dt_basic_wrapper"
 						class="dataTables_wrapper form-inline no-footer">
-						<table id="dt_basic"
+						<table id="dt_basics"
 							class="table table-striped table-bordered table-hover dataTable no-footer"
 							width="100%" role="grid" aria-describedby="dt_basic_info"
 							style="width: 100%;">
@@ -54,7 +54,7 @@
 										<td>${cp.contactNo}</td>
 										<td>${cp.alternateNo}</td>
 										<td><a class="text-primary"
-											onclick="assignContactPerson('${cp.id}');"
+											onclick="mappingContacts('${cp.id}');"
 											style="cursor: pointer; border-bottom: 1px solid #3276b1;">ASSIGN</a></td>
 									</tr>
 								</c:forEach>
@@ -75,7 +75,7 @@
 				<div class="widget-body no-padding">
 					<div id="dt_basic_wrapper"
 						class="dataTables_wrapper form-inline no-footer">
-						<table id="dt_basic1"
+						<table id="dt_basics1"
 							class="table table-striped table-bordered table-hover dataTable no-footer"
 							width="100%" role="grid" aria-describedby="dt_basic_info"
 							style="width: 100%;">
@@ -118,17 +118,17 @@
 				$alert.fadeOut('slow');
 			}, 3000);
 		}
-		$('#dt_basic').dataTable({
+		$('#dt_basics').dataTable({
 			"autoWidth" : true,
 			"pageLength" : 5
 		});
-		$('#dt_basic1').dataTable({
+		$('#dt_basics1').dataTable({
 			"autoWidth" : true,
 			"pageLength" : 5
 		});
 	});
 
-	function assignContactPerson(cpId) {
+	function mappingContacts(cpId) {
 		var selectedSiteId1 = $("#selectedSiteId1").val();
 		$('#assignContacts')
 				.html(

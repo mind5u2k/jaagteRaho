@@ -39,6 +39,10 @@ $(function() {
 		$("#clientManagement").css("display", "block");
 		$('#manageSite').addClass('active');
 		break;
+	case 'Employee Site Report':
+		$("#clientManagement").css("display", "block");
+		$('#employeeSiteReport').addClass('active');
+		break;
 	case 'Designation':
 		$("#systemSetup").css("display", "block");
 		$('#manageDesignation').addClass('active');
