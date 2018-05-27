@@ -23,7 +23,7 @@ public class HibernateConfig {
 	private final static String DATABASE_DRIVER = "com.mysql.jdbc.Driver";
 	private final static String DATABASE_DIALECT = "org.hibernate.dialect.MySQL5Dialect";
 	private final static String DATABASE_USERNAME = "root";
-	private final static String DATABASE_PASSWORD = "root";
+	private final static String DATABASE_PASSWORD = "vedhacon@123";
 
 	// dataSource bean will be available
 	@Bean("dataSource")

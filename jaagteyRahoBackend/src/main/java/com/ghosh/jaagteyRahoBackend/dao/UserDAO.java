@@ -11,6 +11,8 @@ public interface UserDAO {
 	// user related operation
 	User getByEmail(String email);
 
+	User getUserByMobileNo(String no);
+
 	User get(int id);
 
 	boolean add(User user);
@@ -18,6 +20,8 @@ public interface UserDAO {
 	User addUser(User user);
 
 	boolean updateUser(User user);
+
+	boolean deleteUser(User user);
 
 	List<User> getAllUsers();
 

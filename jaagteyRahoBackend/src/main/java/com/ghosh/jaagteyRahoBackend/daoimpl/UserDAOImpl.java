@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ghosh.jaagteyRahoBackend.Util;
 import com.ghosh.jaagteyRahoBackend.dao.UserDAO;
 import com.ghosh.jaagteyRahoBackend.dto.Address;
 import com.ghosh.jaagteyRahoBackend.dto.Designation;
@@ -27,6 +26,20 @@ public class UserDAOImpl implements UserDAO {
 			return sessionFactory.getCurrentSession()
 					.createQuery(selectQuery, User.class)
 					.setParameter("email", email).getSingleResult();
+		} catch (Exception ex) {
+			return null;
+		}
+
+	}
+
+	@Override
+	public User getUserByMobileNo(String contactNumber) {
+		String selectQuery = "FROM User WHERE contactNumber = :contactNumber";
+		try {
+			return sessionFactory.getCurrentSession()
+					.createQuery(selectQuery, User.class)
+					.setParameter("contactNumber", contactNumber)
+					.getSingleResult();
 		} catch (Exception ex) {
 			return null;
 		}
@@ -57,6 +70,16 @@ public class UserDAOImpl implements UserDAO {
 	public boolean updateUser(User user) {
 		try {
 			sessionFactory.getCurrentSession().update(user);
+			return true;
+		} catch (Exception ex) {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deleteUser(User user) {
+		try {
+			sessionFactory.getCurrentSession().delete(user);
 			return true;
 		} catch (Exception ex) {
 			return false;

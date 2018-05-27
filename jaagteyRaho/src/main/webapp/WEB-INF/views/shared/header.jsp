@@ -121,9 +121,9 @@
 				<ul id="adminUserBlock" style="display: none;">
 					<li id="salesManager"><a href="#">Site Audit Report</a></li>
 					<li id="salesOrganization"><a href="#">Auto Checkin Report</a></li>
-					<li id="salesManager"><a href="#">Selfie Checkin Report</a></li>
+					<%-- <li id="salesManager"><a href="#">Selfie Checkin Report</a></li>
 					<li id="salesOrganization"><a
-						href="${contextRoot}/ad/salesOrganization">Geofancing Report</a></li>
+						href="${contextRoot}/ad/salesOrganization">Geofancing Report</a></li> --%>
 				</ul></li>
 		</ul>
 	</nav>

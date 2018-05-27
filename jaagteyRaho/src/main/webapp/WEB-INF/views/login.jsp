@@ -99,11 +99,11 @@
 								</footer>
 							</form>
 						</div>
-						<div style="text-align: right; font-size: 13px; color: #284534;">
+						<!-- <div style="text-align: right; font-size: 13px; color: #284534;">
 							Developed By <a href="https://www.linkedin.com/in/anuraghosh"
 								target="_blank" style="border-bottom: 1px solid #437a9e;">Anurag
 								Ghosh</a>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</div>

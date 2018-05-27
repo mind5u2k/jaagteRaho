@@ -7,9 +7,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
+@Table(name = "user")
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -28,6 +32,12 @@ public class User implements Serializable {
 
 	private String contactNumber;
 	private String alternateNumber;
+
+	private String pushNotificationToken;
+
+	@JsonIgnore
+	@Transient
+	private String authorizationToken;
 
 	private String gender;
 
@@ -58,14 +68,33 @@ public class User implements Serializable {
 
 	private String role;
 
+	@JsonIgnore
 	private String password;
 
 	private String dob;
 
 	private boolean enabled = true;
 
+	@JsonIgnore
 	@Transient
 	private String confirmPassword;
+
+	/*-@JsonCreator
+	public User(@JsonProperty("id") int id,
+			@JsonProperty("empId") String empId,
+			@JsonProperty("firstName") String firstName,
+			@JsonProperty("middleName") String middleName,
+			@JsonProperty("lastName") String lastName,
+			@JsonProperty("email") String email,
+			@JsonProperty("contactNumber") String contactNumber) {
+		this.id = id;
+		this.empId = empId;
+		this.firstName = firstName;
+		this.middleName = middleName;
+		this.lastName = lastName;
+		this.email = email;
+		this.contactNumber = contactNumber;
+	}*/
 
 	public String getConfirmPassword() {
 		return confirmPassword;
@@ -329,6 +358,22 @@ public class User implements Serializable {
 
 	public void setPanImage(String panImage) {
 		this.panImage = panImage;
+	}
+
+	public String getPushNotificationToken() {
+		return pushNotificationToken;
+	}
+
+	public void setPushNotificationToken(String pushNotificationToken) {
+		this.pushNotificationToken = pushNotificationToken;
+	}
+
+	public String getAuthorizationToken() {
+		return authorizationToken;
+	}
+
+	public void setAuthorizationToken(String authorizationToken) {
+		this.authorizationToken = authorizationToken;
 	}
 
 }
