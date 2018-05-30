@@ -30,19 +30,44 @@ public class PushNotification {
 				.setCredentials(GoogleCredentials.fromStream(serviceAccount))
 				.setDatabaseUrl("https://jaagte-raho.firebaseio.com").build();
 
-		FirebaseApp.initializeApp(options); ;
+		FirebaseApp.initializeApp(options);
 
 	}
+
+	/*-private String sendNotification(String message, String appId) {
+		sender sender = new Sender("AIzaSyCz2bnoLP-TzzpS-7AQNSYO87icMwpoj_g");
+		Message msg = new Message.Builder().addData("message", message).build();
+		String str = null;
+		try {
+			Result results = sender.send(msg, appId, 5); // Where appId is given
+															// by Android end
+			if (results.getMessageId() != null) {
+				str = val_true;
+			} else {
+				str = val_false;
+				String error = results.getErrorCodeName();
+				logger.info("message sending failed:: " + error);
+				if (error.equals(Constants.ERROR_NOT_REGISTERED)) {
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return str;
+	}*/
 
 	public static void main(String[] args) {
 		try {
 			HttpClient client = HttpClientBuilder.create().build();
 			HttpPost post = new HttpPost("https://fcm.googleapis.com/fcm/send");
 			post.setHeader("Content-type", "application/json");
-			post.setHeader("Authorization", "key=AIzaSyBSxxxxsXevRq0trDbA9mhnY_2jqMoeChA");
+			post.setHeader("Authorization",
+					"key=AIzaSyBSxxxxsXevRq0trDbA9mhnY_2jqMoeChA");
 
 			JSONObject message = new JSONObject();
-			message.put("to", "dBbB2BFT-VY:APA91bHrvgfXbZa-K5eg9vVdUkIsHbMxxxxxc8dBAvoH_3ZtaahVVeMXP7Bm0iera5s37ChHmAVh29P8aAVa8HF0I0goZKPYdGT6lNl4MXN0na7xbmvF25c4ZLl0JkCDm_saXb51Vrte");
+			message.put(
+					"to",
+					"dBbB2BFT-VY:APA91bHrvgfXbZa-K5eg9vVdUkIsHbMxxxxxc8dBAvoH_3ZtaahVVeMXP7Bm0iera5s37ChHmAVh29P8aAVa8HF0I0goZKPYdGT6lNl4MXN0na7xbmvF25c4ZLl0JkCDm_saXb51Vrte");
 			message.put("priority", "high");
 
 			JSONObject notification = new JSONObject();
@@ -56,8 +81,6 @@ public class PushNotification {
 			System.out.println(response);
 			System.out.println(message);
 
-
-			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
