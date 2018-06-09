@@ -1,5 +1,6 @@
 package com.ghosh.jaagteyRahoBackend;
 
+import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,6 +17,14 @@ public class Util {
 		List<String> roles = new ArrayList<String>();
 		roles.add(ROLE_SUPERADMIN);
 		roles.add(ROLE_ADMIN);
+		roles.add(ROLE_USER);
+		return roles;
+	}
+
+	public static List<String> getRoles() {
+		List<String> roles = new ArrayList<String>();
+		roles.add(ROLE_ADMIN);
+		roles.add(ROLE_USER);
 		return roles;
 	}
 
@@ -119,7 +128,21 @@ public class Util {
 		return times;
 	}
 
+	public static String getSaltString() {
+		String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+		StringBuilder salt = new StringBuilder();
+		Random rnd = new Random();
+		while (salt.length() < 12) { // length of the random string.
+			int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+			salt.append(SALTCHARS.charAt(index));
+		}
+		String saltStr = salt.toString();
+		return saltStr;
+
+	}
+
 	public static void main(String[] args) {
+		System.out.println(Util.getSaltString());
 	}
 
 }

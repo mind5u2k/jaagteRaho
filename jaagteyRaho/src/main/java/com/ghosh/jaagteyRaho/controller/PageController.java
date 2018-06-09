@@ -121,18 +121,6 @@ public class PageController {
 		return mv;
 	}
 
-	@RequestMapping(value = "/downloadBill")
-	public void downloadBill(HttpServletRequest request,
-			HttpServletResponse response) {
-		PdfGeneration generation = new PdfGeneration();
-		try {
-			generation.generateBill(request, response);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	@RequestMapping(value = "/editProfile")
 	public ModelAndView downloadBill() {
 		User client = userDAO.getByEmail(globalController.getUserModel()

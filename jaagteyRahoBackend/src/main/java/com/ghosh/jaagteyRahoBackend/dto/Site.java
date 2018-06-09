@@ -7,6 +7,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Site implements Serializable {
@@ -24,6 +27,10 @@ public class Site implements Serializable {
 	@ManyToOne
 	private Client client;
 
+	@JsonIgnore
+	@Transient
+	private String clientName;
+
 	private String contactPerson;
 
 	private String contactNo;
@@ -35,6 +42,18 @@ public class Site implements Serializable {
 	private Long latitude;
 
 	private Long longitude;
+
+	@JsonIgnore
+	@Transient
+	private User user;
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	public int getId() {
 		return id;
@@ -114,6 +133,14 @@ public class Site implements Serializable {
 
 	public void setLongitude(Long longitude) {
 		this.longitude = longitude;
+	}
+
+	public String getClientName() {
+		return getClient().getClientName();
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
 	}
 
 }

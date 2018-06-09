@@ -65,7 +65,7 @@
 			</section>
 		</div>
 		<div class="row">
-			<section class="col col-6">
+			<section class="col col-4">
 				<label class="label">Gender</label>
 				<div class="inline-group">
 					<label class="radio"> <sf:radiobutton path="gender"
@@ -75,11 +75,18 @@
 					</label>
 				</div>
 			</section>
-			<section class="col col-6">
+			<section class="col col-4">
 				<label class="label">Designation<span
 					style="color: #f00; padding-left: 4px;">*</span></label> <label
 					class="select"> <sf:select path="designation.id"
 						items="${designations}" itemLabel="designationName" itemValue="id" />
+					<i></i>
+				</label>
+			</section>
+			<section class="col col-4">
+				<label class="label">Role<span
+					style="color: #f00; padding-left: 4px;">*</span></label> <label
+					class="select"> <sf:select path="role" items="${roles}" />
 					<i></i>
 				</label>
 			</section>

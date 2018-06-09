@@ -51,11 +51,29 @@ public class ClientManagementDaoImpl implements ClientManagementDao {
 	}
 
 	@Override
+	@Transactional
 	public boolean deleteClient(Client client) {
 		try {
+
 			sessionFactory.getCurrentSession().delete(client);
 			return true;
+
 		} catch (Exception ex) {
+			System.out.println("===============hello there");
+			return false;
+		}
+	}
+
+	@Override
+	@Transactional
+	public boolean deleteSite(Site site) {
+		try {
+
+			sessionFactory.getCurrentSession().delete(site);
+			return true;
+
+		} catch (Exception ex) {
+			System.out.println("===============hello there");
 			return false;
 		}
 	}
@@ -74,6 +92,16 @@ public class ClientManagementDaoImpl implements ClientManagementDao {
 			return true;
 		} catch (Exception ex) {
 			return false;
+		}
+	}
+
+	@Override
+	public Site saveSite(Site site) {
+		try {
+			sessionFactory.getCurrentSession().persist(site);
+			return site;
+		} catch (Exception ex) {
+			return null;
 		}
 	}
 
@@ -109,11 +137,19 @@ public class ClientManagementDaoImpl implements ClientManagementDao {
 
 	@Override
 	public SiteEmployeeMapping getSiteEmpMappingByEmpAndSite(Site site, User emp) {
+		System.out.println("--------- [" + emp + "]");
+		System.out.println("=======[" + emp.getId() + "]");
+
 		String selectQuery = "FROM SiteEmployeeMapping WHERE site.id = :siteId AND employee.id = :empId ORDER BY id DESC";
-		return sessionFactory.getCurrentSession()
-				.createQuery(selectQuery, SiteEmployeeMapping.class)
-				.setParameter("siteId", site.getId())
-				.setParameter("empId", emp.getId()).getSingleResult();
+
+		try {
+			return sessionFactory.getCurrentSession()
+					.createQuery(selectQuery, SiteEmployeeMapping.class)
+					.setParameter("siteId", site.getId())
+					.setParameter("empId", emp.getId()).getSingleResult();
+		} catch (Exception e) {
+			return null;
+		}
 
 	}
 

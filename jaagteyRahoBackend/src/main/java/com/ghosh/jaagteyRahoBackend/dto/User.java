@@ -44,6 +44,10 @@ public class User implements Serializable {
 	@ManyToOne
 	private Designation designation;
 
+	@JsonIgnore
+	@Transient
+	private String designationName;
+
 	private String aadhar;
 	private String aadharImage;
 	private String aadharUploaderName;
@@ -78,6 +82,10 @@ public class User implements Serializable {
 	@JsonIgnore
 	@Transient
 	private String confirmPassword;
+
+	@JsonIgnore
+	@Transient
+	private Site site;
 
 	/*-@JsonCreator
 	public User(@JsonProperty("id") int id,
@@ -374,6 +382,22 @@ public class User implements Serializable {
 
 	public void setAuthorizationToken(String authorizationToken) {
 		this.authorizationToken = authorizationToken;
+	}
+
+	public Site getSite() {
+		return site;
+	}
+
+	public void setSite(Site site) {
+		this.site = site;
+	}
+
+	public String getDesignationName() {
+		return getDesignation().getDesignationName();
+	}
+
+	public void setDesignationName(String designationName) {
+		this.designationName = designationName;
 	}
 
 }

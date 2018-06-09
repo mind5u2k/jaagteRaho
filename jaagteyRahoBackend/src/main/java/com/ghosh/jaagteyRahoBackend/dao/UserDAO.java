@@ -25,6 +25,8 @@ public interface UserDAO {
 
 	List<User> getAllUsers();
 
+	List<User> getAllUsersByRole(String role);
+
 	List<Designation> getAllDesignations();
 
 	boolean addDesignation(Designation designation);

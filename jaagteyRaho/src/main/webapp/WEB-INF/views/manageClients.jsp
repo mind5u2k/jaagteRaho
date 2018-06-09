@@ -8,13 +8,13 @@
 <c:if test="${not empty msg}">
 	<div class="card card-login mx-auto mt-5">
 		<div class="alert alert-success"
-			style="margin-bottom: 14px; position: fixed; z-index: 11; width: 31%; top: 10%; left: 42%; text-align: center;">${msg}</div>
+			style="margin-bottom: 14px; position: fixed; z-index: 11; width: 31%; top: 54px; left: 42%; text-align: center;">${msg}</div>
 	</div>
 </c:if>
 <c:if test="${not empty errorMsg}">
 	<div class="card card-login mx-auto mt-5">
 		<div class="alert alert-danger"
-			style="margin-bottom: 14px; position: fixed; z-index: 11; width: 31%; top: 10%; left: 42%; text-align: center;">${errorMsg}</div>
+			style="margin-bottom: 14px; position: fixed; z-index: 11; width: 31%; top: 54px; left: 42%; text-align: center;">${errorMsg}</div>
 	</div>
 </c:if>
 <div id="before"
@@ -31,12 +31,16 @@
 						Client</button>
 				</div>
 				<div class="col-sm-6" style="text-align: right;">
-					<button class="btn btn-default">
+					<a class="btn btn-default"
+						href="${contextRoot}/admin/downloadExcelClient" target="_blank">
 						<i class="fa fa-file-excel-o"></i> &nbsp;Download Excel
-					</button>
-					<button class="btn btn-default">
+					</a> <a class="btn btn-default"
+						href="${contextRoot}/admin/downloadPdfClient" target="_blank">
 						<i class="fa fa-file-pdf-o"></i> &nbsp;Download Pdf
-					</button>
+					</a> <a class="btn btn-default"
+						href="${contextRoot}/admin/downloadCSVClients" target="_blank">
+						<i class="fa fa-file-pdf-o"></i> &nbsp;Download CSV
+					</a>
 				</div>
 			</div>
 		</div>
@@ -98,95 +102,96 @@
 			</div>
 		</div>
 	</div>
-</div>
-<div id="dialog_simple" title="Add New Client">
-	<div>
-		<sf:form action="${contextRoot}/ad/addNewClient"
-			modelAttribute="client" id="client" cssClass="smart-form client"
-			method="post">
-			<fieldset>
-				<div class="row">
-					<section class="col col-3">
-						<label class="label">Client Code<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <i class="icon-append fa fa-user"></i> <sf:input
-								type="text" path="clientCode" placeholder="" />
-						</label>
-					</section>
-					<section class="col col-3">
-						<label class="label">Client Name<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <i class="icon-append fa fa-user"></i> <sf:input
-								type="text" path="clientName" placeholder="" />
-						</label>
-					</section>
-					<section class="col col-3">
-						<label class="label">Contact Person<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <i class="icon-append fa fa-user"></i> <sf:input
-								type="text" path="contactPerson" placeholder="" />
-						</label>
-					</section>
-					<section class="col col-3">
-						<label class="label">Contact No.<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <i class="icon-append fa fa-phone"></i> <sf:input
-								type="text" path="contactNo" placeholder=""
-								data-mask="9999999999" />
-						</label>
-					</section>
-				</div>
-				<div class="row">
-					<section class="col col-6">
-						<label class="label">Email<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <i class="icon-append fa fa-envelope-o"></i>
-							<sf:input type="email" path="emailId" placeholder="" />
-						</label>
-					</section>
-					<section class="col col-6">
-						<label class="label">Address<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <sf:input type="text" path="address"
-								placeholder="" />
-						</label>
-					</section>
-				</div>
-				<div class="row">
-					<section class="col col-12" style="float: right;">
-						<label class="input"> <sf:hidden path="id" />
-							<button type="submit" name="submit" class="btn btn-primary"
-								style="padding: 7px 10px 7px 10px; margin-top: 18px;">
-								Submit</button>
-						</label>
-					</section>
-				</div>
-			</fieldset>
-		</sf:form>
+	<div id="dialog_simple" title="Add New Client">
+		<div>
+			<sf:form action="${contextRoot}/ad/addNewClient"
+				modelAttribute="client" id="client" cssClass="smart-form client"
+				method="post">
+				<fieldset>
+					<div class="row">
+						<section class="col col-3">
+							<label class="label">Client Code<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="input"> <i class="icon-append fa fa-user"></i> <sf:input
+									type="text" path="clientCode" placeholder="" />
+							</label>
+						</section>
+						<section class="col col-3">
+							<label class="label">Client Name<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="input"> <i class="icon-append fa fa-user"></i> <sf:input
+									type="text" path="clientName" placeholder="" />
+							</label>
+						</section>
+						<section class="col col-3">
+							<label class="label">Contact Person<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="input"> <i class="icon-append fa fa-user"></i> <sf:input
+									type="text" path="contactPerson" placeholder="" />
+							</label>
+						</section>
+						<section class="col col-3">
+							<label class="label">Contact No.<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="input"> <i class="icon-append fa fa-phone"></i> <sf:input
+									type="text" path="contactNo" placeholder=""
+									data-mask="9999999999" />
+							</label>
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-6">
+							<label class="label">Email<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="input"> <i class="icon-append fa fa-envelope-o"></i>
+								<sf:input type="email" path="emailId" placeholder="" />
+							</label>
+						</section>
+						<section class="col col-6">
+							<label class="label">Address<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="input"> <sf:input type="text" path="address"
+									placeholder="" />
+							</label>
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-12" style="float: right;">
+							<label class="input"> <sf:hidden path="id" />
+								<button type="submit" name="submit" class="btn btn-primary"
+									style="padding: 7px 10px 7px 10px; margin-top: 18px;">
+									Submit</button>
+							</label>
+						</section>
+					</div>
+				</fieldset>
+			</sf:form>
+		</div>
 	</div>
-</div>
-<div id="editClientDialog" title="Edit Client">
-	<div id="clientDetails">
-		<div style="text-align: center; padding-top: 59px;">
-			<img src="${images}/qqq.png" style="height: 84px;"><br>
-			Please wait ...
+	<div id="editClientDialog" title="Edit Client">
+		<div id="clientDetails">
+			<div style="text-align: center; padding-top: 59px;">
+				<img src="${images}/qqq.png" style="height: 84px;"><br>
+				Please wait ...
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="deleteClientModel" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content" id="deleteClientModel"
+				style="text-align: center; font-size: 17px; padding: 40px;">
+				Once you delete the client ,Client will be deleted permanently.<br>Are
+				you sure ?<br> <br> <input type="hidden"
+					id="deletedClientId" value="" />
+				<button class="btn btn-default av" type="button"
+					data-dismiss="modal" aria-label="Close">Close</button>
+				<button class="btn btn-danger" onclick="deletePermanent();">Delete</button>
+			</div>
 		</div>
 	</div>
 </div>
-<div class="modal fade" id="deleteClientModel" tabindex="-1"
-	role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content" id="deleteClientModel"
-			style="text-align: center; font-size: 17px; padding: 40px;">
-			Once you delete the client ,Client will be deleted permanently.<br>Are
-			you sure ?<br> <br> <input type="hidden"
-				id="deletedClientId" value="" />
-			<button class="btn btn-default av" type="button" data-dismiss="modal"
-				aria-label="Close">Close</button>
-			<button class="btn btn-danger" onclick="deletePermanent();">Delete</button>
-		</div>
-	</div>
-</div>
+
 <style>
 .ui-dialog-titlebar {
 	padding: 3px 12px 3px 12px !important;

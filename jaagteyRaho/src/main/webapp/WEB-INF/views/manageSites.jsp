@@ -8,13 +8,13 @@
 <c:if test="${not empty msg}">
 	<div class="card card-login mx-auto mt-5">
 		<div class="alert alert-success"
-			style="margin-bottom: 14px; position: fixed; z-index: 11; width: 31%; top: 10%; left: 42%; text-align: center;">${msg}</div>
+			style="margin-bottom: 14px; position: fixed; z-index: 11; width: 31%; top: 54px; left: 42%; text-align: center;">${msg}</div>
 	</div>
 </c:if>
 <c:if test="${not empty errorMsg}">
 	<div class="card card-login mx-auto mt-5">
 		<div class="alert alert-danger"
-			style="margin-bottom: 14px; position: fixed; z-index: 11; width: 31%; top: 10%; left: 42%; text-align: center;">${errorMsg}</div>
+			style="margin-bottom: 14px; position: fixed; z-index: 11; width: 31%; top: 54px; left: 42%; text-align: center;">${errorMsg}</div>
 	</div>
 </c:if>
 <div id="before"
@@ -30,12 +30,16 @@
 					<button class="btn btn-primary" id="dialog_link">Add Site</button>
 				</div>
 				<div class="col-sm-6" style="text-align: right;">
-					<button class="btn btn-default">
+					<a class="btn btn-default"
+						href="${contextRoot}/admin/downloadExcelSite" target="_blank">
 						<i class="fa fa-file-excel-o"></i> &nbsp;Download Excel
-					</button>
-					<button class="btn btn-default">
-						<i class="fa fa-file-pdf-o"></i> &nbsp;Download Pdf
-					</button>
+					</a> <a class="btn btn-default"
+						href="${contextRoot}/admin/downloadPdfSite" target="_blank"> <i
+						class="fa fa-file-pdf-o"></i> &nbsp;Download Pdf
+					</a> <a class="btn btn-default"
+						href="${contextRoot}/admin/downloadCSVSite" target="_blank"> <i
+						class="fa fa-file-pdf-o"></i> &nbsp;Download CSV
+					</a>
 				</div>
 			</div>
 		</div>
@@ -88,7 +92,9 @@
 														|| <a class="text-primary"
 														onclick="assignContactPerson('${s.id}');"
 														style="cursor: pointer; border-bottom: 1px solid #3276b1;">ASSIGN
-															CONTACT</a></td>
+															CONTACT</a> || <a class="text-primary"
+														onclick="deleteSite('${s.id}');"
+														style="cursor: pointer; border-bottom: 1px solid #3276b1;">DELETE</a></td>
 												</tr>
 											</c:forEach>
 										</tbody>
@@ -101,107 +107,132 @@
 			</div>
 		</div>
 	</div>
-</div>
-<div id="dialog_simple" title="Add New Site">
-	<div>
-		<sf:form action="${contextRoot}/ad/addNewSite" modelAttribute="site"
-			id="site" cssClass="smart-form" method="post">
-			<fieldset>
-				<div class="row">
-					<section class="col col-4">
-						<label class="label">Site Code<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <i class="icon-append fa fa-user"></i> <sf:input
-								type="text" path="siteCode" placeholder="" />
-						</label>
-					</section>
-					<section class="col col-4">
-						<label class="label">Site Name<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <i class="icon-append fa fa-user"></i> <sf:input
-								type="text" path="siteName" placeholder="" />
-						</label>
-					</section>
-					<section class="col col-4">
-						<label class="label">Client<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="select"> <sf:select path="client.id"
-								items="${clients}" itemLabel="clientName" itemValue="id" /> <i></i>
-						</label>
-					</section>
-				</div>
-				<div class="row">
-					<section class="col col-4">
-						<label class="label">Contact Person<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <i class="icon-append fa fa-user"></i> <sf:input
-								type="text" path="contactPerson" placeholder="" />
-						</label>
-					</section>
-					<section class="col col-4">
-						<label class="label">Contact No.<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <i class="icon-append fa fa-phone"></i> <sf:input
-								type="text" path="contactNo" placeholder=""
-								data-mask="9999999999" />
-						</label>
-					</section>
-					<section class="col col-4">
-						<label class="label">Email<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <i class="icon-append fa fa-envelope-o"></i>
-							<sf:input type="email" path="emailId" placeholder="" />
-						</label>
-					</section>
-				</div>
-				<div class="row">
-					<section class="col col-6">
-						<label class="label">Address<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <sf:input type="text" path="address"
-								placeholder="" />
-						</label>
-					</section>
-				</div>
-				<div class="row">
-					<section class="col col-12" style="float: right;">
-						<label class="input"> <sf:hidden path="id" />
-							<button type="submit" name="submit" class="btn btn-primary"
-								style="padding: 7px 10px 7px 10px; margin-top: 18px;">
-								Submit</button>
-						</label>
-					</section>
-				</div>
-			</fieldset>
-		</sf:form>
+	<div id="dialog_simple" title="Add New Site">
+		<div>
+			<sf:form action="${contextRoot}/ad/addNewSite" modelAttribute="site"
+				id="site" cssClass="smart-form" method="post">
+				<fieldset>
+					<div class="row">
+						<section class="col col-4">
+							<label class="label">Site Code<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="input"> <i class="icon-append fa fa-user"></i> <sf:input
+									type="text" path="siteCode" placeholder="" />
+							</label>
+						</section>
+						<section class="col col-4">
+							<label class="label">Site Name<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="input"> <i class="icon-append fa fa-user"></i> <sf:input
+									type="text" path="siteName" placeholder="" />
+							</label>
+						</section>
+						<section class="col col-4">
+							<label class="label">Client<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="select"> <sf:select path="client.id"
+									items="${clients}" itemLabel="clientName" itemValue="id" /> <i></i>
+							</label>
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-4">
+							<label class="label">Contact Person<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="input"> <i class="icon-append fa fa-user"></i> <sf:input
+									type="text" path="contactPerson" placeholder="" />
+							</label>
+						</section>
+						<section class="col col-4">
+							<label class="label">Contact No.<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="input"> <i class="icon-append fa fa-phone"></i> <sf:input
+									type="text" path="contactNo" placeholder=""
+									data-mask="9999999999" />
+							</label>
+						</section>
+						<section class="col col-4">
+							<label class="label">Email<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="input"> <i class="icon-append fa fa-envelope-o"></i>
+								<sf:input type="email" path="emailId" placeholder="" />
+							</label>
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-6">
+							<label class="label">Address<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="input"> <sf:input type="text" path="address"
+									placeholder="" />
+							</label>
+						</section>
+						<section class="col col-6">
+							<label class="label">Employee </label> <label class="select">
+								<sf:select path="user.id">
+									<sf:option value="0">Select Employee</sf:option>
+									<sf:options items="${employees}" itemLabel="firstName"
+										itemValue="id" />
+								</sf:select> <i></i>
+							</label>
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-12" style="float: right;">
+							<label class="input"> <sf:hidden path="id" />
+								<button type="submit" name="submit" class="btn btn-primary"
+									style="padding: 7px 10px 7px 10px; margin-top: 18px;">
+									Submit</button>
+							</label>
+						</section>
+					</div>
+				</fieldset>
+			</sf:form>
+		</div>
 	</div>
-</div>
-<div id="editSiteDialog" title="Edit Site">
-	<div id="siteDetails">
-		<div style="text-align: center; padding-top: 95px;">
-			<img src="${images}/qqq.png" style="height: 84px;"><br>
-			Please wait ...
+	<div id="editSiteDialog" title="Edit Site">
+		<div id="siteDetails">
+			<div style="text-align: center; padding-top: 95px;">
+				<img src="${images}/qqq.png" style="height: 84px;"><br>
+				Please wait ...
+			</div>
+		</div>
+	</div>
+
+	<div id="assignEmployeeDialog" title="Map Employee">
+		<div id="assigEmployees">
+			<div style="text-align: center; padding-top: 142px;">
+				<img src="${images}/qqq.png" style="height: 84px;"><br>
+				Please wait ...
+			</div>
+		</div>
+	</div>
+
+	<div id="assignContactDialog" title="Map Contact">
+		<div id="assignContacts">
+			<div style="text-align: center; padding-top: 142px;">
+				<img src="${images}/qqq.png" style="height: 84px;"><br>
+				Please wait ...
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="deleteSiteModel" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content" id="deleteSiteModelContent"
+				style="text-align: center; font-size: 17px; padding: 40px;">
+				Once you delete the Site ,Site will be deleted permanently.<br>Are
+				you sure ?<br> <br> <input type="hidden"
+					id="deletedSiteId" value="" />
+				<button class="btn btn-default av" type="button"
+					data-dismiss="modal" aria-label="Close">Close</button>
+				<button class="btn btn-danger" onclick="deletePermanent();">Delete</button>
+			</div>
 		</div>
 	</div>
 </div>
 
-<div id="assignEmployeeDialog" title="Map Employee">
-	<div id="assigEmployees">
-		<div style="text-align: center; padding-top: 142px;">
-			<img src="${images}/qqq.png" style="height: 84px;"><br>
-			Please wait ...
-		</div>
-	</div>
-</div>
-
-<div id="assignContactDialog" title="Map Contact">
-	<div id="assignContacts">
-		<div style="text-align: center; padding-top: 142px;">
-			<img src="${images}/qqq.png" style="height: 84px;"><br>
-			Please wait ...
-		</div>
-	</div>
-</div>
 
 <style>
 .ui-dialog-titlebar {
@@ -345,6 +376,18 @@
 				console.log('Error: ' + e);
 			}
 		});
+	}
+
+	function deleteSite(siteId) {
+		$("#deletedSiteId").val(siteId);
+		$('#deleteSiteModel').modal({
+			show : true
+		});
+	}
+
+	function deletePermanent() {
+		var deletedSiteId = $("#deletedSiteId").val();
+		window.location.href = "deleteSite/" + deletedSiteId;
 	}
 
 	$(function() {

@@ -148,6 +148,14 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
+	public List<User> getAllUsersByRole(String role) {
+		String selectQuery = "FROM User WHERE role = :role";
+		return sessionFactory.getCurrentSession()
+				.createQuery(selectQuery, User.class)
+				.setParameter("role", role).getResultList();
+	}
+
+	@Override
 	public List<Designation> getAllDesignations() {
 		return sessionFactory.getCurrentSession()
 				.createQuery("FROM Designation", Designation.class)

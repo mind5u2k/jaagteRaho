@@ -9,13 +9,13 @@
 <c:if test="${not empty msg}">
 	<div class="card card-login mx-auto mt-5">
 		<div class="alert alert-success"
-			style="margin-bottom: 14px; position: fixed; z-index: 11; width: 31%; top: 10%; left: 42%; text-align: center;">${msg}</div>
+			style="margin-bottom: 14px; position: fixed; z-index: 11; width: 31%; top: 54px; left: 42%; text-align: center;">${msg}</div>
 	</div>
 </c:if>
 <c:if test="${not empty errorMsg}">
 	<div class="card card-login mx-auto mt-5">
 		<div class="alert alert-danger"
-			style="margin-bottom: 14px; position: fixed; z-index: 11; width: 31%; top: 10%; left: 42%; text-align: center;">${errorMsg}</div>
+			style="margin-bottom: 14px; position: fixed; z-index: 11; width: 31%; top: 54px; left: 42%; text-align: center;">${errorMsg}</div>
 	</div>
 </c:if>
 <div id="before"
@@ -32,15 +32,16 @@
 						Employee</button>
 				</div>
 				<div class="col-sm-6" style="text-align: right;">
-					<a class="btn btn-default" download="data_123.xls" href="#"
-						id="anchorNewApi-xls" onclick="return newApi('xls');"> <i
-						class="fa fa-file-excel-o"></i> &nbsp;Download Excel
+					<a class="btn btn-default"
+						href="${contextRoot}/admin/downloadExcelEmp" target="_blank">
+						<i class="fa fa-file-excel-o"></i> &nbsp;Download Excel
+					</a> <a class="btn btn-default"
+						href="${contextRoot}/admin/downloadPdfEmp" target="_blank"> <i
+						class="fa fa-file-pdf-o"></i> &nbsp;Download Pdf
+					</a> <a class="btn btn-default" href="${contextRoot}/admin/downloadCSV"
+						target="_blank"> <i class="fa fa-file-pdf-o"></i>
+						&nbsp;Download CSV
 					</a>
-					<button class="btn btn-default" id="cmd">
-						<i class="fa fa-file-pdf-o"></i> &nbsp;Download Pdf
-					</button>
-					<!-- <a download="data_123.xls" href="#" id="anchorNewApi-xls"
-						onclick="return newApi('xls');">Export to Excel: XLS format</a> -->
 				</div>
 			</div>
 		</div>
@@ -65,34 +66,44 @@
 												<th data-hide="phone" class="sorting_asc" tabindex="0"
 													aria-controls="datatable_col_reorder" rowspan="1"
 													colspan="1" aria-sort="ascending"
-													aria-label="ID: activate to sort column ascending"
-													style="width: 40px;">Sr.</th>
+													aria-label="ID: activate to sort column ascending">Sr.</th>
 												<th data-class="expand" class="sorting" tabindex="0"
 													aria-controls="datatable_col_reorder" rowspan="1"
 													colspan="1"
-													aria-label="Name: activate to sort column ascending"
-													style="width: 96px;">Emp ID</th>
+													aria-label="Name: activate to sort column ascending">Emp
+													ID</th>
 												<th class="sorting" tabindex="0"
 													aria-controls="datatable_col_reorder" rowspan="1"
 													colspan="1"
-													aria-label="Phone: activate to sort column ascending"
-													style="width: 152px;">Name</th>
-
+													aria-label="Phone: activate to sort column ascending">Name</th>
+												<th class="sorting" tabindex="0"
+													aria-controls="datatable_col_reorder" rowspan="1"
+													colspan="1"
+													aria-label="Phone: activate to sort column ascending">Mail
+													Id</th>
+												<th class="sorting" tabindex="0"
+													aria-controls="datatable_col_reorder" rowspan="1"
+													colspan="1"
+													aria-label="Phone: activate to sort column ascending">Role</th>
+												<th class="sorting" tabindex="0"
+													aria-controls="datatable_col_reorder" rowspan="1"
+													colspan="1"
+													aria-label="Phone: activate to sort column ascending">Contact
+													No</th>
 												<th data-hide="phone,tablet" class="sorting" tabindex="0"
 													aria-controls="datatable_col_reorder" rowspan="1"
 													colspan="1"
-													aria-label="Zip: activate to sort column ascending"
-													style="width: 104px;">Action</th>
-												<th data-hide="phone,tablet" class="sorting" tabindex="0"
+													aria-label="Zip: activate to sort column ascending">Action</th>
+												<!-- <th data-hide="phone,tablet" class="sorting" tabindex="0"
 													aria-controls="datatable_col_reorder" rowspan="1"
 													colspan="1"
 													aria-label="City: activate to sort column ascending"
-													style="width: 213px;">Login Access</th>
-												<th data-hide="phone,tablet" class="sorting" tabindex="0"
+													style="width: 213px;">Login Access</th> -->
+												<!-- <th data-hide="phone,tablet" class="sorting" tabindex="0"
 													aria-controls="datatable_col_reorder" rowspan="1"
 													colspan="1"
 													aria-label="Date: activate to sort column ascending"
-													style="width: 90px;">Password Reset</th>
+													style="width: 90px;">Password Reset</th> -->
 											</tr>
 										</thead>
 										<tbody>
@@ -105,14 +116,17 @@
 															test="${not empty user.middleName}">&nbsp;${user.middleName}</c:if>
 														${user.lastName}
 													</td>
+													<td>${user.email}</td>
+													<td>${user.role}</td>
+													<td>${user.contactNumber}</td>
 													<td><a class="text-primary"
 														style="cursor: pointer; border-bottom: 1px solid #3276b1;"
 														onclick="editUserDialog('${user.id}');">DETAILS</a></td>
-													<td><a class="text-success"
-														style="cursor: pointer; border-bottom: 1px solid #468847;">ACTIVE</a></td>
-													<td><a class="text-primary"
+													<!-- <td><a class="text-success"
+														style="cursor: pointer; border-bottom: 1px solid #468847;">ACTIVE</a></td> -->
+													<!-- <td><a class="text-primary"
 														style="cursor: pointer; border-bottom: 1px solid #3276b1;">SEND
-															LINK</a></td>
+															LINK</a></td> -->
 												</tr>
 											</c:forEach>
 										</tbody>
@@ -190,6 +204,24 @@
 							<label class="label">Alternate No</label> <label class="input">
 								<i class="icon-append fa fa-phone"></i> <sf:input type="text"
 									path="alternateNumber" placeholder="" data-mask="9999999999" />
+							</label>
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-6">
+							<label class="label">Site </label> <label class="select">
+								<sf:select path="site.id">
+									<sf:option value="0">Select Site</sf:option>
+									<sf:options items="${sites}" itemLabel="siteName"
+										itemValue="id" />
+								</sf:select> <i></i>
+							</label>
+						</section>
+						<section class="col col-6">
+							<label class="label">Role<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="select"> <sf:select path="role" items="${roles}" />
+								<i></i>
 							</label>
 						</section>
 					</div>

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ghosh.jaagteyRaho.model.SiteEmpReport;
+import com.ghosh.jaagteyRaho.service.MailNotificationServices.MailNotification;
 import com.ghosh.jaagteyRahoBackend.Util;
 import com.ghosh.jaagteyRahoBackend.dao.ClientManagementDao;
 import com.ghosh.jaagteyRahoBackend.dao.SystemSetupDAO;
@@ -113,11 +114,21 @@ public class AdminController {
 			} else if (status.equals("failure")) {
 				mv.addObject("errorMsg",
 						"Getting Error while Creating New User");
+			} else if (status.equals("mailExist")) {
+				mv.addObject("errorMsg", "Mail Id is already Registerd");
+			} else if (status.equals("numberExist")) {
+				mv.addObject("errorMsg", "Contact Number is already registered");
 			} else if (status.equals("updateSuccess")) {
 				mv.addObject("msg",
 						"Employee Details has been updated successfully");
 			} else if (status.equals("updateFailure")) {
 				mv.addObject("errorMsg", "Getting Error while Updating User");
+			} else if (status.equals("updateFailureMail")) {
+				mv.addObject("errorMsg",
+						"Mail Id already registered with Other Employee");
+			} else if (status.equals("updateFailureNumber")) {
+				mv.addObject("errorMsg",
+						"Contact Number already registered with other Employee");
 			}
 		}
 		List<Designation> designations = userDAO.getAllDesignations();
@@ -125,6 +136,12 @@ public class AdminController {
 		User user = new User();
 		user.setGender("Male");
 		mv.addObject("user", user);
+
+		List<Site> sites = clientManagementDao.getAllSites();
+		mv.addObject("sites", sites);
+
+		List<String> roles = Util.getRoles();
+		mv.addObject("roles", roles);
 
 		List<User> users = userDAO.getAllUsers();
 		mv.addObject("users", users);
@@ -135,12 +152,56 @@ public class AdminController {
 
 	@RequestMapping(value = "/addNewEmployee", method = RequestMethod.POST)
 	public String addNewEmployee(@ModelAttribute("user") User user) {
-		user.setRole(Util.ROLE_USER);
-		boolean status = userDAO.add(user);
-		if (status) {
-			return "redirect:/ad/addEmployees?status=success";
+
+		String passCode = "";
+		User user2 = userDAO.getByEmail(user.getEmail());
+		User user3 = userDAO.getUserByMobileNo(user.getContactNumber());
+		boolean status = false;
+		if (user2 == null && user3 == null) {
+			passCode = Util.getSaltString();
+			String password = passwordEncoder.encode(passCode);
+			user.setPassword(password);
+			User u = userDAO.addUser(user);
+			if (u != null) {
+				System.out.println("user id is [" + u.getId() + "]");
+				System.out.println("''''''''''[" + user.getSite().getId()
+						+ "]''''''''");
+				if (user.getSite().getId() != 0) {
+					Site site = clientManagementDao.getSiteById(user.getSite()
+							.getId());
+					System.out.println("==[" + site + "]==");
+					SiteEmployeeMapping siteEmployeeMapping = new SiteEmployeeMapping();
+					siteEmployeeMapping.setEmployee(u);
+					siteEmployeeMapping.setSite(site);
+					SiteEmployeeMapping s = clientManagementDao
+							.getSiteEmpMappingByEmpAndSite(site, u);
+					System.out.println("`````----``[" + s + "]");
+					if (s == null) {
+						boolean st = clientManagementDao
+								.saveOrUpdateSiteEmployeeMapping(siteEmployeeMapping);
+						System.out.println("```````[" + st + "]");
+					}
+				}
+				status = true;
+			}
+
+			if (status) {
+				MailNotification.sendMail(user.getEmail(), "", "",
+						"Jaagtey Raho - *Confidential*",
+						"Your password for Jaagtey Raho Tool is <br>"
+								+ passCode);
+				return "redirect:/ad/addEmployees?status=success";
+			} else {
+				return "redirect:/ad/addEmployees?status=failure";
+			}
 		} else {
-			return "redirect:/ad/addEmployees?status=failure";
+			if (user2 != null) {
+				return "redirect:/ad/addEmployees?status=mailExist";
+			} else if (user3 != null) {
+				return "redirect:/ad/addEmployees?status=numberExist";
+			} else {
+				return "redirect:/ad/addEmployees?status=failure";
+			}
 		}
 	}
 
@@ -155,6 +216,10 @@ public class AdminController {
 
 		List<Designation> designations = userDAO.getAllDesignations();
 		mv.addObject("designations", designations);
+
+		List<String> roles = Util.getRoles();
+		mv.addObject("roles", roles);
+
 		mv.addObject("employee", user);
 		return mv;
 	}
@@ -162,14 +227,54 @@ public class AdminController {
 	@RequestMapping(value = "/saveEmployee", method = RequestMethod.POST)
 	public String saveEmployee(@ModelAttribute("employee") User employee) {
 
-		employee.setRole(Util.ROLE_USER);
-		boolean status = userDAO.updateUser(employee);
-		;
-		if (status) {
-			return "redirect:/ad/addEmployees?status=updateSuccess";
-		} else {
-			return "redirect:/ad/addEmployees?status=updateFailure";
+		User u1 = userDAO.getByEmail(employee.getEmail());
+		if (u1.getId() == employee.getId()) {
+			u1 = null;
 		}
+		User u2 = userDAO.getUserByMobileNo(employee.getContactNumber());
+		if (u2.getId() == employee.getId()) {
+			u2 = null;
+		}
+		if (u1 == null && u2 == null) {
+			User user = userDAO.get(employee.getId());
+			user.setEmpId(employee.getEmpId());
+			user.setEmail(employee.getEmail());
+			user.setFirstName(employee.getFirstName());
+			user.setMiddleName(employee.getMiddleName());
+			user.setLastName(employee.getLastName());
+			user.setDob(employee.getDob());
+			user.setContactNumber(employee.getContactNumber());
+			user.setAlternateNumber(employee.getAlternateNumber());
+			user.setGender(employee.getGender());
+			user.setDesignation(employee.getDesignation());
+			user.setRole(employee.getRole());
+
+			user.setCorredpondenceAddress(employee.getCorredpondenceAddress());
+			user.setCorredpondencePostalCode(employee
+					.getCorredpondencePostalCode());
+			user.setCorredpondenceState(employee.getCorredpondenceState());
+			user.setCorredpondenceCity(employee.getCorredpondenceCity());
+
+			user.setPermanentAddress(employee.getPermanentAddress());
+			user.setPermanentPostalCode(employee.getPermanentPostalCode());
+			user.setPermanentState(employee.getPermanentState());
+			user.setPermanentCity(employee.getPermanentCity());
+			boolean status = userDAO.updateUser(user);
+			if (status) {
+				return "redirect:/ad/addEmployees?status=updateSuccess";
+			} else {
+				return "redirect:/ad/addEmployees?status=updateFailure";
+			}
+		} else {
+			if (u1 != null) {
+				return "redirect:/ad/addEmployees?status=updateFailureMail";
+			} else if (u2 != null) {
+				return "redirect:/ad/addEmployees?status=updateFailureNumber";
+			} else {
+				return "redirect:/ad/addEmployees?status=updateFailure";
+			}
+		}
+
 	}
 
 	@RequestMapping("/autoCheckinSetting")
@@ -326,7 +431,8 @@ public class AdminController {
 			} else if (status.equals("deleteSuccess")) {
 				mv.addObject("msg", "Deleted Successfully");
 			} else if (status.equals("deleteFailure")) {
-				mv.addObject("errorMsg", "Getting Error while Deleting Client");
+				mv.addObject("errorMsg",
+						"Client can not be deleted as the reference of the Client exist");
 			} else if (status.equals("updateSuccess")) {
 				mv.addObject("msg", "Updated Successfully");
 			} else if (status.equals("updateFailure")) {
@@ -347,9 +453,15 @@ public class AdminController {
 
 	@RequestMapping(value = "/deleteClient/{id}")
 	public String deleteClient(@PathVariable int id) {
-
 		Client client = clientManagementDao.getClientById(id);
-		boolean status = clientManagementDao.deleteClient(client);
+		boolean status = false;
+		try {
+			status = clientManagementDao.deleteClient(client);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("hello there [" + status + "]");
 		if (status) {
 			return "redirect:/ad/manageClient?status=deleteSuccess";
 		} else {
@@ -402,6 +514,11 @@ public class AdminController {
 				mv.addObject("msg", "Updated Successfully");
 			} else if (status.equals("updateFailure")) {
 				mv.addObject("errorMsg", "Getting Error while Updating Site");
+			} else if (status.equals("deleteSuccess")) {
+				mv.addObject("msg", "Deleted Successfully");
+			} else if (status.equals("deleteFailure")) {
+				mv.addObject("errorMsg",
+						"Selected Site can not be deleted as the reference of the Site exists");
 			}
 		}
 
@@ -413,6 +530,9 @@ public class AdminController {
 
 		List<Client> clients = clientManagementDao.getAllClients();
 		mv.addObject("clients", clients);
+
+		List<User> employees = userDAO.getAllUsersByRole(Util.ROLE_USER);
+		mv.addObject("employees", employees);
 
 		mv.addObject("title", "Sites");
 		mv.addObject("userClickAdminManageSite", true);
@@ -426,7 +546,25 @@ public class AdminController {
 				.getId());
 		site.setClient(client);
 
-		boolean status = clientManagementDao.saveOrUpdateSite(site);
+		Site s = clientManagementDao.saveSite(site);
+		boolean status = false;
+		if (s != null) {
+			System.out.println("----------[" + s.getId() + "]");
+			if (site.getUser().getId() != 0) {
+				User user = userDAO.get(site.getUser().getId());
+				System.out.println("==[" + user + "]==");
+				SiteEmployeeMapping siteEmployeeMapping = new SiteEmployeeMapping();
+				siteEmployeeMapping.setEmployee(user);
+				siteEmployeeMapping.setSite(s);
+				boolean st = clientManagementDao
+						.saveOrUpdateSiteEmployeeMapping(siteEmployeeMapping);
+				System.out.println("```````[" + st + "]");
+			}
+			status = true;
+		}
+
+		System.out.println("+++[" + status + "]++");
+
 		if (status) {
 			return "redirect:/ad/manageSite?status=success";
 		} else {
@@ -455,6 +593,24 @@ public class AdminController {
 			return "redirect:/ad/manageSite?status=updateSuccess";
 		} else {
 			return "redirect:/ad/manageSite?status=updateFailure";
+		}
+	}
+
+	@RequestMapping(value = "/deleteSite/{id}")
+	public String deleteSite(@PathVariable int id) {
+		Site site = clientManagementDao.getSiteById(id);
+		boolean status = false;
+		try {
+			status = clientManagementDao.deleteSite(site);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("hello there [" + status + "]");
+		if (status) {
+			return "redirect:/ad/manageSite?status=deleteSuccess";
+		} else {
+			return "redirect:/ad/manageSite?status=deleteFailure";
 		}
 	}
 
