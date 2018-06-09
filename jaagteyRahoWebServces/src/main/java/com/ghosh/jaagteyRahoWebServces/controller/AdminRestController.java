@@ -2,6 +2,7 @@ package com.ghosh.jaagteyRahoWebServces.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ghosh.jaagteyRahoBackend.Util;
 import com.ghosh.jaagteyRahoBackend.dao.ClientManagementDao;
 import com.ghosh.jaagteyRahoBackend.dao.SystemSetupDAO;
 import com.ghosh.jaagteyRahoBackend.dao.UserDAO;
+import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
+import com.ghosh.jaagteyRahoBackend.dto.PushNotificationsStatus;
 import com.ghosh.jaagteyRahoBackend.dto.User;
+import com.ghosh.jaagteyRahoWebServces.model.GetOtp;
+import com.ghosh.jaagteyRahoWebServces.model.GetPushNotiToken;
 
 @RestController
 @RequestMapping("/admin")
@@ -43,6 +49,22 @@ public class AdminRestController {
 		}
 		headers.add("Number Of Records Found", String.valueOf(employees.size()));
 		return new ResponseEntity<List<User>>(employees, headers, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/Contacts", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<List<ContactPerson>> Contacts() {
+
+		HttpHeaders headers = new HttpHeaders();
+		List<ContactPerson> contactPersons = systemSetupDAO
+				.getAllContactPersons();
+
+		if (contactPersons == null) {
+			return new ResponseEntity<List<ContactPerson>>(HttpStatus.NOT_FOUND);
+		}
+		headers.add("Number Of Records Found",
+				String.valueOf(contactPersons.size()));
+		return new ResponseEntity<List<ContactPerson>>(contactPersons, headers,
+				HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/employee/{id}", method = RequestMethod.GET)
@@ -80,22 +102,80 @@ public class AdminRestController {
 		return new ResponseEntity<User>(employee, headers, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/pushNotificationTaken", method = RequestMethod.POST, produces = APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<User> pushNotificationTaken(@RequestBody User employee) {
+	@RequestMapping(value = "/pushNotificationToken", method = RequestMethod.POST, produces = APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<GetPushNotiToken> pushNotificationToken(
+			@RequestBody User employee) {
 		HttpHeaders headers = new HttpHeaders();
-
 		User user = userDAO.getUserByMobileNo(employee.getContactNumber());
-
 		System.out.println("total users are [" + user + "]");
-
 		if (user == null) {
-			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+			GetPushNotiToken getOtp = new GetPushNotiToken();
+			getOtp.setStatus(Util.FAILURE);
+			getOtp.setMsg("!! Wrong Credentials !!");
+			return new ResponseEntity<GetPushNotiToken>(getOtp, headers,
+					HttpStatus.NOT_FOUND);
 		}
-
 		user.setPushNotificationToken(employee.getPushNotificationToken());
 		userDAO.updateUser(user);
 
-		return new ResponseEntity<User>(user, headers, HttpStatus.NO_CONTENT);
+		GetPushNotiToken getOtp = new GetPushNotiToken();
+		getOtp.setStatus(Util.SUCCESS);
+		getOtp.setMsg("!! Notification token updated successfully !!");
+		return new ResponseEntity<GetPushNotiToken>(getOtp, headers,
+				HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/sendOtp", method = RequestMethod.POST, produces = APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<GetOtp> getOtp(
+			@RequestBody PushNotificationsStatus notification) {
+		HttpHeaders headers = new HttpHeaders();
+
+		User user = userDAO.getUserByMobileNo(notification.getContactNumber());
+		if (user == null) {
+			GetOtp getOtp = new GetOtp();
+			getOtp.setStatus(Util.FAILURE);
+			getOtp.setMsg("!! Wrong Credentials !!");
+			return new ResponseEntity<GetOtp>(getOtp, headers,
+					HttpStatus.NOT_FOUND);
+		}
+
+		PushNotificationsStatus no = systemSetupDAO
+				.getLatestPushNotificationByUser(user);
+		if (no == null) {
+			GetOtp getOtp = new GetOtp();
+			getOtp.setStatus(Util.FAILURE);
+			getOtp.setMsg("!! Wrong Credentials !!");
+			return new ResponseEntity<GetOtp>(getOtp, headers,
+					HttpStatus.NOT_FOUND);
+		}
+
+		Timestamp sendTime = no.getSentTimestamp();
+		Timestamp receiTime = new Timestamp(System.currentTimeMillis());
+
+		if (notification.getOtp().equals(no.getSentOtp())) {
+			if (Util.compareTwoTimeStamps(receiTime, sendTime) > 5) {
+				GetOtp getOtp = new GetOtp();
+				getOtp.setStatus(Util.FAILURE);
+				getOtp.setMsg("!! OTP has been expired !!");
+				return new ResponseEntity<GetOtp>(getOtp, headers,
+						HttpStatus.OK);
+			} else {
+				GetOtp getOtp = new GetOtp();
+				getOtp.setStatus(Util.SUCCESS);
+				getOtp.setMsg("!! Cheers !!");
+				no.setReceivedStatus(Util.SUCCESS);
+				no.setReceivedTimestamp(receiTime);
+				no.setLatestStatus(false);
+				systemSetupDAO.UpdatePustNotificationStatus(no);
+				return new ResponseEntity<GetOtp>(getOtp, headers,
+						HttpStatus.OK);
+			}
+		} else {
+			GetOtp getOtp = new GetOtp();
+			getOtp.setStatus(Util.FAILURE);
+			getOtp.setMsg("!! You have entered a wrong OTP !!");
+			return new ResponseEntity<GetOtp>(getOtp, headers, HttpStatus.OK);
+		}
 	}
 
 	@RequestMapping(value = "/employee/{id}", method = RequestMethod.PUT)

@@ -78,6 +78,9 @@
 		<c:if test="${userClickAdminManageContact == true }">
 			<%@include file="manageContact.jsp"%>
 		</c:if>
+		<c:if test="${userClickAdminReport == true }">
+			<%@include file="report.jsp"%>
+		</c:if>
 	</div>
 	<%@include file="./shared/footer.jsp"%>
 
@@ -87,7 +90,7 @@
 					.write('<script src="${contextPath}/comDash/js/libs/jquery-ui-1.10.3.min.js"><\/script>');
 		}
 	</script>
-	<script src="${js}/excellentexport.js"></script> 
+	<script src="${js}/excellentexport.js"></script>
 	<script src="${js}/app.config.js"></script>
 	<script src="${js}/bootstrap/bootstrap.min.js"></script>
 	<script src="${js}/notification/SmartNotification.min.js"></script>

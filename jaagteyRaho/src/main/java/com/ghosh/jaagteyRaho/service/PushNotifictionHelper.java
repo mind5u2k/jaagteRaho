@@ -14,7 +14,7 @@ public class PushNotifictionHelper {
 	public final static String AUTH_KEY_FCM = "AAAA_dzN42U:APA91bFIdmX2cdFlywBjyrYVYt3LddyHmWK2mUByNt6UJi6krDU4_uFXih_Gu_MnNPwwXm54n0ykRouU_8DhRQ_tfO-p8aR8dZgJmz3SdRyqiLQVsAiVWTSMrQ6HFmIrWhRU-_wK9D5x";
 	public final static String API_URL_FCM = "https://fcm.googleapis.com/fcm/send";
 
-	public static String sendPushNotification(String deviceToken)
+	public static String sendPushNotification(String deviceToken, String otp)
 			throws IOException {
 		String result = "";
 		URL url = new URL(API_URL_FCM);
@@ -32,8 +32,8 @@ public class PushNotifictionHelper {
 
 		json.put("to", deviceToken.trim());
 		JSONObject info = new JSONObject();
-		//info.put("title", "sale kutte"); // Notification title
-		info.put("body", "kamine"); // Notification
+		info.put("title", "sale kutte"); // Notification title
+		info.put("body", "OTP - " + otp); // Notification
 		// body
 		json.put("notification", info);
 		try {
@@ -65,7 +65,9 @@ public class PushNotifictionHelper {
 
 		for (int i = 0; i < 2000; i++) {
 			try {
-				helper.sendPushNotification("dmUaxznGXcY:APA91bF5BWqMz1SPQN8qcgv5A0IIh2bD2ot0z-P3hZZJKZ94h4mBg8McI0X2__F-LGS0UIspa8waMVnBZCVBNrczrAr-Qe2Czx45A9RM2GXrX3O4ZvJawsmXc4uCCVTDiREUEvUBJkJq");
+				helper.sendPushNotification(
+						"dmUaxznGXcY:APA91bF5BWqMz1SPQN8qcgv5A0IIh2bD2ot0z-P3hZZJKZ94h4mBg8McI0X2__F-LGS0UIspa8waMVnBZCVBNrczrAr-Qe2Czx45A9RM2GXrX3O4ZvJawsmXc4uCCVTDiREUEvUBJkJq",
+						"");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

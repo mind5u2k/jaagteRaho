@@ -1,6 +1,5 @@
 package com.ghosh.jaagteyRahoBackend;
 
-import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,6 +26,9 @@ public class Util {
 		roles.add(ROLE_USER);
 		return roles;
 	}
+
+	public static final String SUCCESS = "SUCCESS";
+	public static final String FAILURE = "FAILURE";
 
 	public static final String STATUS_ASSIGNED = "ASSIGNED";
 	public static final String STATUS_TRIAL = "Trial";
@@ -141,8 +143,32 @@ public class Util {
 
 	}
 
+	public static char[] OTP() {
+		String numbers = "0123456789";
+		Random rndm_method = new Random();
+		char[] otp = new char[4];
+		for (int i = 0; i < 4; i++) {
+			otp[i] = numbers.charAt(rndm_method.nextInt(numbers.length()));
+		}
+		return otp;
+	}
+
+	public static long compareTwoTimeStamps(java.sql.Timestamp currentTime,
+			java.sql.Timestamp oldTime) {
+		long milliseconds1 = oldTime.getTime();
+		long milliseconds2 = currentTime.getTime();
+
+		long diff = milliseconds2 - milliseconds1;
+		long diffSeconds = diff / 1000;
+		long diffMinutes = diff / (60 * 1000);
+		long diffHours = diff / (60 * 60 * 1000);
+		long diffDays = diff / (24 * 60 * 60 * 1000);
+
+		return diffMinutes;
+	}
+
 	public static void main(String[] args) {
-		System.out.println(Util.getSaltString());
+		System.out.println(Util.OTP());
 	}
 
 }

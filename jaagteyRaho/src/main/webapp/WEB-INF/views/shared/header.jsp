@@ -112,15 +112,14 @@
 					<li id="autoCheckinSetting"><a
 						href="${contextRoot}/ad/autoCheckinSetting">Auto Checkin
 							Setting</a></li>
-					<li id="salesManager"><a href="#">Device Mapping</a></li>
+					<!-- 	<li id="salesManager"><a href="#">Device Mapping</a></li> -->
 				</ul></li>
-			<li id="adminUsers"><a href="#"><i
-					class="fa fa-lg fa-fw fa-retweet"></i> <span
-					class="menu-item-parent">Movement Analysis</span><b
+			<li id=" "><a href="#"><i class="fa fa-lg fa-fw fa-retweet"></i>
+					<span class="menu-item-parent">Movement Analysis</span><b
 					class="collapse-sign"><em class="fa fa-minus-square-o"></em></b></a>
-				<ul id="adminUserBlock" style="display: none;">
-					<li id="salesManager"><a href="#">Site Audit Report</a></li>
-					<li id="salesOrganization"><a href="#">Auto Checkin Report</a></li>
+				<ul id="movementAnalysis" style="display: none;">
+					<li id="report"><a href="${contextRoot}/ad/report">Report</a></li>
+					<!-- <li id="salesOrganization"><a href="#">Auto Checkin Report</a></li> -->
 					<%-- <li id="salesManager"><a href="#">Selfie Checkin Report</a></li>
 					<li id="salesOrganization"><a
 						href="${contextRoot}/ad/salesOrganization">Geofancing Report</a></li> --%>

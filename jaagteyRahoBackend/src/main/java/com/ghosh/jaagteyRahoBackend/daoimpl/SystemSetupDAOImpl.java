@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ghosh.jaagteyRahoBackend.dao.SystemSetupDAO;
 import com.ghosh.jaagteyRahoBackend.dto.AutoCheckinSetting;
 import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
+import com.ghosh.jaagteyRahoBackend.dto.PushNotificationsStatus;
+import com.ghosh.jaagteyRahoBackend.dto.User;
 
 @Repository("systemSetupDAO")
 @Transactional
@@ -76,6 +78,51 @@ public class SystemSetupDAOImpl implements SystemSetupDAO {
 			return true;
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
+			return false;
+		}
+	}
+
+	@Override
+	public boolean addPustNotificationStatus(PushNotificationsStatus status) {
+		try {
+			sessionFactory.getCurrentSession().persist(status);
+			return true;
+		} catch (Exception ex) {
+			return false;
+		}
+	}
+
+	@Override
+	public List<PushNotificationsStatus> getLatestPushNotifications() {
+		String selectQuery = "FROM PushNotificationsStatus WHERE latestStatus=:latestStatus";
+		return sessionFactory.getCurrentSession()
+				.createQuery(selectQuery, PushNotificationsStatus.class)
+				.setParameter("latestStatus", true).getResultList();
+	}
+
+	@Override
+	public List<PushNotificationsStatus> getPushNotificationsByEmployee(User emp) {
+		String selectQuery = "FROM PushNotificationsStatus WHERE employee.id=:empId";
+		return sessionFactory.getCurrentSession()
+				.createQuery(selectQuery, PushNotificationsStatus.class)
+				.setParameter("empId", emp.getId()).getResultList();
+	}
+
+	@Override
+	public PushNotificationsStatus getLatestPushNotificationByUser(User user) {
+		String selectQuery = "FROM PushNotificationsStatus WHERE employee.id=:empId AND latestStatus=:latestStatus";
+		return sessionFactory.getCurrentSession()
+				.createQuery(selectQuery, PushNotificationsStatus.class)
+				.setParameter("empId", user.getId())
+				.setParameter("latestStatus", true).getSingleResult();
+	}
+
+	@Override
+	public boolean UpdatePustNotificationStatus(PushNotificationsStatus status) {
+		try {
+			sessionFactory.getCurrentSession().saveOrUpdate(status);
+			return true;
+		} catch (Exception ex) {
 			return false;
 		}
 	}

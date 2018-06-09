@@ -25,6 +25,7 @@ import com.ghosh.jaagteyRahoBackend.dto.AutoCheckinSetting;
 import com.ghosh.jaagteyRahoBackend.dto.Client;
 import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
 import com.ghosh.jaagteyRahoBackend.dto.Designation;
+import com.ghosh.jaagteyRahoBackend.dto.PushNotificationsStatus;
 import com.ghosh.jaagteyRahoBackend.dto.Site;
 import com.ghosh.jaagteyRahoBackend.dto.SiteContactMapping;
 import com.ghosh.jaagteyRahoBackend.dto.SiteEmployeeMapping;
@@ -780,6 +781,34 @@ public class AdminController {
 			return "redirect:/ad/assignContactperson?siteId=" + site.getId()
 					+ "&status=revokefailure";
 		}
+	}
+
+	@RequestMapping("/report")
+	public ModelAndView report(
+			@RequestParam(name = "userId", required = false) Integer userId) {
+		ModelAndView mv = new ModelAndView("page");
+		List<User> users = userDAO.getAllUsersByRole(Util.ROLE_USER);
+		User emp = null;
+
+		if (userId != null) {
+			emp = userDAO.get(userId);
+		} else {
+			if (users != null && users.size() > 0) {
+				emp = users.get(0);
+			}
+		}
+		List<PushNotificationsStatus> pushNotificationsStatus = new ArrayList<PushNotificationsStatus>();
+		if (emp != null) {
+			pushNotificationsStatus = systemSetupDAO
+					.getPushNotificationsByEmployee(emp);
+		}
+
+		mv.addObject("pushNotificationsStatus", pushNotificationsStatus);
+		mv.addObject("users", users);
+		mv.addObject("emp", emp);
+		mv.addObject("title", "Report");
+		mv.addObject("userClickAdminReport", true);
+		return mv;
 	}
 
 	@RequestMapping("/employeeSiteReport")

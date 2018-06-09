@@ -59,6 +59,10 @@ $(function() {
 		$("#systemSetup").css("display", "block");
 		$('#manageContact').addClass('active');
 		break;
+	case 'Report':
+		$("#movementAnalysis").css("display", "block");
+		$('#report').addClass('active');
+		break;
 	default:
 		break;
 	}
