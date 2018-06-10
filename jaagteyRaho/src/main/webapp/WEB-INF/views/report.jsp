@@ -24,17 +24,17 @@
 </div>
 <div id="content" style="display: none;">
 	<div class="row">
-		<div class="col-sm-4"></div>
-		<div class="col-sm-4">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-8">
 			<div class="row" style="padding: 0px;">
 				<div class="col-sm-12">
 					<form id="designationForm" class="smart-form" method="post">
 						<fieldset style="padding-top: 0;">
 							<div class="row">
-								<section class="col-12">
+								<section class="col col-4">
 									<label class="label">Select Employee </label> <label
-										class="select state-success"> <select id="userId"
-										onchange="updateDetails();" name="role" class="valid">
+										class="select"> <select id="userId" name="role"
+										class="valid">
 											<c:forEach items="${users}" var="user">
 												<c:if test="${user.id == emp.id}">
 													<option selected="selected" value="${user.id}">${user.empId}-
@@ -56,14 +56,31 @@
 									</select> <i></i>
 									</label>
 								</section>
+								<section class="col col-4">
+									<label class="label">Select Date</label> <label class="input">
+										<i class="icon-append fa fa-calendar"></i> <input id="date"
+										name="date" data-dateformat="dd/mm/yy"
+										placeholder="Select Date" type="text" class="datepicker">
+									</label>
+								</section>
+								<section class="col col-4">
+									<label class="label">&nbsp;</label> <label class="input">
+										<input id="id" name="id" type="hidden" value="1"> <input
+										type="button" value="Submit" class="btn btn-primary"
+										onclick="updateReportPanel();"
+										style="width: 93px; border-radius: 2px; border: 1px solid #ccc;">
+									</label>
+								</section>
 							</div>
 						</fieldset>
 					</form>
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-4"></div>
-		<div class="col-sm-12">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-12" id="reportPanel">
+			<input type="hidden" id="sent" value="${sent}"> <input
+				type="hidden" id="received" value="${received}">
 			<div class="row">
 				<div class="col-sm-12"></div>
 				<article class="col-sm-12 sortable-grid ui-sortable">
@@ -117,6 +134,15 @@
 											</table>
 										</div>
 										<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 show-stats">
+											<div
+												style="margin: auto; text-align: center; font-size: 16px; padding: 12px 0px 14px 0px;">
+												<span style="border-bottom: 1px solid #141313;">Chart
+													Representation</span>
+											</div>
+											<div
+												style="margin: auto; text-align: center; padding-bottom: 15px;">
+												<canvas id="pieChart" height="250px"></canvas>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -151,15 +177,14 @@
 <script src="${js}/plugin/datatables/dataTables.bootstrap.min.js"></script>
 <script
 	src="${js}/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+<script src="${js}/Chart.min.js"></script>
+
 
 <script>
 	$(document)
 			.ready(
 					function() {
 						pageSetUp();
-						$.extend($.fn.dataTable.defaults, {
-							buttons : [ 'csv', 'excel', 'pdf' ]
-						});
 						var responsiveHelper_dt_basic = undefined;
 						var responsiveHelper_datatable_fixed_column = undefined;
 						var responsiveHelper_datatable_col_reorder = undefined;
@@ -221,20 +246,93 @@
 							modal : true
 						});
 
+						var pieOptions = {
+							//Boolean - Whether we should show a stroke on each segment
+							segmentShowStroke : true,
+							//String - The colour of each segment stroke
+							segmentStrokeColor : "#fff",
+							//Number - The width of each segment stroke
+							segmentStrokeWidth : 2,
+							//Number - Amount of animation steps
+							animationSteps : 100,
+							//String - types of animation
+							animationEasing : "easeOutBounce",
+							//Boolean - Whether we animate the rotation of the Doughnut
+							animateRotate : true,
+							//Boolean - Whether we animate scaling the Doughnut from the centre
+							animateScale : false,
+							legend : {
+								display : true,
+								position : 'top',
+								labels : {
+									fontColor : "#000080",
+								}
+							},
+
+							tooltips : {
+								callbacks : {
+									label : function(tooltipItem, data) {
+										var dataset = data.datasets[tooltipItem.datasetIndex];
+										var total = dataset.data
+												.reduce(function(previousValue,
+														currentValue,
+														currentIndex, array) {
+													return previousValue
+															+ currentValue;
+												});
+										var currentValue = dataset.data[tooltipItem.index];
+										var precentage = Math
+												.floor(((currentValue / total) * 100) + 0.5);
+										return precentage + "%";
+									}
+								}
+							}
+
+						};
+
+						var sent = $("#sent").val();
+						var received = $("#received").val();
+
+						var data = {
+							labels : [ "Sent Notifications (" + sent + ")",
+									"Received Notifications (" + received + ")" ],
+							datasets : [ {
+								fill : true,
+								backgroundColor : [ 'rgba(95,174,89,0.7)',
+										'rgba(169, 3, 41, 0.7)' ],
+								data : [ sent, received ],
+								borderColor : [ 'rgba(95,174,89,1)',
+										'rgba(169, 3, 41, 1)' ],
+								borderWidth : [ 1, 1 ]
+							} ]
+						};
+						var ctx = document.getElementById("pieChart")
+								.getContext("2d");
+						var myNewChart = new Chart(ctx, {
+							type : 'pie',
+							data : data,
+							options : pieOptions
+						});
 					});
 
-	function editClient(clientId) {
-		$('#editClientDialog').dialog('open');
-		$.ajax({
-			type : "GET",
-			url : "editClient?clientId=" + clientId,
-			success : function(response) {
-				$('#clientDetails').html(response);
-			},
-			error : function(e) {
-				console.log('Error: ' + e);
-			}
-		});
+	function updateReportPanel() {
+		var selectedEmp = $("#userId").val();
+		var selectedDate = $("#date").val();
+		if (selectedDate == "") {
+			alert("!! Please Select Date !!");
+		} else {
+			$.ajax({
+				type : "GET",
+				url : "updateReportPanel?empId=" + selectedEmp + "&date="
+						+ selectedDate,
+				success : function(response) {
+					$('#reportPanel').html(response);
+				},
+				error : function(e) {
+					console.log('Error: ' + e);
+				}
+			});
+		}
 	}
 
 	function deleteClient(clientId) {
@@ -250,8 +348,8 @@
 	}
 
 	$(function() {
-		$("#dob").datepicker({
-			minDate : 0
+		$("#date").datepicker({
+			defaultDate : new Date()
 		});
 	});
 

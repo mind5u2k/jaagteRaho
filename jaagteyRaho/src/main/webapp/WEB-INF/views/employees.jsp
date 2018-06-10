@@ -362,9 +362,6 @@
 <script src="${js}/plugin/datatables/dataTables.bootstrap.min.js"></script>
 <script
 	src="${js}/plugin/datatable-responsive/datatables.responsive.min.js"></script>
-
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script>
 <script>
 	$(document)
 			.ready(
@@ -428,36 +425,6 @@
 							resizable : false,
 							modal : true
 						});
-
-						var doc = new jsPDF();
-						var specialElementHandlers = {
-							'#editor' : function(element, renderer) {
-								return true;
-							}
-						};
-
-						$('#cmd')
-								.click(
-										function() {
-											doc
-													.fromHTML(
-															$(
-																	'#datatable_col_reorder')
-																	.html(),
-															15,
-															15,
-															{
-																'width' : 170,
-																'elementHandlers' : specialElementHandlers
-															});
-											doc.save('sample-file.pdf');
-										});
-						var doc = new jsPDF();
-						var specialElementHandlers = {
-							'#editor' : function(element, renderer) {
-								return true;
-							}
-						};
 					});
 
 	function editUserDialog(userId) {
@@ -479,32 +446,9 @@
 			minDate : 0
 		});
 	});
-</script>
-<script>
-	function newApi(format) {
-		return ExcellentExport.convert({
-			anchor : 'anchorNewApi-' + format,
-			filename : 'data_123.' + format,
-			format : format
-		}, [ {
-			name : 'Sheet Name Here 1',
-			from : {
-				table : 'datatable_col_reorder'
-			}
-		} ]);
-	}
-
-	function newApiArray(format) {
-		return ExcellentExport.convert({
-			anchor : 'anchorNewApi-' + format + '-array',
-			filename : 'data_123.array',
-			format : format
-		}, [ {
-			name : 'Sheet Name Here 1',
-			from : {
-				array : [ [ 'line 1', 1234, 'asadasd' ],
-						[ 'line 2', 1234.56, 'asd' ] ]
-			}
-		} ]);
-	}
+	$(function() {
+		$("#dobs").datepicker({
+			minDate : 0
+		});
+	});
 </script>

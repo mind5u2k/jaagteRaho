@@ -97,7 +97,7 @@ public class SystemSetupDAOImpl implements SystemSetupDAO {
 		String selectQuery = "FROM PushNotificationsStatus WHERE latestStatus=:latestStatus";
 		return sessionFactory.getCurrentSession()
 				.createQuery(selectQuery, PushNotificationsStatus.class)
-				.setParameter("latestStatus", true).getResultList();
+				.setParameter("latestStatus", 1).getResultList();
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class SystemSetupDAOImpl implements SystemSetupDAO {
 		return sessionFactory.getCurrentSession()
 				.createQuery(selectQuery, PushNotificationsStatus.class)
 				.setParameter("empId", user.getId())
-				.setParameter("latestStatus", true).getSingleResult();
+				.setParameter("latestStatus", 1).getSingleResult();
 	}
 
 	@Override

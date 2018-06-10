@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ghosh.jaagteyRahoBackend.dto.Address;
 import com.ghosh.jaagteyRahoBackend.dto.Designation;
+import com.ghosh.jaagteyRahoBackend.dto.SelfieCheckIn;
 import com.ghosh.jaagteyRahoBackend.dto.User;
 
 public interface UserDAO {
@@ -17,6 +18,8 @@ public interface UserDAO {
 
 	boolean add(User user);
 
+	boolean addSelfieCheckin(SelfieCheckIn checkIn);
+
 	User addUser(User user);
 
 	boolean updateUser(User user);
@@ -26,6 +29,8 @@ public interface UserDAO {
 	List<User> getAllUsers();
 
 	List<User> getAllUsersByRole(String role);
+
+	List<SelfieCheckIn> getSelfieCheckinByUser(User user);
 
 	List<Designation> getAllDesignations();
 

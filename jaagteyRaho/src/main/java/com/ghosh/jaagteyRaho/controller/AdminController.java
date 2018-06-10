@@ -1,6 +1,9 @@
 package com.ghosh.jaagteyRaho.controller;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -148,6 +151,7 @@ public class AdminController {
 		mv.addObject("users", users);
 		mv.addObject("title", "Employees");
 		mv.addObject("userClickAdminAddEmployees", true);
+		System.out.println("asdfasdf");
 		return mv;
 	}
 
@@ -784,25 +788,126 @@ public class AdminController {
 	}
 
 	@RequestMapping("/report")
-	public ModelAndView report(
-			@RequestParam(name = "userId", required = false) Integer userId) {
+	public ModelAndView report() {
 		ModelAndView mv = new ModelAndView("page");
+
+		int sent = 0;
+		int received = 0;
+
+		List<User> users = userDAO.getAllUsersByRole(Util.ROLE_USER);
+		User emp = null;
+		if (users != null && users.size() > 0) {
+			emp = users.get(0);
+		}
+		List<PushNotificationsStatus> pushNotificationsStatus = new ArrayList<PushNotificationsStatus>();
+		if (emp != null) {
+			List<PushNotificationsStatus> pushNotificationsStatuss = systemSetupDAO
+					.getPushNotificationsByEmployee(emp);
+			if (pushNotificationsStatuss != null) {
+				for (PushNotificationsStatus s : pushNotificationsStatuss) {
+					Timestamp t = s.getSentTimestamp();
+					Date date = new Date(t.getTime());
+					Calendar cal = Calendar.getInstance();
+					cal.setTimeInMillis(date.getTime());
+					int d = cal.get(Calendar.DATE);
+					int m = cal.get(Calendar.MONTH);
+					int y = cal.get(Calendar.YEAR);
+
+					Date tdate = new Date();
+					Calendar tcal = Calendar.getInstance();
+					tcal.setTimeInMillis(tdate.getTime());
+					int td = tcal.get(Calendar.DATE);
+					int tm = tcal.get(Calendar.MONTH);
+					int ty = tcal.get(Calendar.YEAR);
+
+					if (d == td && m == tm && y == ty) {
+						if (s.getSentStatus() != null) {
+							if (s.getSentStatus().equals(Util.SUCCESS)) {
+								sent++;
+							}
+						}
+
+						if (s.getReceivedStatus() != null) {
+							if (s.getReceivedStatus().equals(Util.SUCCESS)) {
+								received++;
+							}
+						}
+
+						pushNotificationsStatus.add(s);
+					}
+				}
+			}
+		}
+
+		mv.addObject("sent", sent);
+		mv.addObject("received", received);
+		mv.addObject("pushNotificationsStatus", pushNotificationsStatus);
+		mv.addObject("users", users);
+		mv.addObject("emp", emp);
+		mv.addObject("title", "Report");
+		mv.addObject("userClickAdminReport", true);
+		return mv;
+	}
+
+	@RequestMapping(value = "/updateReportPanel", method = RequestMethod.GET)
+	public ModelAndView updateReportPanel(
+			@RequestParam(name = "empId", required = false) Integer empId,
+			@RequestParam(name = "date", required = false) String date) {
+		int sent = 0;
+		int received = 0;
+		System.out.println("selected emp Id is[" + empId
+				+ "] and selected date is [" + date + "]");
+
+		ModelAndView mv = new ModelAndView("updateReportPanel");
 		List<User> users = userDAO.getAllUsersByRole(Util.ROLE_USER);
 		User emp = null;
 
-		if (userId != null) {
-			emp = userDAO.get(userId);
+		if (empId != null) {
+			emp = userDAO.get(empId);
 		} else {
 			if (users != null && users.size() > 0) {
 				emp = users.get(0);
 			}
 		}
+
+		String[] dateArray = date.split("/");
+		int td = Integer.parseInt(dateArray[0]);
+		int tm = Integer.parseInt(dateArray[1]);
+		int ty = Integer.parseInt(dateArray[2]);
+
 		List<PushNotificationsStatus> pushNotificationsStatus = new ArrayList<PushNotificationsStatus>();
 		if (emp != null) {
-			pushNotificationsStatus = systemSetupDAO
+			List<PushNotificationsStatus> pushNotificationsStatuss = systemSetupDAO
 					.getPushNotificationsByEmployee(emp);
-		}
+			if (pushNotificationsStatuss != null) {
+				for (PushNotificationsStatus s : pushNotificationsStatuss) {
+					Timestamp ts = s.getSentTimestamp();
+					Date ds = new Date(ts.getTime());
+					Calendar cal = Calendar.getInstance();
+					cal.setTimeInMillis(ds.getTime());
+					int d = cal.get(Calendar.DATE);
+					int m = cal.get(Calendar.MONTH);
+					int y = cal.get(Calendar.YEAR);
 
+					if (d == td && m == (tm - 1) && y == ty) {
+						if (s.getSentStatus() != null) {
+							if (s.getSentStatus().equals(Util.SUCCESS)) {
+								sent++;
+							}
+						}
+
+						if (s.getReceivedStatus() != null) {
+							if (s.getReceivedStatus().equals(Util.SUCCESS)) {
+								received++;
+							}
+						}
+						pushNotificationsStatus.add(s);
+					}
+				}
+			}
+		}
+		mv.addObject("sent", sent);
+		mv.addObject("received", received);
 		mv.addObject("pushNotificationsStatus", pushNotificationsStatus);
 		mv.addObject("users", users);
 		mv.addObject("emp", emp);

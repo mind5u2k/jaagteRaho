@@ -23,7 +23,9 @@ public class PushNotificationsStatus {
 	@ManyToOne
 	private User employee;
 
-	private Boolean latestStatus = false;
+	private Boolean latestStatuss = false;
+
+	private int latestStatus = 1;
 
 	private String sentOtp;
 	private String sentStatus;
@@ -53,14 +55,6 @@ public class PushNotificationsStatus {
 
 	public void setEmployee(User employee) {
 		this.employee = employee;
-	}
-
-	public Boolean getLatestStatus() {
-		return latestStatus;
-	}
-
-	public void setLatestStatus(Boolean latestStatus) {
-		this.latestStatus = latestStatus;
 	}
 
 	public String getSentOtp() {
@@ -117,6 +111,22 @@ public class PushNotificationsStatus {
 
 	public void setOtp(String otp) {
 		this.otp = otp;
+	}
+
+	public int getLatestStatus() {
+		return latestStatus;
+	}
+
+	public void setLatestStatus(int latestStatus) {
+		this.latestStatus = latestStatus;
+	}
+
+	public Boolean getLatestStatuss() {
+		return latestStatuss;
+	}
+
+	public void setLatestStatuss(Boolean latestStatuss) {
+		this.latestStatuss = latestStatuss;
 	}
 
 }

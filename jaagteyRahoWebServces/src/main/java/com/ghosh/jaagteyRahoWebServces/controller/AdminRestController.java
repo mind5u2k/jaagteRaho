@@ -21,8 +21,10 @@ import com.ghosh.jaagteyRahoBackend.dao.SystemSetupDAO;
 import com.ghosh.jaagteyRahoBackend.dao.UserDAO;
 import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
 import com.ghosh.jaagteyRahoBackend.dto.PushNotificationsStatus;
+import com.ghosh.jaagteyRahoBackend.dto.SelfieCheckIn;
 import com.ghosh.jaagteyRahoBackend.dto.User;
 import com.ghosh.jaagteyRahoWebServces.model.GetOtp;
+import com.ghosh.jaagteyRahoWebServces.model.GetOtpWithNo;
 import com.ghosh.jaagteyRahoWebServces.model.GetPushNotiToken;
 
 @RestController
@@ -102,6 +104,78 @@ public class AdminRestController {
 		return new ResponseEntity<User>(employee, headers, HttpStatus.CREATED);
 	}
 
+	@RequestMapping(value = "/selfieCheckin", method = RequestMethod.POST, produces = APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<GetOtp> selfieCheckin(@RequestBody SelfieCheckIn value) {
+		HttpHeaders headers = new HttpHeaders();
+		if (value == null) {
+			GetOtp getOtp = new GetOtp();
+			getOtp.setMsg("!! Getting Error -  BAD Request !!");
+			getOtp.setStatus(Util.FAILURE);
+			return new ResponseEntity<GetOtp>(getOtp, headers,
+					HttpStatus.BAD_REQUEST);
+		}
+
+		if (value.getContactNumber() == null) {
+			GetOtp getOtp = new GetOtp();
+			getOtp.setMsg("!! Mobile Number Please !!");
+			getOtp.setStatus(Util.FAILURE);
+			return new ResponseEntity<GetOtp>(getOtp, headers, HttpStatus.OK);
+		}
+
+		User user = userDAO.getUserByMobileNo(value.getContactNumber());
+		if (user == null) {
+			GetOtp getOtp = new GetOtp();
+			getOtp.setMsg("!! Contact Number is not registered. !!");
+			getOtp.setStatus(Util.FAILURE);
+			return new ResponseEntity<GetOtp>(getOtp, headers,
+					HttpStatus.NOT_FOUND);
+		}
+
+		SelfieCheckIn selfieCheckIn = new SelfieCheckIn();
+		selfieCheckIn.setContactNumber(value.getContactNumber());
+
+		Timestamp timestamp = Util.convertStringToTimestamp(value
+				.getCurrent_datetimes());
+		if (timestamp == null) {
+			GetOtp getOtp = new GetOtp();
+			getOtp.setMsg("!! Your Date format is wrong .. Format Must be in - (dd-MM-yyyy HH:mm:ss) !!");
+			getOtp.setStatus(Util.FAILURE);
+			return new ResponseEntity<GetOtp>(getOtp, headers, HttpStatus.OK);
+		}
+
+		selfieCheckIn.setCurrent_datetime(timestamp);
+		selfieCheckIn.setCurrentLocation(value.getCurrentLocation());
+		selfieCheckIn.setEmployee(user);
+		selfieCheckIn.setProfile_pic(value.getProfile_pic());
+		selfieCheckIn.setRemark(value.getRemark());
+		userDAO.addSelfieCheckin(selfieCheckIn);
+
+		headers.add("Selfie checkin  Created  - ",
+				String.valueOf(selfieCheckIn.getProfile_pic()));
+		GetOtp getOtp = new GetOtp();
+		getOtp.setMsg("!! Hurrraah .. Successfully Saved !!");
+		getOtp.setStatus(Util.SUCCESS);
+		return new ResponseEntity<GetOtp>(getOtp, headers, HttpStatus.CREATED);
+	}
+
+	@RequestMapping(value = "/getSelfiecheckin/{contactNumber}", method = RequestMethod.GET)
+	public ResponseEntity<List<SelfieCheckIn>> getSelfiecheckin(
+			@PathVariable("contactNumber") String contactNumber) {
+
+		User user = userDAO.getUserByMobileNo(contactNumber);
+		if (user == null) {
+			return new ResponseEntity<List<SelfieCheckIn>>(HttpStatus.NOT_FOUND);
+		}
+
+		List<SelfieCheckIn> selfieCheckIns = userDAO
+				.getSelfieCheckinByUser(user);
+		if (selfieCheckIns == null) {
+			return new ResponseEntity<List<SelfieCheckIn>>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<List<SelfieCheckIn>>(selfieCheckIns,
+				HttpStatus.OK);
+	}
+
 	@RequestMapping(value = "/pushNotificationToken", method = RequestMethod.POST, produces = APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<GetPushNotiToken> pushNotificationToken(
 			@RequestBody User employee) {
@@ -126,12 +200,13 @@ public class AdminRestController {
 	}
 
 	@RequestMapping(value = "/sendOtp", method = RequestMethod.POST, produces = APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<GetOtp> getOtp(
-			@RequestBody PushNotificationsStatus notification) {
+	public ResponseEntity<GetOtp> getOtp(@RequestBody GetOtpWithNo notification) {
 		HttpHeaders headers = new HttpHeaders();
-
 		User user = userDAO.getUserByMobileNo(notification.getContactNumber());
+		System.out.println("--------------" + notification.getContactNumber());
 		if (user == null) {
+			System.out.println("user is null");
+			System.out.println(user.getEmail());
 			GetOtp getOtp = new GetOtp();
 			getOtp.setStatus(Util.FAILURE);
 			getOtp.setMsg("!! Wrong Credentials !!");
@@ -142,6 +217,7 @@ public class AdminRestController {
 		PushNotificationsStatus no = systemSetupDAO
 				.getLatestPushNotificationByUser(user);
 		if (no == null) {
+			System.out.println("push notification is null");
 			GetOtp getOtp = new GetOtp();
 			getOtp.setStatus(Util.FAILURE);
 			getOtp.setMsg("!! Wrong Credentials !!");
@@ -165,7 +241,7 @@ public class AdminRestController {
 				getOtp.setMsg("!! Cheers !!");
 				no.setReceivedStatus(Util.SUCCESS);
 				no.setReceivedTimestamp(receiTime);
-				no.setLatestStatus(false);
+				no.setLatestStatus(0);
 				systemSetupDAO.UpdatePustNotificationStatus(no);
 				return new ResponseEntity<GetOtp>(getOtp, headers,
 						HttpStatus.OK);

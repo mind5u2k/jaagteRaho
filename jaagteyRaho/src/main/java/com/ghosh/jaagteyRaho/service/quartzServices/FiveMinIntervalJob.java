@@ -3,6 +3,7 @@ package com.ghosh.jaagteyRaho.service.quartzServices;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,7 @@ public class FiveMinIntervalJob {
 
 									PushNotificationsStatus noStatus = new PushNotificationsStatus();
 									noStatus.setEmployee(u);
-									noStatus.setLatestStatus(true);
+									noStatus.setLatestStatus(1);
 									noStatus.setSentOtp(otp);
 									noStatus.setSentStatus(Util.SUCCESS);
 									noStatus.setSentTimestamp(new Timestamp(
@@ -85,7 +86,7 @@ public class FiveMinIntervalJob {
 									List<PushNotificationsStatus> ss = systemSetupDAO
 											.getLatestPushNotifications();
 									for (PushNotificationsStatus p : ss) {
-										p.setLatestStatus(false);
+										p.setLatestStatus(0);
 										systemSetupDAO
 												.UpdatePustNotificationStatus(p);
 									}
@@ -107,17 +108,12 @@ public class FiveMinIntervalJob {
 
 	public static void main(String[] args) {
 		Calendar c = Calendar.getInstance();
-		c.set(Calendar.HOUR_OF_DAY, 9);
-		c.set(Calendar.MINUTE, 0);
-		c.set(Calendar.SECOND, 0);
 		Timestamp timestamp = new Timestamp(c.getTimeInMillis());
-		System.out.println(timestamp);
-		Timestamp timestamp1 = new Timestamp(System.currentTimeMillis());
-		System.out.println(timestamp1);
-		System.out.println(Util.compareTwoTimeStamps(timestamp1, timestamp));
-
-		String a = "09 AM";
-		System.out.println(a.substring(0, 2));
-		System.out.println(a.substring(3, 5));
+		Date date = new Date(timestamp.getTime());
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(date.getTime());
+		System.out.println(cal.get(Calendar.DATE));
+		System.out.println(cal.get(Calendar.MONTH));
+		System.out.println(cal.get(Calendar.YEAR));
 	}
 }

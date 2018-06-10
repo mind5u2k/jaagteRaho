@@ -76,7 +76,7 @@ public class TenMinIntervalJob {
 
 									PushNotificationsStatus noStatus = new PushNotificationsStatus();
 									noStatus.setEmployee(u);
-									noStatus.setLatestStatus(true);
+									noStatus.setLatestStatus(1);
 									noStatus.setSentOtp(otp);
 									noStatus.setSentStatus(Util.SUCCESS);
 									noStatus.setSentTimestamp(new Timestamp(
@@ -85,7 +85,7 @@ public class TenMinIntervalJob {
 									List<PushNotificationsStatus> ss = systemSetupDAO
 											.getLatestPushNotifications();
 									for (PushNotificationsStatus p : ss) {
-										p.setLatestStatus(false);
+										p.setLatestStatus(0);
 										systemSetupDAO
 												.UpdatePustNotificationStatus(p);
 									}

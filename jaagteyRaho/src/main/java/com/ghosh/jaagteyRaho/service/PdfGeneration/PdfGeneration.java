@@ -182,7 +182,7 @@ public class PdfGeneration {
 			cell.setPaddingBottom(9);
 			table.addCell(cell);
 			String name = "";
-			if (user.getMiddleName().equals("")) {
+			if (user.getMiddleName() == null || user.getMiddleName().equals("")) {
 				name = user.getFirstName() + " " + user.getLastName();
 			} else {
 				name = user.getFirstName() + " " + user.getMiddleName() + " "

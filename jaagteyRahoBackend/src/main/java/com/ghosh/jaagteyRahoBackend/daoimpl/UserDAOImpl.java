@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ghosh.jaagteyRahoBackend.dao.UserDAO;
 import com.ghosh.jaagteyRahoBackend.dto.Address;
 import com.ghosh.jaagteyRahoBackend.dto.Designation;
+import com.ghosh.jaagteyRahoBackend.dto.SelfieCheckIn;
 import com.ghosh.jaagteyRahoBackend.dto.User;
 
 @Repository("userDAO")
@@ -50,6 +51,16 @@ public class UserDAOImpl implements UserDAO {
 	public boolean add(User user) {
 		try {
 			sessionFactory.getCurrentSession().persist(user);
+			return true;
+		} catch (Exception ex) {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean addSelfieCheckin(SelfieCheckIn checkIn) {
+		try {
+			sessionFactory.getCurrentSession().persist(checkIn);
 			return true;
 		} catch (Exception ex) {
 			return false;
@@ -153,6 +164,14 @@ public class UserDAOImpl implements UserDAO {
 		return sessionFactory.getCurrentSession()
 				.createQuery(selectQuery, User.class)
 				.setParameter("role", role).getResultList();
+	}
+
+	@Override
+	public List<SelfieCheckIn> getSelfieCheckinByUser(User user) {
+		String selectQuery = "FROM SelfieCheckIn WHERE employee.id = :employeeId";
+		return sessionFactory.getCurrentSession()
+				.createQuery(selectQuery, SelfieCheckIn.class)
+				.setParameter("employeeId", user.getId()).getResultList();
 	}
 
 	@Override

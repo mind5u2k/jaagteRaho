@@ -1,8 +1,11 @@
 package com.ghosh.jaagteyRahoBackend;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -167,8 +170,33 @@ public class Util {
 		return diffMinutes;
 	}
 
-	public static void main(String[] args) {
-		System.out.println(Util.OTP());
+	public static Timestamp convertStringToTimestamp(String str_date) {
+		try {
+			DateFormat formatter;
+			formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+			Date date = (Date) formatter.parse(str_date);
+			java.sql.Timestamp timeStampDate = new Timestamp(date.getTime());
+			return timeStampDate;
+		} catch (ParseException e) {
+			System.out.println("Exception :" + e);
+			return null;
+		}
 	}
 
+	public static String convertTimestampToString(Timestamp timestamp) {
+		try {
+			Date date = new Date();
+			date.setTime(timestamp.getTime());
+			String formattedDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
+					.format(date);
+			return formattedDate;
+		} catch (Exception e) {
+			System.out.println("Exception :" + e);
+			return null;
+		}
+	}
+
+	public static void main(String[] args) {
+		System.out.println(convertStringToTimestamp("20-10-1992 asas12:00:00"));
+	}
 }
