@@ -1,6 +1,7 @@
 package com.ghosh.jaagteyRaho.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -14,12 +15,18 @@ import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
 
+import com.ghosh.jaagteyRaho.model.EmployeeSiteCsvModel;
+import com.ghosh.jaagteyRaho.model.SiteEmpReport;
 import com.ghosh.jaagteyRaho.service.PdfGeneration.PdfGeneration;
 import com.ghosh.jaagteyRaho.service.excelServices.DownloadExcel;
 import com.ghosh.jaagteyRahoBackend.dao.ClientManagementDao;
+import com.ghosh.jaagteyRahoBackend.dao.SystemSetupDAO;
 import com.ghosh.jaagteyRahoBackend.dao.UserDAO;
 import com.ghosh.jaagteyRahoBackend.dto.Client;
+import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
+import com.ghosh.jaagteyRahoBackend.dto.Designation;
 import com.ghosh.jaagteyRahoBackend.dto.Site;
+import com.ghosh.jaagteyRahoBackend.dto.SiteEmployeeMapping;
 import com.ghosh.jaagteyRahoBackend.dto.User;
 import com.itextpdf.text.DocumentException;
 
@@ -32,6 +39,9 @@ public class FileDownloadController {
 
 	@Autowired
 	private ClientManagementDao clientManagementDao;
+
+	@Autowired
+	private SystemSetupDAO systemSetupDAO;
 
 	@RequestMapping(value = "/downloadExcelEmp")
 	public void downloadExcelEmp(HttpServletResponse response)
@@ -159,6 +169,192 @@ public class FileDownloadController {
 				new Optional(), new Optional() };
 		List<Site> sites = clientManagementDao.getAllSites();
 		for (Site u : sites) {
+			csvWriter.write(u, header, processors);
+		}
+		csvWriter.close();
+	}
+
+	@RequestMapping(value = "/downloadExcelEmployeeSite")
+	public void downloadExcelEmployeeSite(HttpServletResponse response)
+			throws IOException {
+
+		List<Site> sites = clientManagementDao.getAllSites();
+		List<SiteEmpReport> reports = new ArrayList<SiteEmpReport>();
+		for (Site site : sites) {
+			SiteEmpReport report = new SiteEmpReport();
+			report.setSite(site);
+			report.setMappings(clientManagementDao
+					.assignedEmployeestoSite(site));
+			reports.add(report);
+		}
+		DownloadExcel.downloadEmployeeSiteExcel(response, reports);
+	}
+
+	@RequestMapping(value = "/downloadPdfEmployeeSite")
+	public void downloadPdfEmployeeSite(HttpServletResponse response)
+			throws IOException {
+		List<Site> sites = clientManagementDao.getAllSites();
+		List<SiteEmpReport> reports = new ArrayList<SiteEmpReport>();
+		for (Site site : sites) {
+			SiteEmpReport report = new SiteEmpReport();
+			report.setSite(site);
+			report.setMappings(clientManagementDao
+					.assignedEmployeestoSite(site));
+			reports.add(report);
+		}
+		try {
+			PdfGeneration.generateEmployeeSitePdf(response, reports);
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@RequestMapping(value = "/downloadCSVEmployeeSite")
+	public void downloadCSVEmployeeSite(HttpServletResponse response)
+			throws IOException {
+		String csvFileName = "EmployeeSiteReport.csv";
+		response.setContentType("text/csv");
+		String headerKey = "Content-Disposition";
+		String headerValue = String.format("attachment; filename=\"%s\"",
+				csvFileName);
+		response.setHeader(headerKey, headerValue);
+		ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(),
+				CsvPreference.STANDARD_PREFERENCE);
+		String[] header = { "clientCode", "clientName", "siteCode", "siteName",
+				"siteAddress", "AssignedEmployees" };
+		csvWriter.writeHeader(header);
+		CellProcessor[] processors = new CellProcessor[] { new Optional(),
+				new Optional(), new Optional(), new Optional(), new Optional(),
+				new Optional() };
+
+		List<Site> sites = clientManagementDao.getAllSites();
+		List<SiteEmpReport> reports = new ArrayList<SiteEmpReport>();
+		List<EmployeeSiteCsvModel> csvReports = new ArrayList<EmployeeSiteCsvModel>();
+		for (Site site : sites) {
+			SiteEmpReport report = new SiteEmpReport();
+			report.setSite(site);
+			report.setMappings(clientManagementDao
+					.assignedEmployeestoSite(site));
+			reports.add(report);
+			EmployeeSiteCsvModel csvModel = new EmployeeSiteCsvModel();
+			csvModel.setClientCode(report.getSite().getClient().getClientCode());
+			csvModel.setClientName(report.getSite().getClient().getClientName());
+			csvModel.setSiteCode(report.getSite().getSiteCode());
+			csvModel.setSiteName(report.getSite().getSiteName());
+			csvModel.setSiteAddress(report.getSite().getAddress());
+			String employees = "";
+			for (SiteEmployeeMapping u : report.getMappings()) {
+				if (employees.equals("")) {
+					if (u.getEmployee().getMiddleName() == null
+							|| u.getEmployee().getMiddleName().equals("")) {
+						employees = u.getEmployee().getFirstName() + " "
+								+ u.getEmployee().getLastName();
+					} else {
+						employees = u.getEmployee().getFirstName() + " "
+								+ u.getEmployee().getMiddleName() + " "
+								+ u.getEmployee().getLastName();
+					}
+				} else {
+					if (u.getEmployee().getMiddleName() == null
+							|| u.getEmployee().getMiddleName().equals("")) {
+						employees = employees + ","
+								+ u.getEmployee().getFirstName() + " "
+								+ u.getEmployee().getLastName();
+					} else {
+						employees = employees + ","
+								+ u.getEmployee().getFirstName() + " "
+								+ u.getEmployee().getMiddleName() + " "
+								+ u.getEmployee().getLastName();
+					}
+				}
+			}
+			csvModel.setAssignedEmployees(employees);
+			csvReports.add(csvModel);
+		}
+		for (EmployeeSiteCsvModel u : csvReports) {
+			csvWriter.write(u, header, processors);
+		}
+		csvWriter.close();
+	}
+
+	@RequestMapping(value = "/downloadExcelDesignations")
+	public void downloadExcelDesignations(HttpServletResponse response)
+			throws IOException {
+		List<Designation> designations = userDAO.getAllDesignations();
+		DownloadExcel.downloadDesignationsExcel(response, designations);
+	}
+
+	@RequestMapping(value = "/downloadPdfDesignations")
+	public void downloadPdfDesignations(HttpServletResponse response)
+			throws IOException {
+		List<Designation> designations = userDAO.getAllDesignations();
+		try {
+			PdfGeneration.generateDesignationsPdf(response, designations);
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@RequestMapping(value = "/downloadCSVDesignations")
+	public void downloadCSVDesignations(HttpServletResponse response)
+			throws IOException {
+		String csvFileName = "Designations.csv";
+		response.setContentType("text/csv");
+		String headerKey = "Content-Disposition";
+		String headerValue = String.format("attachment; filename=\"%s\"",
+				csvFileName);
+		response.setHeader(headerKey, headerValue);
+		ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(),
+				CsvPreference.STANDARD_PREFERENCE);
+		String[] header = { "designationCode", "designationName" };
+		csvWriter.writeHeader(header);
+		CellProcessor[] processors = new CellProcessor[] { new Optional(),
+				new Optional() };
+		List<Designation> designations = userDAO.getAllDesignations();
+		for (Designation u : designations) {
+			csvWriter.write(u, header, processors);
+		}
+		csvWriter.close();
+	}
+
+	@RequestMapping(value = "/downloadExcelContacts")
+	public void downloadExcelContacts(HttpServletResponse response)
+			throws IOException {
+		List<ContactPerson> contactPersons = systemSetupDAO
+				.getAllContactPersons();
+		DownloadExcel.downloadContactsExcel(response, contactPersons);
+	}
+
+	@RequestMapping(value = "/downloadPdfContacts")
+	public void downloadPdfContacts(HttpServletResponse response)
+			throws IOException {
+		List<ContactPerson> contactPersons = systemSetupDAO
+				.getAllContactPersons();
+		try {
+			PdfGeneration.generateContactsPdf(response, contactPersons);
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@RequestMapping(value = "/downloadCSVContacts")
+	public void downloadCSVContacts(HttpServletResponse response)
+			throws IOException {
+		String csvFileName = "Contacts.csv";
+		response.setContentType("text/csv");
+		String headerKey = "Content-Disposition";
+		String headerValue = String.format("attachment; filename=\"%s\"",
+				csvFileName);
+		response.setHeader(headerKey, headerValue);
+		ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(),
+				CsvPreference.STANDARD_PREFERENCE);
+		String[] header = { "name", "contactNo", "alternateNo" };
+		csvWriter.writeHeader(header);
+		CellProcessor[] processors = new CellProcessor[] { new Optional(),
+				new Optional(), new Optional() };
+		List<ContactPerson> contactPersons = systemSetupDAO
+				.getAllContactPersons();
+		for (ContactPerson u : contactPersons) {
 			csvWriter.write(u, header, processors);
 		}
 		csvWriter.close();

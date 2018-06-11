@@ -59,10 +59,62 @@ public class AdminController {
 	@RequestMapping("/home")
 	public ModelAndView home() {
 		ModelAndView mv = new ModelAndView("page");
-		User admin = userDAO.getByEmail(globalController.getUserModel()
-				.getEmail());
 
-		mv.addObject("title", "Home");
+		int sent = 0;
+		int received = 0;
+
+		List<User> users = userDAO.getAllUsersByRole(Util.ROLE_USER);
+		User emp = null;
+		if (users != null && users.size() > 0) {
+			emp = users.get(0);
+		}
+		List<PushNotificationsStatus> pushNotificationsStatus = new ArrayList<PushNotificationsStatus>();
+		if (emp != null) {
+			List<PushNotificationsStatus> pushNotificationsStatuss = systemSetupDAO
+					.getPushNotificationsByEmployee(emp);
+			if (pushNotificationsStatuss != null) {
+				for (PushNotificationsStatus s : pushNotificationsStatuss) {
+					Timestamp t = s.getSentTimestamp();
+					Date date = new Date(t.getTime());
+					Calendar cal = Calendar.getInstance();
+					cal.setTimeInMillis(date.getTime());
+					int d = cal.get(Calendar.DATE);
+					int m = cal.get(Calendar.MONTH);
+					int y = cal.get(Calendar.YEAR);
+
+					Date tdate = new Date();
+					Calendar tcal = Calendar.getInstance();
+					tcal.setTimeInMillis(tdate.getTime());
+					int td = tcal.get(Calendar.DATE);
+					int tm = tcal.get(Calendar.MONTH);
+					int ty = tcal.get(Calendar.YEAR);
+
+					if (d == td && m == tm && y == ty) {
+						if (s.getSentStatus() != null) {
+							if (s.getSentStatus().equals(Util.SUCCESS)) {
+								sent++;
+							}
+						}
+
+						if (s.getReceivedStatus() != null) {
+							if (s.getReceivedStatus().equals(Util.SUCCESS)) {
+								received++;
+							}
+						}
+
+						pushNotificationsStatus.add(s);
+					}
+				}
+			}
+		}
+
+		mv.addObject("sent", sent);
+		mv.addObject("received", received);
+		mv.addObject("pushNotificationsStatus", pushNotificationsStatus);
+		mv.addObject("users", users);
+		mv.addObject("emp", emp);
+
+		mv.addObject("title", "HOME");
 		mv.addObject("userClickAdminHome", true);
 		return mv;
 	}
@@ -71,9 +123,6 @@ public class AdminController {
 	public ModelAndView manageDesignation(
 			@RequestParam(name = "status", required = false) String status) {
 		ModelAndView mv = new ModelAndView("page");
-		User admin = userDAO.getByEmail(globalController.getUserModel()
-				.getEmail());
-
 		if (status != null) {
 			if (status.equals("success")) {
 				mv.addObject("msg", "Designation has been added successfully");
@@ -109,9 +158,6 @@ public class AdminController {
 	public ModelAndView addEmployees(
 			@RequestParam(name = "status", required = false) String status) {
 		ModelAndView mv = new ModelAndView("page");
-		User admin = userDAO.getByEmail(globalController.getUserModel()
-				.getEmail());
-
 		if (status != null) {
 			if (status.equals("success")) {
 				mv.addObject("msg", "User has been added successfully");
@@ -359,7 +405,7 @@ public class AdminController {
 				mv.addObject("msg", "Contact person Deleted Successfully");
 			} else if (status.equals("deleteFailure")) {
 				mv.addObject("errorMsg",
-						"Getting Error while Deleting Contact Person");
+						"Contact Can not be deleted as the reference of the Contact is still exist");
 			}
 		}
 
@@ -412,10 +458,15 @@ public class AdminController {
 	@RequestMapping(value = "/deleteContactPerson")
 	public String deleteContactPerson(
 			@RequestParam(name = "contactPersonId", required = false) Integer contactPersonId) {
-
 		ContactPerson contactPerson = systemSetupDAO
 				.getContactPersonById(contactPersonId);
-		boolean status = systemSetupDAO.deleteContactPerson(contactPerson);
+
+		boolean status = false;
+		try {
+			status = systemSetupDAO.deleteContactPerson(contactPerson);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		if (status) {
 			return "redirect:/ad/manageContact?status=deleteSuccess";
 		} else {
@@ -911,7 +962,7 @@ public class AdminController {
 		mv.addObject("pushNotificationsStatus", pushNotificationsStatus);
 		mv.addObject("users", users);
 		mv.addObject("emp", emp);
-		mv.addObject("title", "Report");
+		mv.addObject("title", "REPORT");
 		mv.addObject("userClickAdminReport", true);
 		return mv;
 	}

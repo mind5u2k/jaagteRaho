@@ -52,7 +52,7 @@
 	<div id="main" role="main">
 
 		<c:if test="${userClickAdminHome == true }">
-			<%@include file="adminHome.jsp"%>
+			<%@include file="report.jsp"%>
 		</c:if>
 		<c:if test="${userClickAdminAddEmployees == true }">
 			<%@include file="employees.jsp"%>

@@ -26,8 +26,8 @@ public class HibernateConfig {
 	private final static String DATABASE_USERNAME = "code7projects";
 	private final static String DATABASE_PASSWORD = "gW8R@ebwoD50";
 
-	/*-private final static String DATABASE_USERNAME = "root";
-	private final static String DATABASE_PASSWORD = "root";*/
+	// private final static String DATABASE_USERNAME = "root";
+	// private final static String DATABASE_PASSWORD = "root";
 
 	// dataSource bean will be available
 	@Bean("dataSource")

@@ -16,12 +16,19 @@
 		<div class="col-sm-12">
 			<div class="row" style="padding: 13px 0 17px 0px;">
 				<div class="col-sm-12" style="text-align: right;">
-					<button class="btn btn-default">
-						<i class="fa fa-file-excel-o"></i> &nbsp;Download Excel
-					</button>
-					<button class="btn btn-default">
-						<i class="fa fa-file-pdf-o"></i> &nbsp;Download Pdf
-					</button>
+					<a class="btn btn-default"
+						href="${contextRoot}/admin/downloadExcelEmployeeSite"
+						target="_blank"> <i class="fa fa-file-excel-o"></i>
+						&nbsp;Download Excel
+					</a> <a class="btn btn-default"
+						href="${contextRoot}/admin/downloadPdfEmployeeSite"
+						target="_blank"> <i class="fa fa-file-pdf-o"></i>
+						&nbsp;Download Pdf
+					</a> <a class="btn btn-default"
+						href="${contextRoot}/admin/downloadCSVEmployeeSite"
+						target="_blank"> <i class="fa fa-file-pdf-o"></i>
+						&nbsp;Download CSV
+					</a>
 				</div>
 			</div>
 		</div>

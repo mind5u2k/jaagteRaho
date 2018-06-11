@@ -24,7 +24,7 @@ $(function() {
 	$('#dob').datepicker();
 
 	switch (menu) {
-	case 'Home':
+	case 'HOME':
 		$('#home').addClass('active');
 		break;
 	case 'Employees':
@@ -59,7 +59,7 @@ $(function() {
 		$("#systemSetup").css("display", "block");
 		$('#manageContact').addClass('active');
 		break;
-	case 'Report':
+	case 'REPORT':
 		$("#movementAnalysis").css("display", "block");
 		$('#report').addClass('active');
 		break;

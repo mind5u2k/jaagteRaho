@@ -20,7 +20,7 @@
 		<!-- only admin access -->
 		<intercept-url pattern="/login" access="permitAll" />
 		<intercept-url pattern="/**"
-			access="hasAnyAuthority('SUPER ADMIN','ADMIN')" />
+			access="hasAnyAuthority('SUPER ADMIN','ADMIN','USER')" />
 		<form-login login-page="/login" default-target-url="/home"
 			always-use-default-target="true" />
 		<access-denied-handler error-page="/access-denied" />

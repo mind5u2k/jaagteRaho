@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.ghosh.jaagteyRaho.service.PdfGeneration.PdfGeneration;
 import com.ghosh.jaagteyRahoBackend.Util;
 import com.ghosh.jaagteyRahoBackend.dao.UserDAO;
 import com.ghosh.jaagteyRahoBackend.dto.Address;
@@ -48,6 +47,8 @@ public class PageController {
 			return "redirect:/ad/home";
 		} else if (user.getRole().equals(Util.ROLE_ADMIN)) {
 			return "redirect:/ad/home";
+		} else if (user.getRole().equals(Util.ROLE_USER)) {
+			return "redirect:/userHome";
 		} else {
 			return null;
 		}
@@ -56,6 +57,14 @@ public class PageController {
 	@RequestMapping(value = "/about")
 	public ModelAndView about() {
 		ModelAndView mv = new ModelAndView("page1");
+		mv.addObject("title", "About Us");
+		mv.addObject("userClickAbout", true);
+		return mv;
+	}
+
+	@RequestMapping(value = "/userHome")
+	public ModelAndView userHome() {
+		ModelAndView mv = new ModelAndView("userHome");
 		mv.addObject("title", "About Us");
 		mv.addObject("userClickAbout", true);
 		return mv;

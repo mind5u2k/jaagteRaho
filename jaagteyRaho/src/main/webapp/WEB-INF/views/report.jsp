@@ -2,7 +2,7 @@
 <%@taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <div id="ribbon">
 	<ol class="breadcrumb">
-		<li style="font-size: 16px;" class="text-primary">REPORT</li>
+		<li style="font-size: 16px;" class="text-primary">${title}</li>
 	</ol>
 </div>
 <c:if test="${not empty msg}">
@@ -321,6 +321,11 @@
 		if (selectedDate == "") {
 			alert("!! Please Select Date !!");
 		} else {
+
+			$('#reportPanel')
+					.html(
+							'<div style="width: 100%;height: 285px;text-align: center;vertical-align: middle;font-size: 17px;padding-top: 76px;"><img src="${images}/qqq.png" style="height: 84px;"><br>Please wait ...</div>');
+
 			$.ajax({
 				type : "GET",
 				url : "updateReportPanel?empId=" + selectedEmp + "&date="

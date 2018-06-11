@@ -16,8 +16,12 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.CellStyle;
 
+import com.ghosh.jaagteyRaho.model.SiteEmpReport;
 import com.ghosh.jaagteyRahoBackend.dto.Client;
+import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
+import com.ghosh.jaagteyRahoBackend.dto.Designation;
 import com.ghosh.jaagteyRahoBackend.dto.Site;
+import com.ghosh.jaagteyRahoBackend.dto.SiteEmployeeMapping;
 import com.ghosh.jaagteyRahoBackend.dto.User;
 
 public class DownloadExcel {
@@ -415,6 +419,283 @@ public class DownloadExcel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public static void downloadEmployeeSiteExcel(HttpServletResponse response,
+			List<SiteEmpReport> reports) {
+
+		HSSFWorkbook wb = new HSSFWorkbook();
+
+		HSSFCellStyle style = wb.createCellStyle();
+		HSSFFont font = wb.createFont();
+		font.setColor(HSSFColor.WHITE.index);
+		font.setFontName(HSSFFont.FONT_ARIAL);
+		style.setFont(font);
+		style.setFillForegroundColor(HSSFColor.BLUE_GREY.index);
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		style.setWrapText(true);
+
+		HSSFCellStyle style1 = wb.createCellStyle();
+		style1.setWrapText(true);
+		style1.setAlignment(CellStyle.ALIGN_LEFT);
+		HSSFSheet sheet = wb.createSheet();
+		sheet.setColumnWidth(0, 1700);
+		sheet.setColumnWidth(1, 3000);
+		sheet.setColumnWidth(2, 4000);
+		sheet.setColumnWidth(3, 3000);
+		sheet.setColumnWidth(4, 4000);
+		sheet.setColumnWidth(5, 8000);
+		sheet.setColumnWidth(6, 9000);
+
+		HSSFRow row = sheet.createRow(0);
+		row.setHeightInPoints(25f);
+		HSSFCell cell = row.createCell(0);
+		cell.setCellStyle(style);
+		cell.setCellValue("S.No.");
+		cell = row.createCell(1);
+		cell.setCellStyle(style);
+		cell.setCellValue("Client code");
+		cell = row.createCell(2);
+		cell.setCellStyle(style);
+		cell.setCellValue("Client Name");
+		cell = row.createCell(3);
+		cell.setCellStyle(style);
+		cell.setCellValue("Site code");
+		cell = row.createCell(4);
+		cell.setCellStyle(style);
+		cell.setCellValue("Site Name");
+		cell = row.createCell(5);
+		cell.setCellStyle(style);
+		cell.setCellValue("Site Address");
+		cell = row.createCell(6);
+		cell.setCellStyle(style);
+		cell.setCellValue("Assigned Employees");
+
+		int rows = 1;
+		int i = 0;
+
+		for (SiteEmpReport report : reports) {
+			i++;
+			row = sheet.createRow(rows);
+			cell = row.createCell(0);
+			cell.setCellStyle(style1);
+			cell.setCellValue(i);
+			cell = row.createCell(1);
+			cell.setCellStyle(style1);
+			cell.setCellValue(report.getSite().getClient().getClientCode());
+			cell = row.createCell(2);
+			cell.setCellStyle(style1);
+			cell.setCellValue(report.getSite().getClient().getClientName());
+			cell = row.createCell(3);
+			cell.setCellStyle(style1);
+			cell.setCellValue(report.getSite().getSiteCode());
+			cell = row.createCell(4);
+			cell.setCellStyle(style1);
+			cell.setCellValue(report.getSite().getSiteName());
+			cell = row.createCell(5);
+			cell.setCellStyle(style1);
+			cell.setCellValue(report.getSite().getAddress());
+			cell = row.createCell(6);
+			cell.setCellStyle(style1);
+
+			String employees = "";
+			for (SiteEmployeeMapping u : report.getMappings()) {
+				if (employees.equals("")) {
+					if (u.getEmployee().getMiddleName() == null
+							|| u.getEmployee().getMiddleName().equals("")) {
+						employees = u.getEmployee().getFirstName() + " "
+								+ u.getEmployee().getLastName();
+					} else {
+						employees = u.getEmployee().getFirstName() + " "
+								+ u.getEmployee().getMiddleName() + " "
+								+ u.getEmployee().getLastName();
+					}
+				} else {
+					if (u.getEmployee().getMiddleName() == null
+							|| u.getEmployee().getMiddleName().equals("")) {
+						employees = employees + ","
+								+ u.getEmployee().getFirstName() + " "
+								+ u.getEmployee().getLastName();
+					} else {
+						employees = employees + ","
+								+ u.getEmployee().getFirstName() + " "
+								+ u.getEmployee().getMiddleName() + " "
+								+ u.getEmployee().getLastName();
+					}
+				}
+			}
+			cell.setCellValue(employees);
+			rows++;
+		}
+
+		// write it as an excel attachment
+		ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+		try {
+			wb.write(outByteStream);
+			byte[] outArray = outByteStream.toByteArray();
+			response.setContentType("application/ms-excel");
+			response.setContentLength(outArray.length);
+			response.setHeader("Expires:", "0"); // eliminates browser caching
+			response.setHeader("Content-Disposition",
+					"attachment; filename=EmployeeSiteReport.xls");
+			OutputStream outStream = response.getOutputStream();
+			outStream.write(outArray);
+			outStream.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void downloadDesignationsExcel(HttpServletResponse response,
+			List<Designation> designations) {
+
+		HSSFWorkbook wb = new HSSFWorkbook();
+
+		HSSFCellStyle style = wb.createCellStyle();
+		HSSFFont font = wb.createFont();
+		font.setColor(HSSFColor.WHITE.index);
+		font.setFontName(HSSFFont.FONT_ARIAL);
+		style.setFont(font);
+		style.setFillForegroundColor(HSSFColor.BLUE_GREY.index);
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		style.setWrapText(true);
+
+		HSSFCellStyle style1 = wb.createCellStyle();
+		style1.setWrapText(true);
+		style1.setAlignment(CellStyle.ALIGN_LEFT);
+		HSSFSheet sheet = wb.createSheet();
+		sheet.setColumnWidth(0, 1700);
+		sheet.setColumnWidth(1, 4000);
+		sheet.setColumnWidth(2, 6000);
+
+		HSSFRow row = sheet.createRow(0);
+		row.setHeightInPoints(25f);
+		HSSFCell cell = row.createCell(0);
+		cell.setCellStyle(style);
+		cell.setCellValue("S.No.");
+		cell = row.createCell(1);
+		cell.setCellStyle(style);
+		cell.setCellValue("Designation Code");
+		cell = row.createCell(2);
+		cell.setCellStyle(style);
+		cell.setCellValue("Designation Name");
+
+		int rows = 1;
+		int i = 0;
+
+		for (Designation designation : designations) {
+			i++;
+			row = sheet.createRow(rows);
+			cell = row.createCell(0);
+			cell.setCellStyle(style1);
+			cell.setCellValue(i);
+			cell = row.createCell(1);
+			cell.setCellStyle(style1);
+			cell.setCellValue(designation.getDesignationCode());
+			cell = row.createCell(2);
+			cell.setCellStyle(style1);
+			cell.setCellValue(designation.getDesignationName());
+			rows++;
+		}
+
+		// write it as an excel attachment
+		ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+		try {
+			wb.write(outByteStream);
+			byte[] outArray = outByteStream.toByteArray();
+			response.setContentType("application/ms-excel");
+			response.setContentLength(outArray.length);
+			response.setHeader("Expires:", "0"); // eliminates browser caching
+			response.setHeader("Content-Disposition",
+					"attachment; filename=Designations.xls");
+			OutputStream outStream = response.getOutputStream();
+			outStream.write(outArray);
+			outStream.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void downloadContactsExcel(HttpServletResponse response,
+			List<ContactPerson> contactPersons) {
+
+		HSSFWorkbook wb = new HSSFWorkbook();
+
+		HSSFCellStyle style = wb.createCellStyle();
+		HSSFFont font = wb.createFont();
+		font.setColor(HSSFColor.WHITE.index);
+		font.setFontName(HSSFFont.FONT_ARIAL);
+		style.setFont(font);
+		style.setFillForegroundColor(HSSFColor.BLUE_GREY.index);
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		style.setWrapText(true);
+
+		HSSFCellStyle style1 = wb.createCellStyle();
+		style1.setWrapText(true);
+		style1.setAlignment(CellStyle.ALIGN_LEFT);
+		HSSFSheet sheet = wb.createSheet();
+		sheet.setColumnWidth(0, 1700);
+		sheet.setColumnWidth(1, 6000);
+		sheet.setColumnWidth(2, 6000);
+		sheet.setColumnWidth(3, 6000);
+
+		HSSFRow row = sheet.createRow(0);
+		row.setHeightInPoints(25f);
+		HSSFCell cell = row.createCell(0);
+		cell.setCellStyle(style);
+		cell.setCellValue("S.No.");
+		cell = row.createCell(1);
+		cell.setCellStyle(style);
+		cell.setCellValue("Contact Person");
+		cell = row.createCell(2);
+		cell.setCellStyle(style);
+		cell.setCellValue("Contact No");
+		cell = row.createCell(3);
+		cell.setCellStyle(style);
+		cell.setCellValue("Alternate Contact No");
+
+		int rows = 1;
+		int i = 0;
+
+		for (ContactPerson contactPerson : contactPersons) {
+			i++;
+			row = sheet.createRow(rows);
+			cell = row.createCell(0);
+			cell.setCellStyle(style1);
+			cell.setCellValue(i);
+			cell = row.createCell(1);
+			cell.setCellStyle(style1);
+			cell.setCellValue(contactPerson.getName());
+			cell = row.createCell(2);
+			cell.setCellStyle(style1);
+			cell.setCellValue(contactPerson.getContactNo());
+			cell = row.createCell(3);
+			cell.setCellStyle(style1);
+			cell.setCellValue(contactPerson.getAlternateNo());
+			rows++;
+		}
+
+		// write it as an excel attachment
+		ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+		try {
+			wb.write(outByteStream);
+			byte[] outArray = outByteStream.toByteArray();
+			response.setContentType("application/ms-excel");
+			response.setContentLength(outArray.length);
+			response.setHeader("Expires:", "0"); // eliminates browser caching
+			response.setHeader("Content-Disposition",
+					"attachment; filename=Contacts.xls");
+			OutputStream outStream = response.getOutputStream();
+			outStream.write(outArray);
+			outStream.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	public static void main(String[] args) {

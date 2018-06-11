@@ -2,7 +2,8 @@
 <%@taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <div id="ribbon">
 	<ol class="breadcrumb">
-		<li style="font-size: 16px;" class="text-primary">MANAGE DESIGNATION</li>
+		<li style="font-size: 16px;" class="text-primary">MANAGE
+			DESIGNATION</li>
 	</ol>
 </div>
 <c:if test="${not empty msg}">
@@ -57,12 +58,19 @@
 
 				</div>
 				<div class="col-sm-6" style="text-align: right;">
-					<button class="btn btn-default">
-						<i class="fa fa-file-excel-o"></i> &nbsp;Download Excel
-					</button>
-					<button class="btn btn-default">
-						<i class="fa fa-file-pdf-o"></i> &nbsp;Download Pdf
-					</button>
+					<a class="btn btn-default"
+						href="${contextRoot}/admin/downloadExcelDesignations"
+						target="_blank"> <i class="fa fa-file-excel-o"></i>
+						&nbsp;Download Excel
+					</a> <a class="btn btn-default"
+						href="${contextRoot}/admin/downloadPdfDesignations"
+						target="_blank"> <i class="fa fa-file-pdf-o"></i>
+						&nbsp;Download Pdf
+					</a> <a class="btn btn-default"
+						href="${contextRoot}/admin/downloadCSVDesignations"
+						target="_blank"> <i class="fa fa-file-pdf-o"></i>
+						&nbsp;Download CSV
+					</a>
 				</div>
 			</div>
 		</div>
@@ -84,26 +92,9 @@
 										style="width: 100%;">
 										<thead>
 											<tr role="row">
-												<th data-hide="phone" class="sorting_asc" tabindex="0"
-													aria-controls="datatable_col_reorder" rowspan="1"
-													colspan="1" aria-sort="ascending"
-													aria-label="ID: activate to sort column ascending"
-													style="width: 40px;">Sr.</th>
-												<th data-class="expand" class="sorting" tabindex="0"
-													aria-controls="datatable_col_reorder" rowspan="1"
-													colspan="1"
-													aria-label="Name: activate to sort column ascending"
-													style="width: 96px;">Designation Code</th>
-												<th class="sorting" tabindex="0"
-													aria-controls="datatable_col_reorder" rowspan="1"
-													colspan="1"
-													aria-label="Phone: activate to sort column ascending"
-													style="width: 152px;">Designation Name</th>
-												<th data-hide="phone,tablet" class="sorting" tabindex="0"
-													aria-controls="datatable_col_reorder" rowspan="1"
-													colspan="1"
-													aria-label="City: activate to sort column ascending"
-													style="width: 213px;">Status</th>
+												<th data-hide="phone" style="width: 40px;">Sr.</th>
+												<th>Designation Code</th>
+												<th>Designation Name</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -113,8 +104,6 @@
 													<td class="sorting_1">${i}</td>
 													<td><span class="responsiveExpander"></span>${designation.designationCode}</td>
 													<td>${designation.designationName}</td>
-													<td><a class="text-success"
-														style="cursor: pointer; border-bottom: 1px solid #468847;">ACTIVE</a></td>
 												</tr>
 											</c:forEach>
 										</tbody>

@@ -31,12 +31,16 @@
 						Contact</button>
 				</div>
 				<div class="col-sm-6" style="text-align: right;">
-					<button class="btn btn-default">
+					<a class="btn btn-default"
+						href="${contextRoot}/admin/downloadExcelContacts" target="_blank">
 						<i class="fa fa-file-excel-o"></i> &nbsp;Download Excel
-					</button>
-					<button class="btn btn-default">
+					</a> <a class="btn btn-default"
+						href="${contextRoot}/admin/downloadPdfContacts" target="_blank">
 						<i class="fa fa-file-pdf-o"></i> &nbsp;Download Pdf
-					</button>
+					</a> <a class="btn btn-default"
+						href="${contextRoot}/admin/downloadCSVContacts" target="_blank">
+						<i class="fa fa-file-pdf-o"></i> &nbsp;Download CSV
+					</a>
 				</div>
 			</div>
 		</div>
@@ -78,7 +82,7 @@
 													aria-controls="datatable_col_reorder" rowspan="1"
 													colspan="1"
 													aria-label="Zip: activate to sort column ascending"
-													style="width: 104px;">Alternate Contact No</th>
+													style="width: 104px;">Alternate No</th>
 												<th data-hide="phone,tablet" class="sorting" tabindex="0"
 													aria-controls="datatable_col_reorder" rowspan="1"
 													colspan="1"
@@ -96,10 +100,10 @@
 													<td><span class="responsiveExpander"></span>${cp.alternateNo}</td>
 													<td><a class="text-primary"
 														style="cursor: pointer; border-bottom: 1px solid #3276b1;"
-														onclick="editContactPerson('${cp.id}');">Edit</a> | <a
+														onclick="editContactPerson('${cp.id}');">EDIT</a> | <a
 														class="text-primary"
 														href="${contextRoot}/ad/deleteContactPerson?contactPersonId=${cp.id}"
-														style="cursor: pointer; border-bottom: 1px solid #3276b1;">Delete</a></td>
+														style="cursor: pointer; border-bottom: 1px solid #3276b1;">DELETE</a></td>
 												</tr>
 											</c:forEach>
 										</tbody>
@@ -113,58 +117,59 @@
 			</div>
 		</div>
 	</div>
-</div>
-<div id="dialog_simple" title="Add New Contact">
-	<div>
-		<sf:form action="${contextRoot}/ad/addNewContact"
-			modelAttribute="contactPerson" id="contactPersonForm"
-			cssClass="smart-form" method="post">
-			<fieldset>
-				<div class="row">
-					<section class="col col-4">
-						<label class="label">Contact Person Name<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <i class="icon-append fa fa-user"></i> <sf:input
-								type="text" path="name" placeholder="" />
-						</label>
-					</section>
-					<section class="col col-4">
-						<label class="label">Contact No.<span
-							style="color: #f00; padding-left: 4px;">*</span></label> <label
-							class="input"> <i class="icon-append fa fa-phone"></i> <sf:input
-								type="text" path="contactNo" placeholder=""
-								data-mask="9999999999" />
-						</label>
-					</section>
-					<section class="col col-4">
-						<label class="label">Alternate Contact No.</label> <label
-							class="input"> <i class="icon-append fa fa-phone"></i> <sf:input
-								type="text" path="alternateNo" placeholder=""
-								data-mask="9999999999" />
-						</label>
-					</section>
-				</div>
-				<div class="row">
-					<section class="col col-12" style="float: right;">
-						<label class="input"> <sf:hidden path="id" />
-							<button type="submit" name="submit" class="btn btn-primary"
-								style="padding: 7px 10px 7px 10px; margin-top: 18px;">
-								Submit</button>
-						</label>
-					</section>
-				</div>
-			</fieldset>
-		</sf:form>
+	<div id="dialog_simple" title="Add New Contact">
+		<div>
+			<sf:form action="${contextRoot}/ad/addNewContact"
+				modelAttribute="contactPerson" id="contactPersonForm"
+				cssClass="smart-form" method="post">
+				<fieldset>
+					<div class="row">
+						<section class="col col-4">
+							<label class="label">Contact Person Name<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="input"> <i class="icon-append fa fa-user"></i> <sf:input
+									type="text" path="name" placeholder="" />
+							</label>
+						</section>
+						<section class="col col-4">
+							<label class="label">Contact No.<span
+								style="color: #f00; padding-left: 4px;">*</span></label> <label
+								class="input"> <i class="icon-append fa fa-phone"></i> <sf:input
+									type="text" path="contactNo" placeholder=""
+									data-mask="9999999999" />
+							</label>
+						</section>
+						<section class="col col-4">
+							<label class="label">Alternate Contact No.</label> <label
+								class="input"> <i class="icon-append fa fa-phone"></i> <sf:input
+									type="text" path="alternateNo" placeholder=""
+									data-mask="9999999999" />
+							</label>
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-12" style="float: right;">
+							<label class="input"> <sf:hidden path="id" />
+								<button type="submit" name="submit" class="btn btn-primary"
+									style="padding: 7px 10px 7px 10px; margin-top: 18px;">
+									Submit</button>
+							</label>
+						</section>
+					</div>
+				</fieldset>
+			</sf:form>
+		</div>
 	</div>
-</div>
-<div id="editContactPerson" title="Edit Contact Person">
-	<div id="editPersonDiv">
-		<div style="text-align: center; padding-top: 41px;">
-			<img src="${images}/qqq.png" style="height: 84px;"><br>
-			Please wait ...
+	<div id="editContactPerson" title="Edit Contact Person">
+		<div id="editPersonDiv">
+			<div style="text-align: center; padding-top: 41px;">
+				<img src="${images}/qqq.png" style="height: 84px;"><br>
+				Please wait ...
+			</div>
 		</div>
 	</div>
 </div>
+
 
 <style>
 .ui-dialog-titlebar {
