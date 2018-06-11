@@ -2,9 +2,14 @@ package com.ghosh.jaagteyRahoWebServces.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
+
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,6 +31,7 @@ import com.ghosh.jaagteyRahoBackend.dto.User;
 import com.ghosh.jaagteyRahoWebServces.model.GetOtp;
 import com.ghosh.jaagteyRahoWebServces.model.GetOtpWithNo;
 import com.ghosh.jaagteyRahoWebServces.model.GetPushNotiToken;
+import com.mysql.jdbc.Blob;
 
 @RestController
 @RequestMapping("/admin")
@@ -107,6 +113,7 @@ public class AdminRestController {
 	@RequestMapping(value = "/selfieCheckin", method = RequestMethod.POST, produces = APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<GetOtp> selfieCheckin(@RequestBody SelfieCheckIn value) {
 		HttpHeaders headers = new HttpHeaders();
+		System.out.println(value);
 		if (value == null) {
 			GetOtp getOtp = new GetOtp();
 			getOtp.setMsg("!! Getting Error -  BAD Request !!");
@@ -115,6 +122,8 @@ public class AdminRestController {
 					HttpStatus.BAD_REQUEST);
 		}
 
+		System.out.println(value);
+		System.out.println(value.getContactNumber());
 		if (value.getContactNumber() == null) {
 			GetOtp getOtp = new GetOtp();
 			getOtp.setMsg("!! Mobile Number Please !!");
@@ -134,6 +143,7 @@ public class AdminRestController {
 		SelfieCheckIn selfieCheckIn = new SelfieCheckIn();
 		selfieCheckIn.setContactNumber(value.getContactNumber());
 
+		System.out.println(value.getCurrent_datetimes());
 		Timestamp timestamp = Util.convertStringToTimestamp(value
 				.getCurrent_datetimes());
 		if (timestamp == null) {
@@ -147,11 +157,17 @@ public class AdminRestController {
 		selfieCheckIn.setCurrentLocation(value.getCurrentLocation());
 		selfieCheckIn.setEmployee(user);
 		selfieCheckIn.setProfile_pic(value.getProfile_pic());
+		SerialBlob blob = null;
+		try {
+			blob = new SerialBlob(value.getProfile_pic().getBytes());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		selfieCheckIn.setProfile_image(blob);
 		selfieCheckIn.setRemark(value.getRemark());
 		userDAO.addSelfieCheckin(selfieCheckIn);
 
-		headers.add("Selfie checkin  Created  - ",
-				String.valueOf(selfieCheckIn.getProfile_pic()));
+		headers.add("Selfie checkin  Created ", "");
 		GetOtp getOtp = new GetOtp();
 		getOtp.setMsg("!! Hurrraah .. Successfully Saved !!");
 		getOtp.setStatus(Util.SUCCESS);
