@@ -12,6 +12,7 @@ public class SendSms {
 			System.out.println("hello");
 			String apiKey = "apikey="
 					+ "wcL+7qODu9E-MjFusywZMom2yP5Gad6YoD0EpjUMOw";
+
 			String message = "&message="
 					+ "Hi Navnit !! what's up ? call me once you free";
 			String sender = "&sender=" + "TXTLCL";

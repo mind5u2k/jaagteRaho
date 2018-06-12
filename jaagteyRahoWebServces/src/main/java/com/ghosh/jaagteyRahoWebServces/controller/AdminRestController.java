@@ -2,14 +2,12 @@ package com.ghosh.jaagteyRahoWebServces.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.rowset.serial.SerialBlob;
-import javax.sql.rowset.serial.SerialException;
 
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,10 +26,11 @@ import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
 import com.ghosh.jaagteyRahoBackend.dto.PushNotificationsStatus;
 import com.ghosh.jaagteyRahoBackend.dto.SelfieCheckIn;
 import com.ghosh.jaagteyRahoBackend.dto.User;
+import com.ghosh.jaagteyRahoWebServces.model.ContactPersonModel;
 import com.ghosh.jaagteyRahoWebServces.model.GetOtp;
 import com.ghosh.jaagteyRahoWebServces.model.GetOtpWithNo;
 import com.ghosh.jaagteyRahoWebServces.model.GetPushNotiToken;
-import com.mysql.jdbc.Blob;
+import com.ghosh.jaagteyRahoWebServces.model.SelfieCheckinModel;
 
 @RestController
 @RequestMapping("/admin")
@@ -60,19 +59,30 @@ public class AdminRestController {
 	}
 
 	@RequestMapping(value = "/Contacts", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<List<ContactPerson>> Contacts() {
+	public ResponseEntity<ContactPersonModel> Contacts() {
 
 		HttpHeaders headers = new HttpHeaders();
 		List<ContactPerson> contactPersons = systemSetupDAO
 				.getAllContactPersons();
 
 		if (contactPersons == null) {
-			return new ResponseEntity<List<ContactPerson>>(HttpStatus.NOT_FOUND);
+			ContactPersonModel contactPersonModel = new ContactPersonModel();
+			contactPersonModel
+					.setContactPersons(new ArrayList<ContactPerson>());
+			contactPersonModel.setStatus(Util.FAILURE);
+			contactPersonModel.setMsg("No Entry Found");
+			return new ResponseEntity<ContactPersonModel>(contactPersonModel,
+					HttpStatus.OK);
 		}
 		headers.add("Number Of Records Found",
 				String.valueOf(contactPersons.size()));
-		return new ResponseEntity<List<ContactPerson>>(contactPersons, headers,
-				HttpStatus.OK);
+		ContactPersonModel contactPersonModel = new ContactPersonModel();
+		contactPersonModel.setContactPersons(contactPersons);
+		contactPersonModel.setMsg("Total No of Contacts = "
+				+ contactPersons.size());
+		contactPersonModel.setStatus(Util.SUCCESS);
+		return new ResponseEntity<ContactPersonModel>(contactPersonModel,
+				headers, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/employee/{id}", method = RequestMethod.GET)
@@ -175,20 +185,34 @@ public class AdminRestController {
 	}
 
 	@RequestMapping(value = "/getSelfiecheckin/{contactNumber}", method = RequestMethod.GET)
-	public ResponseEntity<List<SelfieCheckIn>> getSelfiecheckin(
+	public ResponseEntity<SelfieCheckinModel> getSelfiecheckin(
 			@PathVariable("contactNumber") String contactNumber) {
 
 		User user = userDAO.getUserByMobileNo(contactNumber);
 		if (user == null) {
-			return new ResponseEntity<List<SelfieCheckIn>>(HttpStatus.NOT_FOUND);
+			SelfieCheckinModel checkinModel = new SelfieCheckinModel();
+			checkinModel.setMsg("!! Not Found !!");
+			checkinModel.setStatus(Util.FAILURE);
+			checkinModel.setSelfieCheckins(new ArrayList<SelfieCheckIn>());
+			return new ResponseEntity<SelfieCheckinModel>(checkinModel,
+					HttpStatus.OK);
 		}
 
 		List<SelfieCheckIn> selfieCheckIns = userDAO
 				.getSelfieCheckinByUser(user);
 		if (selfieCheckIns == null) {
-			return new ResponseEntity<List<SelfieCheckIn>>(HttpStatus.NOT_FOUND);
+			SelfieCheckinModel checkinModel = new SelfieCheckinModel();
+			checkinModel.setMsg("!! No Entry Found !!");
+			checkinModel.setStatus(Util.FAILURE);
+			checkinModel.setSelfieCheckins(new ArrayList<SelfieCheckIn>());
+			return new ResponseEntity<SelfieCheckinModel>(checkinModel,
+					HttpStatus.OK);
 		}
-		return new ResponseEntity<List<SelfieCheckIn>>(selfieCheckIns,
+		SelfieCheckinModel checkinModel = new SelfieCheckinModel();
+		checkinModel.setSelfieCheckins(selfieCheckIns);
+		checkinModel.setMsg("Total Entries = " + selfieCheckIns.size());
+		checkinModel.setStatus(Util.SUCCESS);
+		return new ResponseEntity<SelfieCheckinModel>(checkinModel,
 				HttpStatus.OK);
 	}
 
