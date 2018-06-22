@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ghosh.jaagteyRahoBackend.Util;
 import com.ghosh.jaagteyRahoBackend.dao.ClientManagementDao;
 import com.ghosh.jaagteyRahoBackend.dao.SystemSetupDAO;
 import com.ghosh.jaagteyRahoBackend.dao.UserDAO;
@@ -49,7 +50,11 @@ public class LoginController {
 		System.out.println("asdfasdfasdf [" + employee + "" + "]");
 
 		if (employee == null) {
-			return new ResponseEntity<LoginCredentials>(HttpStatus.BAD_REQUEST);
+			LoginCredentials credentials = new LoginCredentials();
+			credentials.setStatus(Util.FAILURE);
+			credentials.setMsg("!! Bad Requery !!");
+			return new ResponseEntity<LoginCredentials>(credentials, headers,
+					HttpStatus.OK);
 		}
 
 		String username = employee.getContactNo();
@@ -60,7 +65,11 @@ public class LoginController {
 
 		User u = userDAO.getUserByMobileNo(username);
 		if (u == null) {
-			return new ResponseEntity<LoginCredentials>(HttpStatus.NOT_FOUND);
+			LoginCredentials credentials = new LoginCredentials();
+			credentials.setStatus(Util.FAILURE);
+			credentials.setMsg("!! Not Registered !!");
+			return new ResponseEntity<LoginCredentials>(credentials, headers,
+					HttpStatus.OK);
 		}
 
 		boolean status = passwordEncoder.matches(password, u.getPassword());
@@ -76,9 +85,14 @@ public class LoginController {
 			String authHeader = "Basic " + new String(encodedAuth);
 			System.out.println("hahahahahahahahaha  [" + authHeader + "]");
 			credentials.setAuthorizationToken(authHeader);
+			credentials.setStatus(Util.SUCCESS);
+			credentials.setMsg("you have logged In successfully");
 			return new ResponseEntity<LoginCredentials>(credentials, headers,
 					HttpStatus.OK);
 		} else {
+			LoginCredentials credentials = new LoginCredentials();
+			credentials.setStatus(Util.FAILURE);
+			credentials.setMsg("!! Wrong Credentials !!");
 			return new ResponseEntity<LoginCredentials>(headers,
 					HttpStatus.UNAUTHORIZED);
 		}

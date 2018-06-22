@@ -28,25 +28,30 @@
 		<div class="col-sm-12">
 			<div class="row" style="padding: 13px 0 17px 0px;">
 				<div class="col-sm-12">
-					<sf:form action="${contextRoot}/ad/updateAutoCheckin"
+					<sf:form action="${contextRoot}/ad/addAutoCheckin"
 						modelAttribute="autoCheckinSetting" id="autoCheckinSettingForm"
 						cssClass="smart-form" method="post">
 						<fieldset>
 							<div class="row">
-								<%-- <section class="col col-2">
-									<label class="label">Geo Radius<span
+								<section class="col col-2">
+									<label class="label">Client<span
 										style="color: #f00; padding-left: 4px;">*</span></label> <label
-										class="input"> <sf:input type="text" path="geoRadius"
-											placeholder="" />
+										class="select"> <sf:select path="client.id"
+											onchange="updateEmployee(this.value);">
+											<sf:option value="0" disabled="true">Select Client</sf:option>
+											<sf:options itemValue="id" items="${allClients}"
+												itemLabel="clientName" />
+										</sf:select> <i></i>
 									</label>
 								</section>
-								<section class="col col-2">
-									<label class="label">Reminder Int. Time<span
+								<section class="col col-2" id="employeeSection">
+									<label class="label">Employee<span
 										style="color: #f00; padding-left: 4px;">*</span></label> <label
-										class="select"> <sf:select path="reminderIntTime"
-											items="${intervalTimes}" /> <i></i>
+										class="select"> <sf:select path="employee.id">
+											<sf:option value="0" disabled="true">Select Employee</sf:option>
+										</sf:select> <i></i>
 									</label>
-								</section> --%>
+								</section>
 								<section class="col col-2">
 									<label class="label">AutoCheckins Int. Time<span
 										style="color: #f00; padding-left: 4px;">*</span></label> <label
@@ -79,6 +84,71 @@
 						</fieldset>
 					</sf:form>
 				</div>
+			</div>
+		</div>
+		<div class="col-sm-12">
+			<div class="row">
+				<article
+					class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+					<div class="jarviswidget   jarviswidget-sortable" id="wid-id-1"
+						data-widget-editbutton="false"
+						data-widget-fullscreenbutton="false" role="widget">
+						<div role="content" style="border-top: 1px solid #ccc;">
+							<div class="widget-body no-padding">
+								<div id="datatable_col_reorder_wrapper"
+									class="dataTables_wrapper form-inline no-footer">
+									<table id="datatable_col_reorder"
+										class="table table-striped table-bordered table-hover dataTable no-footer"
+										width="100%" role="grid"
+										aria-describedby="datatable_col_reorder_info"
+										style="width: 100%;">
+										<thead>
+											<tr role="row">
+												<th data-hide="phone" style="width: 40px;">Sr.</th>
+												<th>Employee</th>
+												<th>AutoCheckins Int. Time</th>
+												<th>Start Time</th>
+												<th>End Time</th>
+												<th>Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											<c:forEach items="${autoCheckinSettings}" var="a">
+												<c:set var="i" value="${i+1}" scope="page" />
+												<tr role="row">
+													<td class="sorting_1">${i}</td>
+													<td>${a.employee.firstName}<c:if
+															test="${not empty a.employee.middleName}">&nbsp;${a.employee.middleName}</c:if>
+														${a.employee.lastName}
+													</td>
+													<td>${a.autoCheckinIntTime}</td>
+													<td>${a.startTime}</td>
+													<td>${a.endTime}</td>
+													<td><a class="text-primary"
+														onclick="deleteAutoCheckinSetting('${a.id}');"
+														style="cursor: pointer; border-bottom: 1px solid #3276b1;">DELETE</a></td>
+												</tr>
+											</c:forEach>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</article>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="deleteAutoCheckinModel" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content" id="deleteSiteModelContent"
+				style="text-align: center; font-size: 17px; padding: 40px;">
+				Once you delete the AutoCheckins Int. Time ?<br>Are you sure ?<br>
+				<br> <input type="hidden" id="deleteAutoCheckinId" value="" />
+				<button class="btn btn-default av" type="button"
+					data-dismiss="modal" aria-label="Close">Close</button>
+				<button class="btn btn-danger" onclick="deletePermanent();">Delete</button>
 			</div>
 		</div>
 	</div>
@@ -152,7 +222,28 @@
 
 					});
 
-	function createDesignation() {
+	function updateEmployee(clientId) {
+		$.ajax({
+			type : "GET",
+			url : "updateEmpDropdown?clientId=" + clientId,
+			success : function(response) {
+				$('#employeeSection').html(response);
+			},
+			error : function(e) {
+				console.log('Error: ' + e);
+			}
+		});
+	}
 
+	function deleteAutoCheckinSetting(autoCheckinId) {
+		$("#deleteAutoCheckinId").val(autoCheckinId);
+		$('#deleteAutoCheckinModel').modal({
+			show : true
+		});
+	}
+
+	function deletePermanent() {
+		var deleteAutoCheckinId = $("#deleteAutoCheckinId").val();
+		window.location.href = "deleteAutoCheckinId/" + deleteAutoCheckinId;
 	}
 </script>

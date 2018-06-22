@@ -121,7 +121,10 @@
 													<td>${user.contactNumber}</td>
 													<td><a class="text-primary"
 														style="cursor: pointer; border-bottom: 1px solid #3276b1;"
-														onclick="editUserDialog('${user.id}');">DETAILS</a></td>
+														onclick="editUserDialog('${user.id}');">DETAILS</a> || <a
+														class="text-primary"
+														onclick="deleteEmployee('${user.id}');"
+														style="cursor: pointer; border-bottom: 1px solid #3276b1;">DELETE</a></td>
 													<!-- <td><a class="text-success"
 														style="cursor: pointer; border-bottom: 1px solid #468847;">ACTIVE</a></td> -->
 													<!-- <td><a class="text-primary"
@@ -337,6 +340,20 @@
 			</div>
 		</div>
 	</div>
+	<div class="modal fade" id="deleteEmployeeModel" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content" id="deleteEmployeeContent"
+				style="text-align: center; font-size: 17px; padding: 40px;">
+				Once you delete the Employee ,Employee will be deleted permanently.<br>Are
+				you sure want to continue ?<br> <br> <input type="hidden"
+					id="deletedEmpId" value="" />
+				<button class="btn btn-default av" type="button"
+					data-dismiss="modal" aria-label="Close">Close</button>
+				<button class="btn btn-danger" onclick="deletePermanent();">Delete</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 
@@ -439,6 +456,18 @@
 				console.log('Error: ' + e);
 			}
 		});
+	}
+
+	function deleteEmployee(empId) {
+		$("#deletedEmpId").val(empId);
+		$('#deleteEmployeeModel').modal({
+			show : true
+		});
+	}
+
+	function deletePermanent() {
+		var deletedEmpId = $("#deletedEmpId").val();
+		window.location.href = "deleteEmployee/" + deletedEmpId;
 	}
 
 	$(function() {

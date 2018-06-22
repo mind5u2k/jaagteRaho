@@ -86,6 +86,15 @@ public class ClientManagementDaoImpl implements ClientManagementDao {
 	}
 
 	@Override
+	public List<Site> getSitesByClient(Client client) {
+		String selectQuery = "FROM Site WHERE client.id = :clientId ORDER BY id DESC";
+		return sessionFactory.getCurrentSession()
+				.createQuery(selectQuery, Site.class)
+				.setParameter("clientId", client.getId()).getResultList();
+
+	}
+
+	@Override
 	public boolean saveOrUpdateSite(Site site) {
 		try {
 			sessionFactory.getCurrentSession().saveOrUpdate(site);

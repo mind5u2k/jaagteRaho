@@ -11,6 +11,7 @@ import com.ghosh.jaagteyRahoBackend.dao.SystemSetupDAO;
 import com.ghosh.jaagteyRahoBackend.dto.AutoCheckinSetting;
 import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
 import com.ghosh.jaagteyRahoBackend.dto.PushNotificationsStatus;
+import com.ghosh.jaagteyRahoBackend.dto.Site;
 import com.ghosh.jaagteyRahoBackend.dto.User;
 
 @Repository("systemSetupDAO")
@@ -21,14 +22,54 @@ public class SystemSetupDAOImpl implements SystemSetupDAO {
 	private SessionFactory sessionFactory;
 
 	@Override
-	public AutoCheckinSetting getAutoCheckinSetting() {
-		String selectQuery = "FROM AutoCheckinSetting";
+	public List<AutoCheckinSetting> getAutoCheckinSetting() {
+		String selectQuery = "FROM AutoCheckinSetting ORDER BY employee.id";
 		try {
 			return sessionFactory.getCurrentSession()
 					.createQuery(selectQuery, AutoCheckinSetting.class)
-					.getSingleResult();
+					.getResultList();
 		} catch (Exception ex) {
 			return null;
+		}
+	}
+
+	@Override
+	public AutoCheckinSetting getAutoCheckinSettingByUser(int userId) {
+		String selectQuery = "FROM AutoCheckinSetting WHERE employee.id=:empId";
+		try {
+			return sessionFactory.getCurrentSession()
+					.createQuery(selectQuery, AutoCheckinSetting.class)
+					.setParameter("empId", userId).getSingleResult();
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+			return null;
+		}
+
+	}
+
+	@Override
+	public AutoCheckinSetting getAutoCheckinSettingById(int id) {
+		try {
+			return sessionFactory.getCurrentSession().get(
+					AutoCheckinSetting.class, id);
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional
+	public boolean deleteAutoCheckinSetting(
+			AutoCheckinSetting autoCheckinSetting) {
+		try {
+
+			sessionFactory.getCurrentSession().delete(autoCheckinSetting);
+			return true;
+
+		} catch (Exception ex) {
+			System.out.println("===============hello there");
+			return false;
 		}
 	}
 

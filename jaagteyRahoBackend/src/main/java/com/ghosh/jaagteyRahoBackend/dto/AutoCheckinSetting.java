@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 @Entity
 public class AutoCheckinSetting implements Serializable {
@@ -15,6 +17,12 @@ public class AutoCheckinSetting implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+
+	@Transient
+	private Client client;
+
+	@ManyToOne
+	private User employee;
 
 	private String geoRadius;
 
@@ -72,6 +80,22 @@ public class AutoCheckinSetting implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public User getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(User employee) {
+		this.employee = employee;
+	}
+
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
 }

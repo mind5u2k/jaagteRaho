@@ -150,15 +150,19 @@ $(function() {
 
 	var $autoCheckinSettingForm = $("#autoCheckinSettingForm").validate({
 		rules : {
-			geoRadius : {
-				required : true,
-				digits : true
+			'client.id' : {
+				required : true
+			},
+			'employee.id' : {
+				required : true
 			}
 		},
 		messages : {
-			geoRadius : {
-				required : 'Please enter Geo Radius',
-				digits : 'Geo Radius must be a number'
+			'client.id' : {
+				required : 'Please Select Client'
+			},
+			'employee.id' : {
+				required : 'Please Select Employee'
 			}
 		},
 

@@ -20,11 +20,13 @@ public interface ClientManagementDao {
 	boolean deleteClient(Client client);
 
 	boolean deleteSite(Site site);
-	
+
 	List<Site> getAllSites();
 
+	List<Site> getSitesByClient(Client client);
+
 	boolean saveOrUpdateSite(Site site);
-	
+
 	Site saveSite(Site site);
 
 	Site getSiteById(int id);

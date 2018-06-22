@@ -24,46 +24,38 @@
 </div>
 <div id="content" style="display: none;">
 	<div class="row">
-		<div class="col-sm-2"></div>
-		<div class="col-sm-8">
+		<div class="col-sm-12">
 			<div class="row" style="padding: 0px;">
 				<div class="col-sm-12">
 					<form id="designationForm" class="smart-form" method="post">
 						<fieldset style="padding-top: 0;">
 							<div class="row">
-								<section class="col col-4">
-									<label class="label">Select Employee </label> <label
-										class="select"> <select id="userId" name="role"
-										class="valid">
-											<c:forEach items="${users}" var="user">
-												<c:if test="${user.id == emp.id}">
-													<option selected="selected" value="${user.id}">${user.empId}-
-														${user.firstName}
-														<c:if test="${not empty user.middleName}">&nbsp;${user.middleName}</c:if>
-														${user.lastName}
-													</option>
-
-												</c:if>
-												<c:if test="${user.id != emp.id}">
-													<option value="${user.id}">${user.empId}-
-														${user.firstName}
-														<c:if test="${not empty user.middleName}">&nbsp;${user.middleName}</c:if>
-														${user.lastName}
-													</option>
-
-												</c:if>
+								<section class="col col-3">
+									<label class="label">Select Client </label> <label
+										class="select"> <select id="clientId" name="cl"
+										onchange="updateEmployee(this.value);">
+											<option selected="selected" value="0">All Clients</option>
+											<c:forEach items="${clients}" var="client">
+												<option value="${client.id}">${client.clientName}</option>
 											</c:forEach>
 									</select> <i></i>
 									</label>
 								</section>
-								<section class="col col-4">
+								<section class="col col-3" id="employeeSection">
+									<label class="label">Select Employee </label> <label
+										class="select"> <select id="userId" name="role"><option
+												selected="selected" value="0">All Employees</option>
+									</select> <i></i>
+									</label>
+								</section>
+								<section class="col col-3">
 									<label class="label">Select Date</label> <label class="input">
 										<i class="icon-append fa fa-calendar"></i> <input id="date"
-										name="date" data-dateformat="dd/mm/yy"
+										value="${date}" name="date" data-dateformat="dd/mm/yy"
 										placeholder="Select Date" type="text" class="datepicker">
 									</label>
 								</section>
-								<section class="col col-4">
+								<section class="col col-3">
 									<label class="label">&nbsp;</label> <label class="input">
 										<input id="id" name="id" type="hidden" value="1"> <input
 										type="button" value="Submit" class="btn btn-primary"
@@ -77,7 +69,6 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-2"></div>
 		<div class="col-sm-12" id="reportPanel">
 			<input type="hidden" id="sent" value="${sent}"> <input
 				type="hidden" id="received" value="${received}">
@@ -316,6 +307,7 @@
 					});
 
 	function updateReportPanel() {
+		var selectedClient = $("#clientId").val();
 		var selectedEmp = $("#userId").val();
 		var selectedDate = $("#date").val();
 		if (selectedDate == "") {
@@ -328,8 +320,8 @@
 
 			$.ajax({
 				type : "GET",
-				url : "updateReportPanel?empId=" + selectedEmp + "&date="
-						+ selectedDate,
+				url : "updateReportPanel?clientid=" + selectedClient
+						+ "&empId=" + selectedEmp + "&date=" + selectedDate,
 				success : function(response) {
 					$('#reportPanel').html(response);
 				},
@@ -361,5 +353,18 @@
 	function updateDetails() {
 		var userId = $("#userId").val();
 		window.location.href = "report?userId=" + userId;
+	}
+
+	function updateEmployee(clientId) {
+		$.ajax({
+			type : "GET",
+			url : "updateEmpReportDropdown?clientId=" + clientId,
+			success : function(response) {
+				$('#employeeSection').html(response);
+			},
+			error : function(e) {
+				console.log('Error: ' + e);
+			}
+		});
 	}
 </script>

@@ -63,13 +63,19 @@ public class AdminController {
 		int sent = 0;
 		int received = 0;
 
+		List<Client> clients = clientManagementDao.getAllClients();
 		List<User> users = userDAO.getAllUsersByRole(Util.ROLE_USER);
-		User emp = null;
-		if (users != null && users.size() > 0) {
-			emp = users.get(0);
+		if (users == null) {
+			users = new ArrayList<User>();
 		}
 		List<PushNotificationsStatus> pushNotificationsStatus = new ArrayList<PushNotificationsStatus>();
-		if (emp != null) {
+		Date tdate = new Date();
+		Calendar tcal = Calendar.getInstance();
+		tcal.setTimeInMillis(tdate.getTime());
+		int td = tcal.get(Calendar.DATE);
+		int tm = tcal.get(Calendar.MONTH);
+		int ty = tcal.get(Calendar.YEAR);
+		for (User emp : users) {
 			List<PushNotificationsStatus> pushNotificationsStatuss = systemSetupDAO
 					.getPushNotificationsByEmployee(emp);
 			if (pushNotificationsStatuss != null) {
@@ -81,38 +87,27 @@ public class AdminController {
 					int d = cal.get(Calendar.DATE);
 					int m = cal.get(Calendar.MONTH);
 					int y = cal.get(Calendar.YEAR);
-
-					Date tdate = new Date();
-					Calendar tcal = Calendar.getInstance();
-					tcal.setTimeInMillis(tdate.getTime());
-					int td = tcal.get(Calendar.DATE);
-					int tm = tcal.get(Calendar.MONTH);
-					int ty = tcal.get(Calendar.YEAR);
-
 					if (d == td && m == tm && y == ty) {
 						if (s.getSentStatus() != null) {
 							if (s.getSentStatus().equals(Util.SUCCESS)) {
 								sent++;
 							}
 						}
-
 						if (s.getReceivedStatus() != null) {
 							if (s.getReceivedStatus().equals(Util.SUCCESS)) {
 								received++;
 							}
 						}
-
 						pushNotificationsStatus.add(s);
 					}
 				}
 			}
 		}
-
+		mv.addObject("date", td + "/" + (tm + 1) + "/" + ty);
 		mv.addObject("sent", sent);
 		mv.addObject("received", received);
 		mv.addObject("pushNotificationsStatus", pushNotificationsStatus);
-		mv.addObject("users", users);
-		mv.addObject("emp", emp);
+		mv.addObject("clients", clients);
 
 		mv.addObject("title", "HOME");
 		mv.addObject("userClickAdminHome", true);
@@ -179,6 +174,11 @@ public class AdminController {
 			} else if (status.equals("updateFailureNumber")) {
 				mv.addObject("errorMsg",
 						"Contact Number already registered with other Employee");
+			} else if (status.equals("deleteFailure")) {
+				mv.addObject("errorMsg",
+						"Can't be deleted as the reference of Employee still exists");
+			} else if (status.equals("deleteSuccess")) {
+				mv.addObject("errorMsg", "Employee deleted successfully");
 			}
 		}
 		List<Designation> designations = userDAO.getAllDesignations();
@@ -279,13 +279,19 @@ public class AdminController {
 	public String saveEmployee(@ModelAttribute("employee") User employee) {
 
 		User u1 = userDAO.getByEmail(employee.getEmail());
-		if (u1.getId() == employee.getId()) {
-			u1 = null;
+		if (u1 != null) {
+			if (u1.getId() == employee.getId()) {
+				u1 = null;
+			}
 		}
+
 		User u2 = userDAO.getUserByMobileNo(employee.getContactNumber());
-		if (u2.getId() == employee.getId()) {
-			u2 = null;
+		if (u2 != null) {
+			if (u2.getId() == employee.getId()) {
+				u2 = null;
+			}
 		}
+
 		if (u1 == null && u2 == null) {
 			User user = userDAO.get(employee.getId());
 			user.setEmpId(employee.getEmpId());
@@ -338,15 +344,26 @@ public class AdminController {
 				mv.addObject("msg", "Updated Successfully");
 			} else if (status.equals("updateFailure")) {
 				mv.addObject("errorMsg", "Getting Error while Updating");
+			} else if (status.equals("AlreadyAdded")) {
+				mv.addObject("errorMsg",
+						"AutoCheckinIntTime has already been assigned to selected user");
+			} else if (status.equals("deleteSuccess")) {
+				mv.addObject("msg", "Deleted Successfully");
+			} else if (status.equals("deleteFailure")) {
+				mv.addObject("errorMsg", "Getting error while deleting");
 			}
 		}
 
-		AutoCheckinSetting autoCheckinSetting = systemSetupDAO
+		List<AutoCheckinSetting> autoCheckinSettings = systemSetupDAO
 				.getAutoCheckinSetting();
-		if (autoCheckinSetting == null) {
-			autoCheckinSetting = new AutoCheckinSetting();
-		}
+
+		AutoCheckinSetting autoCheckinSetting = new AutoCheckinSetting();
+		List<Client> allClients = clientManagementDao.getAllClients();
+		List<User> employees = new ArrayList<User>();
+
+		mv.addObject("autoCheckinSettings", autoCheckinSettings);
 		mv.addObject("autoCheckinSetting", autoCheckinSetting);
+		mv.addObject("allClients", allClients);
 		mv.addObject("intervalTimes", Util.getIntervalTimes());
 		mv.addObject("times", Util.getTimes());
 		mv.addObject("title", "Auto Checkin Setting");
@@ -354,16 +371,72 @@ public class AdminController {
 		return mv;
 	}
 
-	@RequestMapping(value = "/updateAutoCheckin", method = RequestMethod.POST)
-	public String updateAutoCheckin(
+	@RequestMapping("/updateEmpDropdown")
+	public ModelAndView updateEmpDropdown(
+			@RequestParam(name = "clientId", required = false) Integer clientId) {
+		ModelAndView mv = new ModelAndView("updateEmpDropdown");
+		Client client = clientManagementDao.getClientById(clientId);
+		List<Site> sites = clientManagementDao.getSitesByClient(client);
+
+		List<User> assignedEmployees = new ArrayList<User>();
+
+		for (Site s : sites) {
+			List<SiteEmployeeMapping> mappings = clientManagementDao
+					.assignedEmployeestoSite(s);
+			if (mappings != null) {
+				for (SiteEmployeeMapping sem : mappings) {
+					assignedEmployees.add(sem.getEmployee());
+				}
+			}
+		}
+		mv.addObject("assignedEmployees", assignedEmployees);
+		return mv;
+	}
+
+	@RequestMapping(value = "/addAutoCheckin", method = RequestMethod.POST)
+	public String addAutoCheckin(
 			@ModelAttribute("autoCheckinSetting") AutoCheckinSetting autoCheckinSetting) {
+
+		System.out.println("Client id is ["
+				+ autoCheckinSetting.getClient().getId() + "]");
+		System.out.println("user id is ["
+				+ autoCheckinSetting.getEmployee().getId() + "]");
+
+		AutoCheckinSetting auCheSetting = systemSetupDAO
+				.getAutoCheckinSettingByUser(autoCheckinSetting.getEmployee()
+						.getId());
+
+		if (auCheSetting != null) {
+			return "redirect:/ad/autoCheckinSetting?status=AlreadyAdded";
+		}
 
 		boolean status = systemSetupDAO
 				.updateAutoCheckinSetting(autoCheckinSetting);
+
 		if (status) {
 			return "redirect:/ad/autoCheckinSetting?status=updateSuccess";
 		} else {
 			return "redirect:/ad/autoCheckinSetting?status=updateFailure";
+		}
+	}
+
+	@RequestMapping(value = "/deleteAutoCheckinId/{id}")
+	public String deleteAutoCheckinId(@PathVariable int id) {
+		AutoCheckinSetting autoCheckinSetting = systemSetupDAO
+				.getAutoCheckinSettingById(id);
+		boolean status = false;
+		try {
+			status = systemSetupDAO
+					.deleteAutoCheckinSetting(autoCheckinSetting);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("hello there [" + status + "]");
+		if (status) {
+			return "redirect:/ad/autoCheckinSetting?status=deleteSuccess";
+		} else {
+			return "redirect:/ad/autoCheckinSetting?status=deleteFailure";
 		}
 	}
 
@@ -522,6 +595,24 @@ public class AdminController {
 			return "redirect:/ad/manageClient?status=deleteSuccess";
 		} else {
 			return "redirect:/ad/manageClient?status=deleteFailure";
+		}
+	}
+
+	@RequestMapping(value = "/deleteEmployee/{id}")
+	public String deleteEmployee(@PathVariable int id) {
+		User user = userDAO.get(id);
+		boolean status = false;
+		try {
+			status = userDAO.deleteUser(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("hello there [" + status + "]");
+		if (status) {
+			return "redirect:/ad/addEmployees?status=deleteSuccess";
+		} else {
+			return "redirect:/ad/addEmployees?status=deleteFailure";
 		}
 	}
 
@@ -845,13 +936,19 @@ public class AdminController {
 		int sent = 0;
 		int received = 0;
 
+		List<Client> clients = clientManagementDao.getAllClients();
 		List<User> users = userDAO.getAllUsersByRole(Util.ROLE_USER);
-		User emp = null;
-		if (users != null && users.size() > 0) {
-			emp = users.get(0);
+		if (users == null) {
+			users = new ArrayList<User>();
 		}
 		List<PushNotificationsStatus> pushNotificationsStatus = new ArrayList<PushNotificationsStatus>();
-		if (emp != null) {
+		Date tdate = new Date();
+		Calendar tcal = Calendar.getInstance();
+		tcal.setTimeInMillis(tdate.getTime());
+		int td = tcal.get(Calendar.DATE);
+		int tm = tcal.get(Calendar.MONTH);
+		int ty = tcal.get(Calendar.YEAR);
+		for (User emp : users) {
 			List<PushNotificationsStatus> pushNotificationsStatuss = systemSetupDAO
 					.getPushNotificationsByEmployee(emp);
 			if (pushNotificationsStatuss != null) {
@@ -863,61 +960,88 @@ public class AdminController {
 					int d = cal.get(Calendar.DATE);
 					int m = cal.get(Calendar.MONTH);
 					int y = cal.get(Calendar.YEAR);
-
-					Date tdate = new Date();
-					Calendar tcal = Calendar.getInstance();
-					tcal.setTimeInMillis(tdate.getTime());
-					int td = tcal.get(Calendar.DATE);
-					int tm = tcal.get(Calendar.MONTH);
-					int ty = tcal.get(Calendar.YEAR);
-
 					if (d == td && m == tm && y == ty) {
 						if (s.getSentStatus() != null) {
 							if (s.getSentStatus().equals(Util.SUCCESS)) {
 								sent++;
 							}
 						}
-
 						if (s.getReceivedStatus() != null) {
 							if (s.getReceivedStatus().equals(Util.SUCCESS)) {
 								received++;
 							}
 						}
-
 						pushNotificationsStatus.add(s);
 					}
 				}
 			}
 		}
-
+		mv.addObject("date", td + "/" + (tm + 1) + "/" + ty);
 		mv.addObject("sent", sent);
 		mv.addObject("received", received);
 		mv.addObject("pushNotificationsStatus", pushNotificationsStatus);
-		mv.addObject("users", users);
-		mv.addObject("emp", emp);
-		mv.addObject("title", "Report");
+		mv.addObject("clients", clients);
+		mv.addObject("title", "REPORT");
 		mv.addObject("userClickAdminReport", true);
+		return mv;
+	}
+
+	@RequestMapping("/updateEmpReportDropdown")
+	public ModelAndView updateEmpReportDropdown(
+			@RequestParam(name = "clientId", required = false) Integer clientId) {
+		ModelAndView mv = new ModelAndView("updateEmpReportDropdown");
+		List<User> assignedEmployees = new ArrayList<User>();
+		if (clientId != 0) {
+			Client client = clientManagementDao.getClientById(clientId);
+			List<Site> sites = clientManagementDao.getSitesByClient(client);
+
+			for (Site s : sites) {
+				List<SiteEmployeeMapping> mappings = clientManagementDao
+						.assignedEmployeestoSite(s);
+				if (mappings != null) {
+					for (SiteEmployeeMapping sem : mappings) {
+						assignedEmployees.add(sem.getEmployee());
+					}
+				}
+			}
+		}
+		mv.addObject("assignedEmployees", assignedEmployees);
 		return mv;
 	}
 
 	@RequestMapping(value = "/updateReportPanel", method = RequestMethod.GET)
 	public ModelAndView updateReportPanel(
+			@RequestParam(name = "clientid", required = false) Integer clientid,
 			@RequestParam(name = "empId", required = false) Integer empId,
 			@RequestParam(name = "date", required = false) String date) {
+
 		int sent = 0;
 		int received = 0;
 		System.out.println("selected emp Id is[" + empId
 				+ "] and selected date is [" + date + "]");
 
 		ModelAndView mv = new ModelAndView("updateReportPanel");
-		List<User> users = userDAO.getAllUsersByRole(Util.ROLE_USER);
-		User emp = null;
 
-		if (empId != null) {
-			emp = userDAO.get(empId);
+		List<User> users = new ArrayList<User>();
+		if (clientid == 0) {
+			users = userDAO.getAllUsersByRole(Util.ROLE_USER);
 		} else {
-			if (users != null && users.size() > 0) {
-				emp = users.get(0);
+			if (empId == 0) {
+				Client client = clientManagementDao.getClientById(clientid);
+				List<Site> sites = clientManagementDao.getSitesByClient(client);
+
+				for (Site s : sites) {
+					List<SiteEmployeeMapping> mappings = clientManagementDao
+							.assignedEmployeestoSite(s);
+					if (mappings != null) {
+						for (SiteEmployeeMapping sem : mappings) {
+							users.add(sem.getEmployee());
+						}
+					}
+				}
+			} else {
+				User u = userDAO.get(empId);
+				users.add(u);
 			}
 		}
 
@@ -927,41 +1051,44 @@ public class AdminController {
 		int ty = Integer.parseInt(dateArray[2]);
 
 		List<PushNotificationsStatus> pushNotificationsStatus = new ArrayList<PushNotificationsStatus>();
-		if (emp != null) {
-			List<PushNotificationsStatus> pushNotificationsStatuss = systemSetupDAO
-					.getPushNotificationsByEmployee(emp);
-			if (pushNotificationsStatuss != null) {
-				for (PushNotificationsStatus s : pushNotificationsStatuss) {
-					Timestamp ts = s.getSentTimestamp();
-					Date ds = new Date(ts.getTime());
-					Calendar cal = Calendar.getInstance();
-					cal.setTimeInMillis(ds.getTime());
-					int d = cal.get(Calendar.DATE);
-					int m = cal.get(Calendar.MONTH);
-					int y = cal.get(Calendar.YEAR);
 
-					if (d == td && m == (tm - 1) && y == ty) {
-						if (s.getSentStatus() != null) {
-							if (s.getSentStatus().equals(Util.SUCCESS)) {
-								sent++;
-							}
-						}
+		for (User emp : users) {
+			if (emp != null) {
+				List<PushNotificationsStatus> pushNotificationsStatuss = systemSetupDAO
+						.getPushNotificationsByEmployee(emp);
+				if (pushNotificationsStatuss != null) {
+					for (PushNotificationsStatus s : pushNotificationsStatuss) {
+						Timestamp ts = s.getSentTimestamp();
+						Date ds = new Date(ts.getTime());
+						Calendar cal = Calendar.getInstance();
+						cal.setTimeInMillis(ds.getTime());
+						int d = cal.get(Calendar.DATE);
+						int m = cal.get(Calendar.MONTH);
+						int y = cal.get(Calendar.YEAR);
 
-						if (s.getReceivedStatus() != null) {
-							if (s.getReceivedStatus().equals(Util.SUCCESS)) {
-								received++;
+						if (d == td && m == (tm - 1) && y == ty) {
+							if (s.getSentStatus() != null) {
+								if (s.getSentStatus().equals(Util.SUCCESS)) {
+									sent++;
+								}
 							}
+
+							if (s.getReceivedStatus() != null) {
+								if (s.getReceivedStatus().equals(Util.SUCCESS)) {
+									received++;
+								}
+							}
+							pushNotificationsStatus.add(s);
 						}
-						pushNotificationsStatus.add(s);
 					}
 				}
 			}
 		}
+
 		mv.addObject("sent", sent);
 		mv.addObject("received", received);
 		mv.addObject("pushNotificationsStatus", pushNotificationsStatus);
 		mv.addObject("users", users);
-		mv.addObject("emp", emp);
 		mv.addObject("title", "REPORT");
 		mv.addObject("userClickAdminReport", true);
 		return mv;

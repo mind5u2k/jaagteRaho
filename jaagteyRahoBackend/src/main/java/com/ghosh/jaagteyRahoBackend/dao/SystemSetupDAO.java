@@ -5,11 +5,18 @@ import java.util.List;
 import com.ghosh.jaagteyRahoBackend.dto.AutoCheckinSetting;
 import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
 import com.ghosh.jaagteyRahoBackend.dto.PushNotificationsStatus;
+import com.ghosh.jaagteyRahoBackend.dto.Site;
 import com.ghosh.jaagteyRahoBackend.dto.User;
 
 public interface SystemSetupDAO {
 
-	AutoCheckinSetting getAutoCheckinSetting();
+	List<AutoCheckinSetting> getAutoCheckinSetting();
+
+	AutoCheckinSetting getAutoCheckinSettingByUser(int userId);
+
+	AutoCheckinSetting getAutoCheckinSettingById(int id);
+	
+	boolean deleteAutoCheckinSetting(AutoCheckinSetting autoCheckinSetting);
 
 	boolean updateAutoCheckinSetting(AutoCheckinSetting autoCheckinSetting);
 
@@ -26,7 +33,7 @@ public interface SystemSetupDAO {
 	boolean UpdatePustNotificationStatus(PushNotificationsStatus status);
 
 	List<PushNotificationsStatus> getLatestPushNotifications();
-	
+
 	PushNotificationsStatus getLatestPushNotificationByUser(User user);
 
 	List<PushNotificationsStatus> getPushNotificationsByEmployee(User emp);
