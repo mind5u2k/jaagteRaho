@@ -19,15 +19,15 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class HibernateConfig {
 
 	// Change the below based on the DBMS you choose
-	private final static String DATABASE_URL = "jdbc:mysql://localhost:3306/code7pro_jaagteyRaho?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull";
-	/*-private final static String DATABASE_URL = "jdbc:mysql://localhost:3306/jaagteyraho?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull";*/
+	/*-private final static String DATABASE_URL = "jdbc:mysql://localhost:3306/code7pro_jaagteyRaho?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull";*/
+	private final static String DATABASE_URL = "jdbc:mysql://localhost:3306/jaagteyraho?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull";
 	private final static String DATABASE_DRIVER = "com.mysql.jdbc.Driver";
 	private final static String DATABASE_DIALECT = "org.hibernate.dialect.MySQL5Dialect";
-	private final static String DATABASE_USERNAME = "code7projects";
-	private final static String DATABASE_PASSWORD = "gW8R@ebwoD50";
+	// private final static String DATABASE_USERNAME = "code7projects";
+	// private final static String DATABASE_PASSWORD = "gW8R@ebwoD50";
 
-	// private final static String DATABASE_USERNAME = "root";
-	// private final static String DATABASE_PASSWORD = "root";
+	private final static String DATABASE_USERNAME = "root";
+	private final static String DATABASE_PASSWORD = "root";
 
 	// dataSource bean will be available
 	@Bean("dataSource")

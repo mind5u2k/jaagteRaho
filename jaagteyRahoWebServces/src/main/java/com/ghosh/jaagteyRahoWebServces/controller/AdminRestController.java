@@ -4,6 +4,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -30,6 +32,7 @@ import com.ghosh.jaagteyRahoWebServces.model.ContactPersonModel;
 import com.ghosh.jaagteyRahoWebServces.model.GetOtp;
 import com.ghosh.jaagteyRahoWebServces.model.GetOtpWithNo;
 import com.ghosh.jaagteyRahoWebServces.model.GetPushNotiToken;
+import com.ghosh.jaagteyRahoWebServces.model.PushNotificationModel;
 import com.ghosh.jaagteyRahoWebServces.model.SelfieCheckinModel;
 
 @RestController
@@ -242,16 +245,23 @@ public class AdminRestController {
 	@RequestMapping(value = "/sendOtp", method = RequestMethod.POST, produces = APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<GetOtp> getOtp(@RequestBody GetOtpWithNo notification) {
 		HttpHeaders headers = new HttpHeaders();
+
+		if (notification == null) {
+			System.out.println("notification is null");
+			GetOtp getOtp = new GetOtp();
+			getOtp.setStatus(Util.FAILURE);
+			getOtp.setMsg("!! wrong data !!");
+			return new ResponseEntity<GetOtp>(getOtp, headers, HttpStatus.OK);
+		}
+
 		User user = userDAO.getUserByMobileNo(notification.getContactNumber());
 		System.out.println("--------------" + notification.getContactNumber());
 		if (user == null) {
 			System.out.println("user is null");
-			System.out.println(user.getEmail());
 			GetOtp getOtp = new GetOtp();
 			getOtp.setStatus(Util.FAILURE);
 			getOtp.setMsg("!! Wrong Credentials !!");
-			return new ResponseEntity<GetOtp>(getOtp, headers,
-					HttpStatus.NOT_FOUND);
+			return new ResponseEntity<GetOtp>(getOtp, headers, HttpStatus.OK);
 		}
 
 		PushNotificationsStatus no = systemSetupDAO
@@ -261,8 +271,7 @@ public class AdminRestController {
 			GetOtp getOtp = new GetOtp();
 			getOtp.setStatus(Util.FAILURE);
 			getOtp.setMsg("!! Wrong Credentials !!");
-			return new ResponseEntity<GetOtp>(getOtp, headers,
-					HttpStatus.NOT_FOUND);
+			return new ResponseEntity<GetOtp>(getOtp, headers, HttpStatus.OK);
 		}
 
 		Timestamp sendTime = no.getSentTimestamp();
@@ -278,7 +287,21 @@ public class AdminRestController {
 			} else {
 				GetOtp getOtp = new GetOtp();
 				getOtp.setStatus(Util.SUCCESS);
-				getOtp.setMsg("!! Cheers !!");
+				getOtp.setMsg("!! Received Successfully !!");
+				no.setContactNumber(user.getContactNumber());
+				no.setCurrentLocation(notification.getCurrentLocation());
+
+				no.setEmployee(user);
+				no.setProfile_pic(notification.getProfile_pic());
+				SerialBlob blob = null;
+				try {
+					blob = new SerialBlob(notification.getProfile_pic()
+							.getBytes());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				no.setProfile_image(blob);
+				no.setRemark(notification.getRemark());
 				no.setReceivedStatus(Util.SUCCESS);
 				no.setReceivedTimestamp(receiTime);
 				no.setLatestStatus(0);
@@ -292,6 +315,69 @@ public class AdminRestController {
 			getOtp.setMsg("!! You have entered a wrong OTP !!");
 			return new ResponseEntity<GetOtp>(getOtp, headers, HttpStatus.OK);
 		}
+	}
+
+	@RequestMapping(value = "/getNotificationsStatus/{contactNumber}", method = RequestMethod.GET)
+	public ResponseEntity<PushNotificationModel> getNotificationsStatus(
+			@PathVariable("contactNumber") String contactNumber) {
+
+		User user = userDAO.getUserByMobileNo(contactNumber);
+		if (user == null) {
+			PushNotificationModel checkinModel = new PushNotificationModel();
+			checkinModel.setMsg("!! Not Found !!");
+			checkinModel.setStatus(Util.FAILURE);
+			checkinModel
+					.setNotificationsStatus(new ArrayList<PushNotificationsStatus>());
+			return new ResponseEntity<PushNotificationModel>(checkinModel,
+					HttpStatus.OK);
+		}
+
+		List<PushNotificationsStatus> notificationsStatus = new ArrayList<PushNotificationsStatus>();
+
+		List<PushNotificationsStatus> pushNotificationsStatuss = systemSetupDAO
+				.getPushNotificationsByEmployee(user);
+
+		Date tdate = new Date();
+		Calendar tcal = Calendar.getInstance();
+		tcal.setTimeInMillis(tdate.getTime());
+		int td = tcal.get(Calendar.DATE);
+		int tm = tcal.get(Calendar.MONTH);
+		int ty = tcal.get(Calendar.YEAR);
+
+		if (pushNotificationsStatuss != null) {
+			for (PushNotificationsStatus s : pushNotificationsStatuss) {
+				Timestamp t = s.getSentTimestamp();
+				Date date = new Date(t.getTime());
+				Calendar cal = Calendar.getInstance();
+				cal.setTimeInMillis(date.getTime());
+				int d = cal.get(Calendar.DATE);
+				int m = cal.get(Calendar.MONTH);
+				int y = cal.get(Calendar.YEAR);
+				if (d == td && m == tm && y == ty) {
+					if (s.getSentStatus() != null) {
+					}
+					if (s.getReceivedStatus() != null) {
+					}
+					notificationsStatus.add(s);
+				}
+			}
+		}
+
+		if (notificationsStatus.size() == 0) {
+			PushNotificationModel checkinModel = new PushNotificationModel();
+			checkinModel.setMsg("!! No Entry Found !!");
+			checkinModel.setStatus(Util.FAILURE);
+			checkinModel
+					.setNotificationsStatus(new ArrayList<PushNotificationsStatus>());
+			return new ResponseEntity<PushNotificationModel>(checkinModel,
+					HttpStatus.OK);
+		}
+		PushNotificationModel checkinModel = new PushNotificationModel();
+		checkinModel.setNotificationsStatus(notificationsStatus);
+		checkinModel.setMsg("Total Entries = " + notificationsStatus.size());
+		checkinModel.setStatus(Util.SUCCESS);
+		return new ResponseEntity<PushNotificationModel>(checkinModel,
+				HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/employee/{id}", method = RequestMethod.PUT)

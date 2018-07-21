@@ -1,5 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
+<c:set var="contextRoot" value="${pageContext.request.contextPath}" />
+
 <input type="hidden" id="sent" value="${sent}">
 <input type="hidden" id="received" value="${received}">
 <div class="row">
@@ -17,7 +19,37 @@
 				<div class="widget-body" style="padding-bottom: 0;">
 					<div id="myTabContent" class="tab-content">
 						<div class="row no-space">
-							<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"
+							<div class="col-md-9 show-stats">
+								<div
+									style="margin: auto; text-align: center; font-size: 16px; padding: 12px 0px 14px 0px;">
+									<span style="border-bottom: 1px solid #141313;">Chart
+										Representation</span>
+								</div>
+								<div
+									style="margin: auto; text-align: center; padding-bottom: 15px;">
+									<canvas id="pieChart" height="70px"></canvas>
+								</div>
+							</div>
+							<div class="col-md-3 show-stats"
+								style="text-align: right; padding: 0 5px 0 0px;">
+								<a class="btn btn-default"
+									href="${contextRoot}/admin/downloadReports?clientid=${clientid}&siteId=${siteId}&empId=${empId}&date=${date}"
+									target="_blank"> <i class="fa fa-file-excel-o"></i>
+									&nbsp;Download Excel
+								</a>
+							</div>
+							<%-- <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 show-stats">
+								<div
+									style="margin: auto; text-align: center; font-size: 16px; padding: 12px 0px 14px 0px;">
+									<span style="border-bottom: 1px solid #141313;">Chart
+										Representation</span>
+								</div>
+								<div
+									style="margin: auto; text-align: center; padding-bottom: 15px;">
+									<canvas id="pieChart" height="50px"></canvas>
+								</div>
+							</div> --%>
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
 								style="border-right: 1px solid #ccc;">
 								<table id="datatable_col_reorder11"
 									class="table table-striped table-bordered table-hover dataTable no-footer"
@@ -28,11 +60,13 @@
 										<tr role="row">
 											<th style="width: 40px;">Sr.</th>
 											<th>Employee ID</th>
+											<th>Image</th>
 											<th>Name</th>
 											<th>Sent Status</th>
 											<th>Sent Time</th>
 											<th>Received Status</th>
 											<th>Received Time</th>
+											<th>Address</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -41,6 +75,12 @@
 											<tr role="row">
 												<td class="sorting_1">${i}</td>
 												<td>${cl.employee.empId}</td>
+												<td style="padding: 2px !important; text-align: center;">
+													<c:if test="${not empty cl.profile_pic}">
+														<img style="height: 64px; width: 56px;"
+															src='data:image/png;base64,${cl.profile_pic}'>
+													</c:if>
+												</td>
 												<td>${cl.employee.firstName}<c:if
 														test="${not empty cl.employee.middleName}">&nbsp;${cl.employee.middleName}</c:if>
 													${cl.employee.lastName}
@@ -49,12 +89,13 @@
 												<td>${cl.sentTimestamp}</td>
 												<td>${cl.receivedStatus}</td>
 												<td>${cl.receivedTimestamp}</td>
+												<td>${cl.currentLocation}</td>
 											</tr>
 										</c:forEach>
 									</tbody>
 								</table>
 							</div>
-							<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 show-stats">
+							<%-- <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 show-stats">
 								<div
 									style="margin: auto; text-align: center; font-size: 16px; padding: 12px 0px 14px 0px;">
 									<span style="border-bottom: 1px solid #141313;">Chart
@@ -64,7 +105,7 @@
 									style="margin: auto; text-align: center; padding-bottom: 15px;">
 									<canvas id="pieChart" height="250px"></canvas>
 								</div>
-							</div>
+							</div> --%>
 						</div>
 					</div>
 				</div>

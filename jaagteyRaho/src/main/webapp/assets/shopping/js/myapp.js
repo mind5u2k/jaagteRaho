@@ -284,15 +284,14 @@ $(function() {
 			empId : {
 				required : true
 			},
+			password : {
+				required : true
+			},
 			firstName : {
 				required : true
 			},
 			lastName : {
 				required : true
-			},
-			email : {
-				required : true,
-				email : true
 			},
 			contactNumber : {
 				required : true
@@ -338,15 +337,14 @@ $(function() {
 			empId : {
 				required : 'Please Enter Employee code'
 			},
+			password : {
+				required : 'Please Enter Password'
+			},
 			firstName : {
 				required : 'Please enter First name'
 			},
 			lastName : {
 				required : 'Please enter Last name'
-			},
-			email : {
-				required : 'Please enter Email address',
-				email : 'Please enter a VALID email address'
 			},
 			contactNumber : {
 				required : 'Please enter Contact Number'

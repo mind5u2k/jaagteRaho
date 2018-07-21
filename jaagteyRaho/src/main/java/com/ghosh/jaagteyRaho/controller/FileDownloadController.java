@@ -1,7 +1,10 @@
 package com.ghosh.jaagteyRaho.controller;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -9,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.supercsv.cellprocessor.Optional;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanWriter;
@@ -19,12 +24,14 @@ import com.ghosh.jaagteyRaho.model.EmployeeSiteCsvModel;
 import com.ghosh.jaagteyRaho.model.SiteEmpReport;
 import com.ghosh.jaagteyRaho.service.PdfGeneration.PdfGeneration;
 import com.ghosh.jaagteyRaho.service.excelServices.DownloadExcel;
+import com.ghosh.jaagteyRahoBackend.Util;
 import com.ghosh.jaagteyRahoBackend.dao.ClientManagementDao;
 import com.ghosh.jaagteyRahoBackend.dao.SystemSetupDAO;
 import com.ghosh.jaagteyRahoBackend.dao.UserDAO;
 import com.ghosh.jaagteyRahoBackend.dto.Client;
 import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
 import com.ghosh.jaagteyRahoBackend.dto.Designation;
+import com.ghosh.jaagteyRahoBackend.dto.PushNotificationsStatus;
 import com.ghosh.jaagteyRahoBackend.dto.Site;
 import com.ghosh.jaagteyRahoBackend.dto.SiteEmployeeMapping;
 import com.ghosh.jaagteyRahoBackend.dto.User;
@@ -42,6 +49,93 @@ public class FileDownloadController {
 
 	@Autowired
 	private SystemSetupDAO systemSetupDAO;
+
+	@RequestMapping(value = "/downloadReports")
+	public void downloadReports(
+			@RequestParam(name = "clientid", required = false) Integer clientid,
+			@RequestParam(name = "siteId", required = false) Integer siteId,
+			@RequestParam(name = "empId", required = false) Integer empId,
+			@RequestParam(name = "date", required = false) String date,
+			HttpServletResponse response) throws IOException {
+
+		System.out.println("selected emp Id is[" + empId
+				+ "] and selected date is [" + date + "]");
+
+		List<User> users = new ArrayList<User>();
+		if (clientid == 0) {
+			users = userDAO.getAllUsersByRole(Util.ROLE_USER);
+		} else {
+			if (siteId == 0) {
+				Client client = clientManagementDao.getClientById(clientid);
+				List<Site> sites = clientManagementDao.getSitesByClient(client);
+
+				for (Site s : sites) {
+					List<SiteEmployeeMapping> mappings = clientManagementDao
+							.assignedEmployeestoSite(s);
+					if (mappings != null) {
+						for (SiteEmployeeMapping sem : mappings) {
+							users.add(sem.getEmployee());
+						}
+					}
+				}
+			} else {
+				if (empId == 0) {
+					Site site = clientManagementDao.getSiteById(siteId);
+					List<SiteEmployeeMapping> mappings = clientManagementDao
+							.assignedEmployeestoSite(site);
+					if (mappings != null) {
+						for (SiteEmployeeMapping sem : mappings) {
+							users.add(sem.getEmployee());
+						}
+					}
+
+				} else {
+					User u = userDAO.get(empId);
+					users.add(u);
+				}
+			}
+
+		}
+
+		String[] dateArray = date.split("/");
+		int td = Integer.parseInt(dateArray[0]);
+		int tm = Integer.parseInt(dateArray[1]);
+		int ty = Integer.parseInt(dateArray[2]);
+
+		List<PushNotificationsStatus> pushNotificationsStatus = new ArrayList<PushNotificationsStatus>();
+
+		for (User emp : users) {
+			if (emp != null) {
+				List<PushNotificationsStatus> pushNotificationsStatuss = systemSetupDAO
+						.getPushNotificationsByEmployee(emp);
+				if (pushNotificationsStatuss != null) {
+					for (PushNotificationsStatus s : pushNotificationsStatuss) {
+						Timestamp ts = s.getSentTimestamp();
+						Date ds = new Date(ts.getTime());
+						Calendar cal = Calendar.getInstance();
+						cal.setTimeInMillis(ds.getTime());
+						int d = cal.get(Calendar.DATE);
+						int m = cal.get(Calendar.MONTH);
+						int y = cal.get(Calendar.YEAR);
+
+						if (d == td && m == (tm - 1) && y == ty) {
+							if (s.getSentStatus() != null) {
+								if (s.getSentStatus().equals(Util.SUCCESS)) {
+								}
+							}
+
+							if (s.getReceivedStatus() != null) {
+								if (s.getReceivedStatus().equals(Util.SUCCESS)) {
+								}
+							}
+							pushNotificationsStatus.add(s);
+						}
+					}
+				}
+			}
+		}
+		DownloadExcel.downloadExcelReport(response, pushNotificationsStatus);
+	}
 
 	@RequestMapping(value = "/downloadExcelEmp")
 	public void downloadExcelEmp(HttpServletResponse response)

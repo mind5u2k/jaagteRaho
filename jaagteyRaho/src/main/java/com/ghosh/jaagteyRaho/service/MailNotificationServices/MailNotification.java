@@ -13,7 +13,7 @@ import javax.mail.internet.MimeMessage;
 public class MailNotification {
 
 	private static String username = "anurag.ghosh.1014@gmail.com";
-	private static String password = "Ghoshmafia@1234";
+	private static String password = "asdf";
 
 	public static boolean sendMail(String to, String cc, String bcc,
 			String subject, String messageText) {

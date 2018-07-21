@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ghosh.jaagteyRaho.model.SiteEmpReport;
-import com.ghosh.jaagteyRaho.service.MailNotificationServices.MailNotification;
 import com.ghosh.jaagteyRahoBackend.Util;
 import com.ghosh.jaagteyRahoBackend.dao.ClientManagementDao;
 import com.ghosh.jaagteyRahoBackend.dao.SystemSetupDAO;
@@ -209,7 +208,7 @@ public class AdminController {
 		User user3 = userDAO.getUserByMobileNo(user.getContactNumber());
 		boolean status = false;
 		if (user2 == null && user3 == null) {
-			passCode = Util.getSaltString();
+			passCode = user.getPassword();
 			String password = passwordEncoder.encode(passCode);
 			user.setPassword(password);
 			User u = userDAO.addUser(user);
@@ -237,10 +236,6 @@ public class AdminController {
 			}
 
 			if (status) {
-				MailNotification.sendMail(user.getEmail(), "", "",
-						"Jaagtey Raho - *Confidential*",
-						"Your password for Jaagtey Raho Tool is <br>"
-								+ passCode);
 				return "redirect:/ad/addEmployees?status=success";
 			} else {
 				return "redirect:/ad/addEmployees?status=failure";
@@ -986,24 +981,34 @@ public class AdminController {
 		return mv;
 	}
 
-	@RequestMapping("/updateEmpReportDropdown")
-	public ModelAndView updateEmpReportDropdown(
+	@RequestMapping("/updateSiteReportDropdown")
+	public ModelAndView updateSiteReportDropdown(
 			@RequestParam(name = "clientId", required = false) Integer clientId) {
-		ModelAndView mv = new ModelAndView("updateEmpReportDropdown");
-		List<User> assignedEmployees = new ArrayList<User>();
+		ModelAndView mv = new ModelAndView("updateSiteReportDropdown");
+		List<Site> sites = new ArrayList<Site>();
 		if (clientId != 0) {
 			Client client = clientManagementDao.getClientById(clientId);
-			List<Site> sites = clientManagementDao.getSitesByClient(client);
+			sites = clientManagementDao.getSitesByClient(client);
+		}
+		mv.addObject("assignedSites", sites);
+		return mv;
+	}
 
-			for (Site s : sites) {
-				List<SiteEmployeeMapping> mappings = clientManagementDao
-						.assignedEmployeestoSite(s);
-				if (mappings != null) {
-					for (SiteEmployeeMapping sem : mappings) {
-						assignedEmployees.add(sem.getEmployee());
-					}
+	@RequestMapping("/updateEmpReportDropdown")
+	public ModelAndView updateEmpReportDropdown(
+			@RequestParam(name = "siteId", required = false) Integer siteId) {
+		ModelAndView mv = new ModelAndView("updateEmpReportDropdown");
+		List<User> assignedEmployees = new ArrayList<User>();
+		if (siteId != 0) {
+			Site site = clientManagementDao.getSiteById(siteId);
+			List<SiteEmployeeMapping> mappings = clientManagementDao
+					.assignedEmployeestoSite(site);
+			if (mappings != null) {
+				for (SiteEmployeeMapping sem : mappings) {
+					assignedEmployees.add(sem.getEmployee());
 				}
 			}
+
 		}
 		mv.addObject("assignedEmployees", assignedEmployees);
 		return mv;
@@ -1012,6 +1017,7 @@ public class AdminController {
 	@RequestMapping(value = "/updateReportPanel", method = RequestMethod.GET)
 	public ModelAndView updateReportPanel(
 			@RequestParam(name = "clientid", required = false) Integer clientid,
+			@RequestParam(name = "siteId", required = false) Integer siteId,
 			@RequestParam(name = "empId", required = false) Integer empId,
 			@RequestParam(name = "date", required = false) String date) {
 
@@ -1026,7 +1032,7 @@ public class AdminController {
 		if (clientid == 0) {
 			users = userDAO.getAllUsersByRole(Util.ROLE_USER);
 		} else {
-			if (empId == 0) {
+			if (siteId == 0) {
 				Client client = clientManagementDao.getClientById(clientid);
 				List<Site> sites = clientManagementDao.getSitesByClient(client);
 
@@ -1040,9 +1046,22 @@ public class AdminController {
 					}
 				}
 			} else {
-				User u = userDAO.get(empId);
-				users.add(u);
+				if (empId == 0) {
+					Site site = clientManagementDao.getSiteById(siteId);
+					List<SiteEmployeeMapping> mappings = clientManagementDao
+							.assignedEmployeestoSite(site);
+					if (mappings != null) {
+						for (SiteEmployeeMapping sem : mappings) {
+							users.add(sem.getEmployee());
+						}
+					}
+
+				} else {
+					User u = userDAO.get(empId);
+					users.add(u);
+				}
 			}
+
 		}
 
 		String[] dateArray = date.split("/");
@@ -1084,6 +1103,11 @@ public class AdminController {
 				}
 			}
 		}
+
+		mv.addObject("clientid", clientid);
+		mv.addObject("siteId", siteId);
+		mv.addObject("empId", empId);
+		mv.addObject("date", date);
 
 		mv.addObject("sent", sent);
 		mv.addObject("received", received);

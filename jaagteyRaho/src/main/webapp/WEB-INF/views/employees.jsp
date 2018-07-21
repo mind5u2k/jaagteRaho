@@ -157,11 +157,17 @@
 									placeholder="" />
 							</label>
 						</section>
-						<section class="col col-8">
-							<label class="label">E-mail Address<span
-								style="color: #f00; padding-left: 4px;">*</span></label> <label
-								class="input"> <i class="icon-append fa fa-envelope-o"></i>
-								<sf:input type="email" path="email" placeholder="" />
+						<section class="col col-4">
+							<label class="label">E-mail Address </label> <label class="input">
+								<i class="icon-append fa fa-envelope-o"></i> <sf:input
+									type="email" path="email" placeholder="" />
+							</label>
+						</section>
+						<section class="col col-4">
+							<label class="label">Password<span
+								style="color: #f00; padding-left: 4px;">*</span></label><label
+								class="input"> <i class="icon-append fa fa-lock"></i> <sf:input
+									type="text" path="password" placeholder="" />
 							</label>
 						</section>
 					</div>

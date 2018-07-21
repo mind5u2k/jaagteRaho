@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +22,6 @@ import com.ghosh.jaagteyRahoBackend.dao.UserDAO;
 import com.ghosh.jaagteyRahoBackend.dto.User;
 import com.ghosh.jaagteyRahoWebServces.model.AuthUser;
 import com.ghosh.jaagteyRahoWebServces.model.LoginCredentials;
-import com.sun.mail.util.BASE64EncoderStream;
 
 @RestController
 @RequestMapping("/login")

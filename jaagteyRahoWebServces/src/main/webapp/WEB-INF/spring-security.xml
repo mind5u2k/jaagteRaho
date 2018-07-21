@@ -18,6 +18,7 @@
 
 	<http create-session="stateless" use-expressions="true">
 		<csrf disabled="true" />
+		<intercept-url pattern="/gupshup/receivedMsg" access="permitAll" />
 		<intercept-url pattern="/login/**" access="permitAll" />
 		<intercept-url pattern="/**"
 			access="hasAnyAuthority('SUPER ADMIN','ADMIN','USER')" />

@@ -30,10 +30,10 @@
 					<form id="designationForm" class="smart-form" method="post">
 						<fieldset style="padding-top: 0;">
 							<div class="row">
-								<section class="col col-3">
+								<section class="col col-2">
 									<label class="label">Select Client </label> <label
 										class="select"> <select id="clientId" name="cl"
-										onchange="updateEmployee(this.value);">
+										onchange="updateSite(this.value);">
 											<option selected="selected" value="0">All Clients</option>
 											<c:forEach items="${clients}" var="client">
 												<option value="${client.id}">${client.clientName}</option>
@@ -41,21 +41,28 @@
 									</select> <i></i>
 									</label>
 								</section>
-								<section class="col col-3" id="employeeSection">
+								<section class="col col-2" id="siteSection">
+									<label class="label">Select Site </label> <label class="select">
+										<select id="siteId" name="role"><option
+												selected="selected" value="0">All Sites</option>
+									</select> <i></i>
+									</label>
+								</section>
+								<section class="col col-2" id="employeeSection">
 									<label class="label">Select Employee </label> <label
 										class="select"> <select id="userId" name="role"><option
 												selected="selected" value="0">All Employees</option>
 									</select> <i></i>
 									</label>
 								</section>
-								<section class="col col-3">
+								<section class="col col-2">
 									<label class="label">Select Date</label> <label class="input">
 										<i class="icon-append fa fa-calendar"></i> <input id="date"
 										value="${date}" name="date" data-dateformat="dd/mm/yy"
 										placeholder="Select Date" type="text" class="datepicker">
 									</label>
 								</section>
-								<section class="col col-3">
+								<section class="col col-2">
 									<label class="label">&nbsp;</label> <label class="input">
 										<input id="id" name="id" type="hidden" value="1"> <input
 										type="button" value="Submit" class="btn btn-primary"
@@ -87,7 +94,26 @@
 							<div class="widget-body" style="padding-bottom: 0;">
 								<div id="myTabContent" class="tab-content">
 									<div class="row no-space">
-										<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"
+										<div class="col-md-9 show-stats">
+											<div
+												style="margin: auto; text-align: center; font-size: 16px; padding: 12px 0px 14px 0px;">
+												<span style="border-bottom: 1px solid #141313;">Chart
+													Representation</span>
+											</div>
+											<div
+												style="margin: auto; text-align: center; padding-bottom: 15px;">
+												<canvas id="pieChart" height="70px"></canvas>
+											</div>
+										</div>
+										<div class="col-md-3 show-stats"
+											style="text-align: right; padding: 0 5px 0 0px;">
+											<a class="btn btn-default"
+												href="${contextRoot}/admin/downloadReports?clientid=0&siteId=0&empId=0&date=${date}"
+												target="_blank"> <i class="fa fa-file-excel-o"></i>
+												&nbsp;Download Excel
+											</a>
+										</div>
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
 											style="border-right: 1px solid #ccc;">
 											<table id="datatable_col_reorder"
 												class="table table-striped table-bordered table-hover dataTable no-footer"
@@ -98,11 +124,13 @@
 													<tr role="row">
 														<th style="width: 40px;">Sr.</th>
 														<th>Employee ID</th>
+														<th>Image</th>
 														<th>Name</th>
 														<th>Sent Status</th>
 														<th>Sent Time</th>
 														<th>Received Status</th>
 														<th>Received Time</th>
+														<th>Address</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -111,6 +139,12 @@
 														<tr role="row">
 															<td class="sorting_1">${i}</td>
 															<td>${cl.employee.empId}</td>
+															<td style="padding: 2px !important; text-align: center;">
+																<c:if test="${not empty cl.profile_pic}">
+																	<img style="height: 64px; width: 56px;"
+																		src='data:image/png;base64,${cl.profile_pic}'>
+																</c:if>
+															</td>
 															<td>${cl.employee.firstName}<c:if
 																	test="${not empty cl.employee.middleName}">&nbsp;${cl.employee.middleName}</c:if>
 																${cl.employee.lastName}
@@ -119,22 +153,13 @@
 															<td>${cl.sentTimestamp}</td>
 															<td>${cl.receivedStatus}</td>
 															<td>${cl.receivedTimestamp}</td>
+															<td>${cl.currentLocation}</td>
 														</tr>
 													</c:forEach>
 												</tbody>
 											</table>
 										</div>
-										<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 show-stats">
-											<div
-												style="margin: auto; text-align: center; font-size: 16px; padding: 12px 0px 14px 0px;">
-												<span style="border-bottom: 1px solid #141313;">Chart
-													Representation</span>
-											</div>
-											<div
-												style="margin: auto; text-align: center; padding-bottom: 15px;">
-												<canvas id="pieChart" height="250px"></canvas>
-											</div>
-										</div>
+
 									</div>
 								</div>
 							</div>
@@ -308,6 +333,7 @@
 
 	function updateReportPanel() {
 		var selectedClient = $("#clientId").val();
+		var selectedSite = $("#siteId").val();
 		var selectedEmp = $("#userId").val();
 		var selectedDate = $("#date").val();
 		if (selectedDate == "") {
@@ -321,7 +347,8 @@
 			$.ajax({
 				type : "GET",
 				url : "updateReportPanel?clientid=" + selectedClient
-						+ "&empId=" + selectedEmp + "&date=" + selectedDate,
+						+ "&siteId=" + selectedSite + "&empId=" + selectedEmp
+						+ "&date=" + selectedDate,
 				success : function(response) {
 					$('#reportPanel').html(response);
 				},
@@ -355,10 +382,24 @@
 		window.location.href = "report?userId=" + userId;
 	}
 
-	function updateEmployee(clientId) {
+	function updateSite(clientId) {
 		$.ajax({
 			type : "GET",
-			url : "updateEmpReportDropdown?clientId=" + clientId,
+			url : "updateSiteReportDropdown?clientId=" + clientId,
+			success : function(response) {
+				$('#siteSection').html(response);
+				updateEmployee(0);
+			},
+			error : function(e) {
+				console.log('Error: ' + e);
+			}
+		});
+	}
+
+	function updateEmployee(siteId) {
+		$.ajax({
+			type : "GET",
+			url : "updateEmpReportDropdown?siteId=" + siteId,
 			success : function(response) {
 				$('#employeeSection').html(response);
 			},

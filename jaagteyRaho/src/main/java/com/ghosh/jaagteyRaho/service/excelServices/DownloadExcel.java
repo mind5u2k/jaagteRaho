@@ -20,6 +20,7 @@ import com.ghosh.jaagteyRaho.model.SiteEmpReport;
 import com.ghosh.jaagteyRahoBackend.dto.Client;
 import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
 import com.ghosh.jaagteyRahoBackend.dto.Designation;
+import com.ghosh.jaagteyRahoBackend.dto.PushNotificationsStatus;
 import com.ghosh.jaagteyRahoBackend.dto.Site;
 import com.ghosh.jaagteyRahoBackend.dto.SiteEmployeeMapping;
 import com.ghosh.jaagteyRahoBackend.dto.User;
@@ -609,6 +610,123 @@ public class DownloadExcel {
 			response.setHeader("Expires:", "0"); // eliminates browser caching
 			response.setHeader("Content-Disposition",
 					"attachment; filename=Designations.xls");
+			OutputStream outStream = response.getOutputStream();
+			outStream.write(outArray);
+			outStream.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void downloadExcelReport(HttpServletResponse response,
+			List<PushNotificationsStatus> notificationsStatus) {
+
+		HSSFWorkbook wb = new HSSFWorkbook();
+
+		HSSFCellStyle style = wb.createCellStyle();
+		HSSFFont font = wb.createFont();
+		font.setColor(HSSFColor.WHITE.index);
+		font.setFontName(HSSFFont.FONT_ARIAL);
+		style.setFont(font);
+		style.setFillForegroundColor(HSSFColor.BLUE_GREY.index);
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		style.setWrapText(true);
+
+		HSSFCellStyle style1 = wb.createCellStyle();
+		style1.setWrapText(true);
+		style1.setAlignment(CellStyle.ALIGN_LEFT);
+		HSSFSheet sheet = wb.createSheet();
+		sheet.setColumnWidth(0, 1700);
+		sheet.setColumnWidth(1, 6000);
+		sheet.setColumnWidth(2, 6000);
+		sheet.setColumnWidth(3, 6000);
+		sheet.setColumnWidth(4, 6000);
+		sheet.setColumnWidth(5, 6000);
+		sheet.setColumnWidth(6, 6000);
+		sheet.setColumnWidth(7, 9000);
+
+		HSSFRow row = sheet.createRow(0);
+		row.setHeightInPoints(25f);
+		HSSFCell cell = row.createCell(0);
+		cell.setCellStyle(style);
+		cell.setCellValue("S.No.");
+		cell = row.createCell(1);
+		cell.setCellStyle(style);
+		cell.setCellValue("Employee Id");
+		cell = row.createCell(2);
+		cell.setCellStyle(style);
+		cell.setCellValue("Employee Name");
+		cell = row.createCell(3);
+		cell.setCellStyle(style);
+		cell.setCellValue("Sent Status");
+		cell = row.createCell(4);
+		cell.setCellStyle(style);
+		cell.setCellValue("Sent Time");
+		cell = row.createCell(5);
+		cell.setCellStyle(style);
+		cell.setCellValue("Received Status");
+		cell = row.createCell(6);
+		cell.setCellStyle(style);
+		cell.setCellValue("Received Time");
+		cell = row.createCell(7);
+		cell.setCellStyle(style);
+		cell.setCellValue("Address");
+
+		int rows = 1;
+		int i = 0;
+
+		for (PushNotificationsStatus st : notificationsStatus) {
+			i++;
+			row = sheet.createRow(rows);
+			cell = row.createCell(0);
+			cell.setCellStyle(style1);
+			cell.setCellValue(i);
+			cell = row.createCell(1);
+			cell.setCellStyle(style1);
+			cell.setCellValue(st.getEmployee().getEmpId());
+			cell = row.createCell(2);
+			cell.setCellStyle(style1);
+			String employees = "";
+			if (st.getEmployee().getMiddleName() == null
+					|| st.getEmployee().getMiddleName().equals("")) {
+				employees = st.getEmployee().getFirstName() + " "
+						+ st.getEmployee().getLastName();
+			} else {
+				employees = st.getEmployee().getFirstName() + " "
+						+ st.getEmployee().getMiddleName() + " "
+						+ st.getEmployee().getLastName();
+			}
+			cell.setCellValue(employees);
+			cell = row.createCell(3);
+			cell.setCellStyle(style1);
+			cell.setCellValue(st.getSentStatus());
+			cell = row.createCell(4);
+			cell.setCellStyle(style1);
+			cell.setCellValue(st.getSentTime());
+			cell = row.createCell(5);
+			cell.setCellStyle(style1);
+			cell.setCellValue(st.getReceivedStatus());
+			cell = row.createCell(6);
+			cell.setCellStyle(style1);
+			cell.setCellValue(st.getReceivedTime());
+			cell = row.createCell(7);
+			cell.setCellStyle(style1);
+			cell.setCellValue(st.getCurrentLocation());
+			rows++;
+		}
+
+		// write it as an excel attachment
+		ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+		try {
+			wb.write(outByteStream);
+			byte[] outArray = outByteStream.toByteArray();
+			response.setContentType("application/ms-excel");
+			response.setContentLength(outArray.length);
+			response.setHeader("Expires:", "0"); // eliminates browser caching
+			response.setHeader("Content-Disposition",
+					"attachment; filename=Report.xls");
 			OutputStream outStream = response.getOutputStream();
 			outStream.write(outArray);
 			outStream.flush();
