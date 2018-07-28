@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class ContactPerson implements Serializable {
@@ -52,5 +53,13 @@ public class ContactPerson implements Serializable {
 
 	public void setAlternateNo(String alternateNo) {
 		this.alternateNo = alternateNo;
+	}
+
+	public Site getSite() {
+		return site;
+	}
+
+	public void setSite(Site site) {
+		this.site = site;
 	}
 }

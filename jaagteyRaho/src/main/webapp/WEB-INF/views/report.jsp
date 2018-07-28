@@ -56,10 +56,19 @@
 									</label>
 								</section>
 								<section class="col col-2">
-									<label class="label">Select Date</label> <label class="input">
-										<i class="icon-append fa fa-calendar"></i> <input id="date"
-										value="${date}" name="date" data-dateformat="dd/mm/yy"
-										placeholder="Select Date" type="text" class="datepicker">
+									<label class="label">Select Start Date</label> <label
+										class="input"> <i class="icon-append fa fa-calendar"></i>
+										<input id="startDate" value="${startDate}" name="startDate"
+										data-dateformat="dd/mm/yy" placeholder="Select Start Date"
+										type="text" class="datepicker">
+									</label>
+								</section>
+								<section class="col col-2">
+									<label class="label">Select End Date</label> <label
+										class="input"> <i class="icon-append fa fa-calendar"></i>
+										<input id="endDate" value="${endDate}" name="endDate"
+										data-dateformat="dd/mm/yy" placeholder="Select Start Date"
+										type="text" class="datepicker">
 									</label>
 								</section>
 								<section class="col col-2">
@@ -335,8 +344,9 @@
 		var selectedClient = $("#clientId").val();
 		var selectedSite = $("#siteId").val();
 		var selectedEmp = $("#userId").val();
-		var selectedDate = $("#date").val();
-		if (selectedDate == "") {
+		var selectedStartDate = $("#startDate").val();
+		var selectedEndDate = $("#endDate").val();
+		if (selectedStartDate == "" || selectedEndDate == "") {
 			alert("!! Please Select Date !!");
 		} else {
 
@@ -348,7 +358,8 @@
 				type : "GET",
 				url : "updateReportPanel?clientid=" + selectedClient
 						+ "&siteId=" + selectedSite + "&empId=" + selectedEmp
-						+ "&date=" + selectedDate,
+						+ "&startDate=" + selectedStartDate + "&endDate="
+						+ selectedEndDate,
 				success : function(response) {
 					$('#reportPanel').html(response);
 				},

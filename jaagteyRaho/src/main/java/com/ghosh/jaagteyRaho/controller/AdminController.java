@@ -102,7 +102,8 @@ public class AdminController {
 				}
 			}
 		}
-		mv.addObject("date", td + "/" + (tm + 1) + "/" + ty);
+		mv.addObject("startDate", td + "/" + (tm + 1) + "/" + ty);
+		mv.addObject("endDate", td + "/" + (tm + 1) + "/" + ty);
 		mv.addObject("sent", sent);
 		mv.addObject("received", received);
 		mv.addObject("pushNotificationsStatus", pushNotificationsStatus);
@@ -482,6 +483,8 @@ public class AdminController {
 		mv.addObject("contactPersons", contactPersons);
 
 		ContactPerson contactPerson = new ContactPerson();
+		List<Site> sites = clientManagementDao.getAllSites();
+		mv.addObject("sites", sites);
 		mv.addObject("contactPerson", contactPerson);
 		mv.addObject("title", "Manage Contact");
 		mv.addObject("userClickAdminManageContact", true);
@@ -971,7 +974,8 @@ public class AdminController {
 				}
 			}
 		}
-		mv.addObject("date", td + "/" + (tm + 1) + "/" + ty);
+		mv.addObject("startDate", td + "/" + (tm + 1) + "/" + ty);
+		mv.addObject("endDate", td + "/" + (tm + 1) + "/" + ty);
 		mv.addObject("sent", sent);
 		mv.addObject("received", received);
 		mv.addObject("pushNotificationsStatus", pushNotificationsStatus);
@@ -1019,12 +1023,14 @@ public class AdminController {
 			@RequestParam(name = "clientid", required = false) Integer clientid,
 			@RequestParam(name = "siteId", required = false) Integer siteId,
 			@RequestParam(name = "empId", required = false) Integer empId,
-			@RequestParam(name = "date", required = false) String date) {
+			@RequestParam(name = "startDate", required = false) String startDate,
+			@RequestParam(name = "endDate", required = false) String endDate) {
 
 		int sent = 0;
 		int received = 0;
 		System.out.println("selected emp Id is[" + empId
-				+ "] and selected date is [" + date + "]");
+				+ "] and selected start date is [" + startDate
+				+ "] and selected end date is [" + endDate + "]");
 
 		ModelAndView mv = new ModelAndView("updateReportPanel");
 
@@ -1064,10 +1070,15 @@ public class AdminController {
 
 		}
 
-		String[] dateArray = date.split("/");
-		int td = Integer.parseInt(dateArray[0]);
-		int tm = Integer.parseInt(dateArray[1]);
-		int ty = Integer.parseInt(dateArray[2]);
+		String[] startDateArray = startDate.split("/");
+		int td = Integer.parseInt(startDateArray[0]);
+		int tm = Integer.parseInt(startDateArray[1]);
+		int ty = Integer.parseInt(startDateArray[2]);
+
+		String[] endDateArray = endDate.split("/");
+		int tdend = Integer.parseInt(endDateArray[0]);
+		int tmend = Integer.parseInt(endDateArray[1]);
+		int tyend = Integer.parseInt(endDateArray[2]);
 
 		List<PushNotificationsStatus> pushNotificationsStatus = new ArrayList<PushNotificationsStatus>();
 
@@ -1085,7 +1096,8 @@ public class AdminController {
 						int m = cal.get(Calendar.MONTH);
 						int y = cal.get(Calendar.YEAR);
 
-						if (d == td && m == (tm - 1) && y == ty) {
+						if (d >= td && m >= (tm - 1) && y >= ty && d <= tdend
+								&& m <= (tmend - 1) && y <= tyend) {
 							if (s.getSentStatus() != null) {
 								if (s.getSentStatus().equals(Util.SUCCESS)) {
 									sent++;
@@ -1107,7 +1119,8 @@ public class AdminController {
 		mv.addObject("clientid", clientid);
 		mv.addObject("siteId", siteId);
 		mv.addObject("empId", empId);
-		mv.addObject("date", date);
+		mv.addObject("startDate", startDate);
+		mv.addObject("endDate", endDate);
 
 		mv.addObject("sent", sent);
 		mv.addObject("received", received);

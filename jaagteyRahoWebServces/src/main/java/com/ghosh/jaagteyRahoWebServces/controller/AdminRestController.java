@@ -266,6 +266,8 @@ public class AdminRestController {
 
 		PushNotificationsStatus no = systemSetupDAO
 				.getLatestPushNotificationByUser(user);
+
+		System.out.println(no);
 		if (no == null) {
 			System.out.println("push notification is null");
 			GetOtp getOtp = new GetOtp();
