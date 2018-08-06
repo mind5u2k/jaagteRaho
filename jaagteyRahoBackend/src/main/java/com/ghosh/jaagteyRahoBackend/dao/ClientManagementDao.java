@@ -33,9 +33,13 @@ public interface ClientManagementDao {
 
 	List<SiteEmployeeMapping> assignedEmployeestoSite(Site site);
 
+	List<SiteEmployeeMapping> assignedSiteToEmployee(User user);
+
 	SiteEmployeeMapping getSiteEmpMappingByEmpAndSite(Site site, User emp);
 
 	SiteEmployeeMapping getSiteEmpMappingById(int id);
+
+	List<SiteEmployeeMapping> getSiteEmpMappingByUserId(int userId);
 
 	List<User> getUnAssignedEmployees(Site site);
 

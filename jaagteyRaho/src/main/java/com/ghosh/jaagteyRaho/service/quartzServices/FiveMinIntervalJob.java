@@ -3,7 +3,6 @@ package com.ghosh.jaagteyRaho.service.quartzServices;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +80,8 @@ public class FiveMinIntervalJob {
 						&& Util.compareTwoTimeStamps(endTimeStamp, currentTime) > 0) {
 					if (autoCheckinSetting.getAutoCheckinIntTime().equals(
 							Util.INTERVAL_TIME_5MIN)) {
+
+						// --------------------------------------------------------------
 						String userNos = "";
 						User u = autoCheckinSetting.getEmployee();
 
@@ -113,10 +114,20 @@ public class FiveMinIntervalJob {
 								e.printStackTrace();
 							}
 						}
+
+						try {
+							Thread.sleep(300000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
 						userNos = userNos + u.getContactNumber();
 
 						SendSms sendSms = new SendSms();
 						// sendSms.sendSms(userNos);
+
+						// ------------------------------------------------------
 					}
 				}
 			}
@@ -125,13 +136,13 @@ public class FiveMinIntervalJob {
 	}
 
 	public static void main(String[] args) {
-		Calendar c = Calendar.getInstance();
+		/*-Calendar c = Calendar.getInstance();
 		Timestamp timestamp = new Timestamp(c.getTimeInMillis());
 		Date date = new Date(timestamp.getTime());
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(date.getTime());
 		System.out.println(cal.get(Calendar.DATE));
 		System.out.println(cal.get(Calendar.MONTH));
-		System.out.println(cal.get(Calendar.YEAR));
+		System.out.println(cal.get(Calendar.YEAR));*/
 	}
 }

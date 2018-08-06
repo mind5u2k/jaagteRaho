@@ -27,6 +27,9 @@ import com.ghosh.jaagteyRahoBackend.dao.UserDAO;
 import com.ghosh.jaagteyRahoBackend.dto.ContactPerson;
 import com.ghosh.jaagteyRahoBackend.dto.PushNotificationsStatus;
 import com.ghosh.jaagteyRahoBackend.dto.SelfieCheckIn;
+import com.ghosh.jaagteyRahoBackend.dto.Site;
+import com.ghosh.jaagteyRahoBackend.dto.SiteContactMapping;
+import com.ghosh.jaagteyRahoBackend.dto.SiteEmployeeMapping;
 import com.ghosh.jaagteyRahoBackend.dto.User;
 import com.ghosh.jaagteyRahoWebServces.model.ContactPersonModel;
 import com.ghosh.jaagteyRahoWebServces.model.GetOtp;
@@ -61,14 +64,50 @@ public class AdminRestController {
 		return new ResponseEntity<List<User>>(employees, headers, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/Contacts", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<ContactPersonModel> Contacts() {
+	@RequestMapping(value = "/Contacts/{number}", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ContactPersonModel> Contacts(
+			@PathVariable("number") String number) {
 
 		HttpHeaders headers = new HttpHeaders();
-		List<ContactPerson> contactPersons = systemSetupDAO
-				.getAllContactPersons();
+		List<ContactPerson> contactPersons = new ArrayList<ContactPerson>();
 
-		if (contactPersons == null) {
+		if (number == null) {
+			ContactPersonModel cpm = new ContactPersonModel();
+			cpm.setMsg("!! Mobile Number Please !!");
+			cpm.setStatus(Util.FAILURE);
+			return new ResponseEntity<ContactPersonModel>(cpm, headers,
+					HttpStatus.OK);
+		}
+
+		User user = userDAO.getUserByMobileNo(number);
+		if (user == null) {
+			ContactPersonModel cpm = new ContactPersonModel();
+			cpm.setMsg("!! Contact Number is not registered. !!");
+			cpm.setStatus(Util.FAILURE);
+			return new ResponseEntity<ContactPersonModel>(cpm, headers,
+					HttpStatus.OK);
+		}
+
+		List<SiteEmployeeMapping> sem = clientManagementDao
+				.assignedSiteToEmployee(user);
+		List<Site> sites = new ArrayList<Site>();
+		if (sem != null) {
+			for (SiteEmployeeMapping s : sem) {
+				sites.add(s.getSite());
+			}
+		}
+
+		for (Site s : sites) {
+			List<SiteContactMapping> cps = clientManagementDao
+					.assignedContactstoSite(s);
+			if (cps != null && cps.size() > 0) {
+				for (SiteContactMapping scm : cps) {
+					contactPersons.add(scm.getContactPerson());
+				}
+			}
+		}
+
+		if (contactPersons.size() == 0) {
 			ContactPersonModel contactPersonModel = new ContactPersonModel();
 			contactPersonModel
 					.setContactPersons(new ArrayList<ContactPerson>());
@@ -265,14 +304,14 @@ public class AdminRestController {
 		}
 
 		PushNotificationsStatus no = systemSetupDAO
-				.getLatestPushNotificationByUser(user);
+				.getLatestPushNotificationByUser(user, Util.NOTIFICATION);
 
 		System.out.println(no);
 		if (no == null) {
 			System.out.println("push notification is null");
 			GetOtp getOtp = new GetOtp();
 			getOtp.setStatus(Util.FAILURE);
-			getOtp.setMsg("!! Wrong Credentials !!");
+			getOtp.setMsg("!! Invalid OTP !!");
 			return new ResponseEntity<GetOtp>(getOtp, headers, HttpStatus.OK);
 		}
 
@@ -283,7 +322,7 @@ public class AdminRestController {
 			if (Util.compareTwoTimeStamps(receiTime, sendTime) > 5) {
 				GetOtp getOtp = new GetOtp();
 				getOtp.setStatus(Util.FAILURE);
-				getOtp.setMsg("!! OTP has been expired !!");
+				getOtp.setMsg("!! you have entered a wrong OTP or OTP has been expired !!");
 				return new ResponseEntity<GetOtp>(getOtp, headers,
 						HttpStatus.OK);
 			} else {

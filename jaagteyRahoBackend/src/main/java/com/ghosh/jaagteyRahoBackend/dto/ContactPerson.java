@@ -17,6 +17,9 @@ public class ContactPerson implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
+	@ManyToOne
+	private Site site;
+
 	private String name;
 
 	private String contactNo;

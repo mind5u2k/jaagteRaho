@@ -23,10 +23,10 @@
 	<img src="${images}/qqq.png" style="height: 84px;"><br>
 	Please wait ...
 </div>
-<div id="content" style="display: none;">
+<div id="content" style="display: none; padding-top: 0;">
 	<div class="row">
 		<div class="col-sm-12">
-			<div class="row" style="padding: 13px 0 17px 0px;">
+			<div class="row" style="padding: 0 0 17px 0px;">
 				<div class="col-sm-12">
 					<sf:form action="${contextRoot}/ad/addAutoCheckin"
 						modelAttribute="autoCheckinSetting" id="autoCheckinSettingForm"
@@ -59,18 +59,33 @@
 											items="${intervalTimes}" /> <i></i>
 									</label>
 								</section>
-								<section class="col col-2">
+								<section class="col col-1">
 									<label class="label">Start Time<span
 										style="color: #f00; padding-left: 4px;">*</span></label> <label
 										class="select"> <sf:select path="startTime"
 											items="${times}" /> <i></i>
 									</label>
 								</section>
-								<section class="col col-2">
+								<section class="col col-1">
 									<label class="label">End Time<span
 										style="color: #f00; padding-left: 4px;">*</span></label> <label
 										class="select"> <sf:select path="endTime"
 											items="${times}" /> <i></i>
+									</label>
+								</section>
+								<section class="col col-1">
+									<label class="label">Noti Pri<span
+										style="color: #f00; padding-left: 4px;">*</span></label> <label
+										class="select"> <sf:select path="pushNotification"
+											onchange="updateMsg();" id="pushNotification"
+											items="${priorities}" /> <i></i>
+									</label>
+								</section>
+								<section class="col col-1">
+									<label class="label">Msg Pri<span
+										style="color: #f00; padding-left: 4px;">*</span></label> <label
+										class="select"> <sf:select path="msg" id="msg"
+											onchange="updateNotification();" items="${priorities}" /> <i></i>
 									</label>
 								</section>
 								<section class="col col-2">
@@ -109,6 +124,8 @@
 												<th>AutoCheckins Int. Time</th>
 												<th>Start Time</th>
 												<th>End Time</th>
+												<th>Noti Priority</th>
+												<th>Msg Priority</th>
 												<th>Action</th>
 											</tr>
 										</thead>
@@ -124,6 +141,8 @@
 													<td>${a.autoCheckinIntTime}</td>
 													<td>${a.startTime}</td>
 													<td>${a.endTime}</td>
+													<td>${a.pushNotification}</td>
+													<td>${a.msg}</td>
 													<td><a class="text-primary"
 														onclick="deleteAutoCheckinSetting('${a.id}');"
 														style="cursor: pointer; border-bottom: 1px solid #3276b1;">DELETE</a></td>
@@ -245,5 +264,27 @@
 	function deletePermanent() {
 		var deleteAutoCheckinId = $("#deleteAutoCheckinId").val();
 		window.location.href = "deleteAutoCheckinId/" + deleteAutoCheckinId;
+	}
+
+	function updateNotification() {
+		var msg = $("#msg").val();
+		var pushNotification = $("#pushNotification").val();
+		if (msg == 1) {
+			$("#pushNotification").val(2);
+		}
+		if (msg == 2) {
+			$("#pushNotification").val(1);
+		}
+	}
+
+	function updateMsg() {
+		var msg = $("#msg").val();
+		var pushNotification = $("#pushNotification").val();
+		if (pushNotification == 1) {
+			$("#msg").val(2);
+		}
+		if (pushNotification == 2) {
+			$("#msg").val(1);
+		}
 	}
 </script>

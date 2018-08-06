@@ -34,6 +34,10 @@ public class AutoCheckinSetting implements Serializable {
 
 	private String endTime;
 
+	private Integer pushNotification;
+
+	private Integer msg;
+
 	public String getGeoRadius() {
 		return geoRadius;
 	}
@@ -96,6 +100,22 @@ public class AutoCheckinSetting implements Serializable {
 
 	public void setClient(Client client) {
 		this.client = client;
+	}
+
+	public Integer getPushNotification() {
+		return pushNotification;
+	}
+
+	public void setPushNotification(Integer pushNotification) {
+		this.pushNotification = pushNotification;
+	}
+
+	public Integer getMsg() {
+		return msg;
+	}
+
+	public void setMsg(Integer msg) {
+		this.msg = msg;
 	}
 
 }

@@ -64,6 +64,7 @@
 											<th>Name</th>
 											<th>Sent Status</th>
 											<th>Sent Time</th>
+											<th>Via</th>
 											<th>Received Status</th>
 											<th>Received Time</th>
 											<th>Address</th>
@@ -87,6 +88,7 @@
 												</td>
 												<td>${cl.sentStatus}</td>
 												<td>${cl.sentTimestamp}</td>
+												<td>${cl.sentBy}</td>
 												<td>${cl.receivedStatus}</td>
 												<td>${cl.receivedTimestamp}</td>
 												<td>${cl.currentLocation}</td>

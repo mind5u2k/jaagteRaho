@@ -15,7 +15,7 @@ public interface SystemSetupDAO {
 	AutoCheckinSetting getAutoCheckinSettingByUser(int userId);
 
 	AutoCheckinSetting getAutoCheckinSettingById(int id);
-	
+
 	boolean deleteAutoCheckinSetting(AutoCheckinSetting autoCheckinSetting);
 
 	boolean updateAutoCheckinSetting(AutoCheckinSetting autoCheckinSetting);
@@ -32,9 +32,12 @@ public interface SystemSetupDAO {
 
 	boolean UpdatePustNotificationStatus(PushNotificationsStatus status);
 
+	void updateAllNotifications(User user);
+
 	List<PushNotificationsStatus> getLatestPushNotifications();
 
-	PushNotificationsStatus getLatestPushNotificationByUser(User user);
+	PushNotificationsStatus getLatestPushNotificationByUser(User user,
+			String type);
 
 	List<PushNotificationsStatus> getPushNotificationsByEmployee(User emp);
 

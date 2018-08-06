@@ -43,7 +43,6 @@ public class PushNotificationsStatus {
 	@Transient
 	private String sentTime;
 
-
 	@Transient
 	private String otp;
 
@@ -72,6 +71,9 @@ public class PushNotificationsStatus {
 
 	@Transient
 	private String contactNumber;
+
+	private String sentBy;
+	private String receivedBy;
 
 	public int getId() {
 		return id;
@@ -245,6 +247,22 @@ public class PushNotificationsStatus {
 
 	public void setReceivedTime(String receivedTime) {
 		this.receivedTime = receivedTime;
+	}
+
+	public String getSentBy() {
+		return sentBy;
+	}
+
+	public void setSentBy(String sentBy) {
+		this.sentBy = sentBy;
+	}
+
+	public String getReceivedBy() {
+		return receivedBy;
+	}
+
+	public void setReceivedBy(String receivedBy) {
+		this.receivedBy = receivedBy;
 	}
 
 }

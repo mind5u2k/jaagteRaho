@@ -144,22 +144,52 @@ public class SystemSetupDAOImpl implements SystemSetupDAO {
 	@Override
 	public List<PushNotificationsStatus> getPushNotificationsByEmployee(User emp) {
 		String selectQuery = "FROM PushNotificationsStatus WHERE employee.id=:empId";
-		return sessionFactory.getCurrentSession()
-				.createQuery(selectQuery, PushNotificationsStatus.class)
-				.setParameter("empId", emp.getId()).getResultList();
+		try {
+			List<PushNotificationsStatus> a = sessionFactory
+					.getCurrentSession()
+					.createQuery(selectQuery, PushNotificationsStatus.class)
+					.setParameter("empId", emp.getId()).getResultList();
+			if (a != null) {
+				if (a.size() > 0) {
+					return a;
+				} else {
+					return null;
+				}
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			return null;
+		}
+
 	}
 
 	@Override
-	public PushNotificationsStatus getLatestPushNotificationByUser(User user) {
-		String selectQuery = "FROM PushNotificationsStatus WHERE employee.id=:empId AND latestStatus=:latestStatus";
+	public PushNotificationsStatus getLatestPushNotificationByUser(User user,
+			String type) {
+		String selectQuery = "FROM PushNotificationsStatus WHERE employee.id=:empId AND latestStatus=:latestStatus AND sentBy=:sentBy";
 
 		try {
 			return sessionFactory.getCurrentSession()
 					.createQuery(selectQuery, PushNotificationsStatus.class)
 					.setParameter("empId", user.getId())
-					.setParameter("latestStatus", 1).getSingleResult();
+					.setParameter("latestStatus", 1)
+					.setParameter("sentBy", type).getSingleResult();
 		} catch (Exception e) {
 			return null;
+		}
+
+	}
+
+	@Override
+	public void updateAllNotifications(User user) {
+		String selectQuery = "UPDATE PushNotificationsStatus SET latestStatus=0 WHERE employee.id=:empId AND latestStatus=:latestStatus";
+
+		try {
+			sessionFactory.getCurrentSession().createQuery(selectQuery)
+					.setParameter("empId", user.getId())
+					.setParameter("latestStatus", 1).executeUpdate();
+		} catch (Exception e) {
 		}
 
 	}

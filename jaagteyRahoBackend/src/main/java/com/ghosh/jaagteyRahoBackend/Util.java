@@ -30,6 +30,9 @@ public class Util {
 		return roles;
 	}
 
+	public static final String MSG = "Msg";
+	public static final String NOTIFICATION = "Notification";
+
 	public static final String SUCCESS = "SUCCESS";
 	public static final String FAILURE = "FAILURE";
 
@@ -57,6 +60,13 @@ public class Util {
 		return string;
 	}
 
+	public static List<Integer> getPriorities() {
+		List<Integer> priorities = new ArrayList<Integer>();
+		priorities.add(1);
+		priorities.add(2);
+		return priorities;
+	}
+
 	public static final String INTERVAL_TIME_5MIN = "5 Mins";
 	public static final String INTERVAL_TIME_10MIN = "10 Mins";
 	public static final String INTERVAL_TIME_15MIN = "15 Mins";
@@ -68,8 +78,8 @@ public class Util {
 
 	public static List<String> getIntervalTimes() {
 		List<String> intervals = new ArrayList<String>();
-		intervals.add(INTERVAL_TIME_5MIN);
-		intervals.add(INTERVAL_TIME_10MIN);
+		/*-intervals.add(INTERVAL_TIME_5MIN);
+		intervals.add(INTERVAL_TIME_10MIN);*/
 		intervals.add(INTERVAL_TIME_15MIN);
 		intervals.add(INTERVAL_TIME_20MIN);
 		intervals.add(INTERVAL_TIME_30MIN);

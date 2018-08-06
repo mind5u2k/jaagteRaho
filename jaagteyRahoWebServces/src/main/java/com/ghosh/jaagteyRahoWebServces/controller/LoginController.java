@@ -76,7 +76,7 @@ public class LoginController {
 			LoginCredentials credentials = new LoginCredentials();
 			credentials.setUser(u);
 
-			String auth = u.getEmail() + ":" + password;
+			String auth = u.getContactNumber() + ":" + password;
 			byte[] encodedAuth = Base64.encode(auth
 					.getBytes(StandardCharsets.ISO_8859_1));
 			String authHeader = "Basic " + new String(encodedAuth);

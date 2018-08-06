@@ -354,6 +354,9 @@ public class AdminController {
 				.getAutoCheckinSetting();
 
 		AutoCheckinSetting autoCheckinSetting = new AutoCheckinSetting();
+		autoCheckinSetting.setPushNotification(1);
+		autoCheckinSetting.setMsg(2);
+
 		List<Client> allClients = clientManagementDao.getAllClients();
 		List<User> employees = new ArrayList<User>();
 
@@ -362,6 +365,7 @@ public class AdminController {
 		mv.addObject("allClients", allClients);
 		mv.addObject("intervalTimes", Util.getIntervalTimes());
 		mv.addObject("times", Util.getTimes());
+		mv.addObject("priorities", Util.getPriorities());
 		mv.addObject("title", "Auto Checkin Setting");
 		mv.addObject("userClickAdminAutoCheckinSetting", true);
 		return mv;
@@ -602,6 +606,7 @@ public class AdminController {
 		boolean status = false;
 		try {
 			status = userDAO.deleteUser(user);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

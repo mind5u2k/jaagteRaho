@@ -134,6 +134,15 @@ public class ClientManagementDaoImpl implements ClientManagementDao {
 	}
 
 	@Override
+	public List<SiteEmployeeMapping> assignedSiteToEmployee(User user) {
+		String selectQuery = "FROM SiteEmployeeMapping WHERE employee.id = :id ORDER BY id DESC";
+		return sessionFactory.getCurrentSession()
+				.createQuery(selectQuery, SiteEmployeeMapping.class)
+				.setParameter("id", user.getId()).getResultList();
+
+	}
+
+	@Override
 	public SiteEmployeeMapping getSiteEmpMappingById(int id) {
 		try {
 			return sessionFactory.getCurrentSession().get(
@@ -142,6 +151,30 @@ public class ClientManagementDaoImpl implements ClientManagementDao {
 			System.out.println(ex.getMessage());
 			return null;
 		}
+	}
+
+	@Override
+	public List<SiteEmployeeMapping> getSiteEmpMappingByUserId(int userId) {
+
+		String selectQuery = "FROM SiteEmployeeMapping WHERE employee.id = :empId ORDER BY id DESC";
+
+		try {
+			List<SiteEmployeeMapping> a = sessionFactory.getCurrentSession()
+					.createQuery(selectQuery, SiteEmployeeMapping.class)
+					.setParameter("empId", userId).getResultList();
+			if (a != null) {
+				if (a.size() > 0) {
+					return a;
+				} else {
+					return null;
+				}
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			return null;
+		}
+
 	}
 
 	@Override
