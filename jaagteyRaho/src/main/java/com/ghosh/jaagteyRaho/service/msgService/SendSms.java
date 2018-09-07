@@ -18,7 +18,7 @@ public class SendSms {
 							+ u.getFirstName()
 							+ "%20!!%20Your%20OTP%20is%20"
 							+ otp
-							+ "%20.%20To%20response%20for%20this%20OTP%20type%20Jagtheraho<SAPACE><your%20OTP>%20and%20send%20to%209220092200&v1.1&userid=2000179599&password=VxGGyDQuL&send_to="
+							+ "%20.%20To%20response%20for%20this%20OTP%20type%20Jagteyraho<SAPACE><your%20OTP>%20and%20send%20to%209220092200&v1.1&userid=2000179599&password=VxGGyDQuL&send_to="
 							+ u.getContactNumber()
 							+ "&msg_type=text&method=sendMessage")
 					.openConnection();

@@ -4,8 +4,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 import java.sql.Timestamp;
 
-import javax.sql.rowset.serial.SerialBlob;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +18,7 @@ import com.ghosh.jaagteyRahoBackend.dao.SystemSetupDAO;
 import com.ghosh.jaagteyRahoBackend.dao.UserDAO;
 import com.ghosh.jaagteyRahoBackend.dto.PushNotificationsStatus;
 import com.ghosh.jaagteyRahoBackend.dto.User;
-import com.ghosh.jaagteyRahoWebServces.model.GetOtp;
+import com.ghosh.jaagteyRahoWebServces.model.ReceivedCallStatus;
 import com.ghosh.jaagteyRahoWebServces.msgService.SendSms;
 
 @RestController
@@ -85,5 +83,59 @@ public class GupshupController {
 				sendSms.wrongOTP(number);
 			}
 		}
+	}
+
+	@RequestMapping(value = "/receivedCalls", method = RequestMethod.GET, produces = APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReceivedCallStatus> receivedCalls(
+			@RequestParam(name = "causeId", required = false) String causeId,
+			@RequestParam(name = "pickUp", required = false) String pickUp,
+			@RequestParam(name = "hangUp", required = false) String hangUp,
+			@RequestParam(name = "billedPulse", required = false) String billedPulse,
+			@RequestParam(name = "finalAttempt", required = false) String finalAttempt,
+			@RequestParam(name = "callStatus", required = false) String callStatus,
+			@RequestParam(name = "phoneNumber", required = false) String phoneNumber,
+			@RequestParam(name = "retryCount", required = false) String retryCount) {
+
+		System.out.println("---------- [" + causeId + "]");
+		System.out.println("---------- [" + pickUp + "]");
+		System.out.println("---------- [" + hangUp + "]");
+		System.out.println("---------- [" + billedPulse + "]");
+		System.out.println("---------- [" + finalAttempt + "]");
+		System.out.println("---------- [" + callStatus + "]");
+		System.out.println("---------- [" + phoneNumber + "]");
+		System.out.println("---------- [" + retryCount + "]");
+
+		String number = phoneNumber.substring(2);
+		User user = userDAO.getUserByMobileNo(number);
+
+		if (user == null) {
+			ReceivedCallStatus st = new ReceivedCallStatus();
+			st.setMsg("Wrong No");
+			st.setStatus(Util.FAILURE);
+			return new ResponseEntity<ReceivedCallStatus>(st, HttpStatus.OK);
+		} else {
+			PushNotificationsStatus no = systemSetupDAO
+					.getLatestPushNotificationByUser(user, Util.CALL);
+			if (no != null) {
+				Timestamp receiTime = new Timestamp(System.currentTimeMillis());
+				no.setContactNumber(user.getContactNumber());
+				no.setCurrentLocation("");
+				no.setEmployee(user);
+				no.setReceivedStatus(callStatus);
+				no.setReceivedTimestamp(receiTime);
+				no.setLatestStatus(0);
+				systemSetupDAO.UpdatePustNotificationStatus(no);
+				ReceivedCallStatus st = new ReceivedCallStatus();
+				st.setMsg("Thank you for responding on the call ");
+				st.setStatus(Util.SUCCESS);
+				return new ResponseEntity<ReceivedCallStatus>(st, HttpStatus.OK);
+			} else {
+				ReceivedCallStatus st = new ReceivedCallStatus();
+				st.setMsg("Call has not been triggered from JaagteryRaho Tool !!");
+				st.setStatus(Util.FAILURE);
+				return new ResponseEntity<ReceivedCallStatus>(st, HttpStatus.OK);
+			}
+		}
+
 	}
 }

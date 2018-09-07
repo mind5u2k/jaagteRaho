@@ -117,7 +117,7 @@
 										<div class="col-md-3 show-stats"
 											style="text-align: right; padding: 0 5px 0 0px;">
 											<a class="btn btn-default"
-												href="${contextRoot}/admin/downloadReports?clientid=0&siteId=0&empId=0&date=${date}"
+												href="${contextRoot}/admin/downloadReports?clientid=0&siteId=0&empId=0&startDate=${startDate}&endDate=${endDate}"
 												target="_blank"> <i class="fa fa-file-excel-o"></i>
 												&nbsp;Download Excel
 											</a>

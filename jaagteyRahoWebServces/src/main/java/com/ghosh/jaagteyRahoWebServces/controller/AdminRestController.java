@@ -5,6 +5,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -250,6 +251,7 @@ public class AdminRestController {
 			return new ResponseEntity<SelfieCheckinModel>(checkinModel,
 					HttpStatus.OK);
 		}
+		Collections.reverse(selfieCheckIns);
 		SelfieCheckinModel checkinModel = new SelfieCheckinModel();
 		checkinModel.setSelfieCheckins(selfieCheckIns);
 		checkinModel.setMsg("Total Entries = " + selfieCheckIns.size());

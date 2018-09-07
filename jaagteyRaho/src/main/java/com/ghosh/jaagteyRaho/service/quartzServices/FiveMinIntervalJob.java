@@ -2,12 +2,15 @@ package com.ghosh.jaagteyRaho.service.quartzServices;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.commons.httpclient.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ghosh.jaagteyRaho.service.PushNotifictionHelper;
+import com.ghosh.jaagteyRaho.service.callService.CallTrigger;
 import com.ghosh.jaagteyRaho.service.msgService.SendSms;
 import com.ghosh.jaagteyRahoBackend.Util;
 import com.ghosh.jaagteyRahoBackend.dao.SystemSetupDAO;
@@ -80,54 +83,6 @@ public class FiveMinIntervalJob {
 						&& Util.compareTwoTimeStamps(endTimeStamp, currentTime) > 0) {
 					if (autoCheckinSetting.getAutoCheckinIntTime().equals(
 							Util.INTERVAL_TIME_5MIN)) {
-
-						// --------------------------------------------------------------
-						String userNos = "";
-						User u = autoCheckinSetting.getEmployee();
-
-						if (u.getPushNotificationToken() != null) {
-							try {
-								String otp = Util.generateOTP();
-								String st = PushNotifictionHelper
-										.sendPushNotification(
-												u.getPushNotificationToken(),
-												otp);
-
-								PushNotificationsStatus noStatus = new PushNotificationsStatus();
-								noStatus.setEmployee(u);
-								noStatus.setLatestStatus(1);
-								noStatus.setSentOtp(otp);
-								noStatus.setSentStatus(Util.SUCCESS);
-								noStatus.setSentTimestamp(new Timestamp(System
-										.currentTimeMillis()));
-
-								List<PushNotificationsStatus> ss = systemSetupDAO
-										.getLatestPushNotifications();
-								for (PushNotificationsStatus p : ss) {
-									p.setLatestStatus(0);
-									systemSetupDAO
-											.UpdatePustNotificationStatus(p);
-								}
-								systemSetupDAO
-										.addPustNotificationStatus(noStatus);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
-
-						try {
-							Thread.sleep(300000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-
-						userNos = userNos + u.getContactNumber();
-
-						SendSms sendSms = new SendSms();
-						// sendSms.sendSms(userNos);
-
-						// ------------------------------------------------------
 					}
 				}
 			}

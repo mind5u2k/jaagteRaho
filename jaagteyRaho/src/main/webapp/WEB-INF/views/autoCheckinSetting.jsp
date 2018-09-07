@@ -33,7 +33,7 @@
 						cssClass="smart-form" method="post">
 						<fieldset>
 							<div class="row">
-								<section class="col col-2">
+								<section class="col col-3">
 									<label class="label">Client<span
 										style="color: #f00; padding-left: 4px;">*</span></label> <label
 										class="select"> <sf:select path="client.id"
@@ -44,7 +44,7 @@
 										</sf:select> <i></i>
 									</label>
 								</section>
-								<section class="col col-2" id="employeeSection">
+								<section class="col col-3" id="employeeSection">
 									<label class="label">Employee<span
 										style="color: #f00; padding-left: 4px;">*</span></label> <label
 										class="select"> <sf:select path="employee.id">
@@ -59,35 +59,43 @@
 											items="${intervalTimes}" /> <i></i>
 									</label>
 								</section>
-								<section class="col col-1">
+								<section class="col col-2">
 									<label class="label">Start Time<span
 										style="color: #f00; padding-left: 4px;">*</span></label> <label
 										class="select"> <sf:select path="startTime"
 											items="${times}" /> <i></i>
 									</label>
 								</section>
-								<section class="col col-1">
+								<section class="col col-2">
 									<label class="label">End Time<span
 										style="color: #f00; padding-left: 4px;">*</span></label> <label
 										class="select"> <sf:select path="endTime"
 											items="${times}" /> <i></i>
 									</label>
 								</section>
-								<section class="col col-1">
-									<label class="label">Noti Pri<span
+								<section class="col col-2">
+									<label class="label">Notification Priority<span
 										style="color: #f00; padding-left: 4px;">*</span></label> <label
 										class="select"> <sf:select path="pushNotification"
-											onchange="updateMsg();" id="pushNotification"
+											onchange="updateNotification();" id="pushNotification"
 											items="${priorities}" /> <i></i>
 									</label>
 								</section>
-								<section class="col col-1">
-									<label class="label">Msg Pri<span
+								<section class="col col-2">
+									<label class="label">Message Priority<span
 										style="color: #f00; padding-left: 4px;">*</span></label> <label
 										class="select"> <sf:select path="msg" id="msg"
-											onchange="updateNotification();" items="${priorities}" /> <i></i>
+											onchange="updateMsg();" items="${priorities}" /> <i></i>
 									</label>
 								</section>
+								<section class="col col-2">
+									<label class="label">Call Priority<span
+										style="color: #f00; padding-left: 4px;">*</span></label> <label
+										class="select"> <sf:select path="calls" id="calls"
+											onchange="updateCall();" items="${priorities}" /> <i></i>
+									</label>
+								</section>
+
 								<section class="col col-2">
 									<label class="label">&nbsp;</label> <label class="input">
 										<sf:hidden path="id" /> <input type="submit" value="Submit"
@@ -126,6 +134,7 @@
 												<th>End Time</th>
 												<th>Noti Priority</th>
 												<th>Msg Priority</th>
+												<th>Call Priority</th>
 												<th>Action</th>
 											</tr>
 										</thead>
@@ -143,6 +152,7 @@
 													<td>${a.endTime}</td>
 													<td>${a.pushNotification}</td>
 													<td>${a.msg}</td>
+													<td>${a.calls}</td>
 													<td><a class="text-primary"
 														onclick="deleteAutoCheckinSetting('${a.id}');"
 														style="cursor: pointer; border-bottom: 1px solid #3276b1;">DELETE</a></td>
@@ -267,24 +277,150 @@
 	}
 
 	function updateNotification() {
+		var calls = $("#calls").val();
 		var msg = $("#msg").val();
 		var pushNotification = $("#pushNotification").val();
-		if (msg == 1) {
-			$("#pushNotification").val(2);
-		}
-		if (msg == 2) {
-			$("#pushNotification").val(1);
+		if (pushNotification == 1) {
+			if (msg == 1) {
+				if (calls == 2) {
+					$("#msg").val(3);
+				} else if (calls == 3) {
+					$("#msg").val(2);
+				}
+			} else if (calls == 1) {
+				if (msg == 2) {
+					$("#calls").val(3);
+				} else if (msg == 3) {
+					$("#calls").val(2);
+				}
+			}
+		} else if (pushNotification == 2) {
+			if (msg == 2) {
+				if (calls == 1) {
+					$("#msg").val(3);
+				} else if (calls == 3) {
+					$("#msg").val(1);
+				}
+			} else if (calls == 2) {
+				if (msg == 1) {
+					$("#calls").val(3);
+				} else if (msg == 3) {
+					$("#calls").val(1);
+				}
+			}
+		} else if (pushNotification == 3) {
+			if (msg == 3) {
+				if (calls == 1) {
+					$("#msg").val(2);
+				} else if (calls == 2) {
+					$("#msg").val(1);
+				}
+			} else if (calls == 3) {
+				if (msg == 1) {
+					$("#calls").val(2);
+				} else if (msg == 2) {
+					$("#calls").val(1);
+				}
+			}
 		}
 	}
 
 	function updateMsg() {
+		var calls = $("#calls").val();
 		var msg = $("#msg").val();
 		var pushNotification = $("#pushNotification").val();
-		if (pushNotification == 1) {
-			$("#msg").val(2);
+		if (msg == 1) {
+			if (pushNotification == 1) {
+				if (calls == 2) {
+					$("#pushNotification").val(3);
+				} else if (calls == 3) {
+					$("#pushNotification").val(2);
+				}
+			} else if (calls == 1) {
+				if (pushNotification == 2) {
+					$("#calls").val(3);
+				} else if (pushNotification == 3) {
+					$("#calls").val(2);
+				}
+			}
+		} else if (msg == 2) {
+			if (pushNotification == 2) {
+				if (calls == 1) {
+					$("#pushNotification").val(3);
+				} else if (calls == 3) {
+					$("#pushNotification").val(1);
+				}
+			} else if (calls == 2) {
+				if (pushNotification == 1) {
+					$("#calls").val(3);
+				} else if (pushNotification == 3) {
+					$("#calls").val(1);
+				}
+			}
+		} else if (msg == 3) {
+			if (pushNotification == 3) {
+				if (calls == 1) {
+					$("#pushNotification").val(2);
+				} else if (calls == 2) {
+					$("#pushNotification").val(1);
+				}
+			} else if (calls == 3) {
+				if (pushNotification == 1) {
+					$("#calls").val(2);
+				} else if (pushNotification == 2) {
+					$("#calls").val(1);
+				}
+			}
 		}
-		if (pushNotification == 2) {
-			$("#msg").val(1);
+	}
+
+	function updateCall() {
+		var calls = $("#calls").val();
+		var pushNotification = $("#pushNotification").val();
+		var msg = $("#msg").val();
+
+		if (calls == 1) {
+			if (pushNotification == 1) {
+				if (msg == 2) {
+					$("#pushNotification").val(3);
+				} else if (msg == 3) {
+					$("#pushNotification").val(2);
+				}
+			} else if (msg == 1) {
+				if (pushNotification == 2) {
+					$("#msg").val(3);
+				} else if (pushNotification == 3) {
+					$("#msg").val(2);
+				}
+			}
+		} else if (calls == 2) {
+			if (pushNotification == 2) {
+				if (msg == 1) {
+					$("#pushNotification").val(3);
+				} else if (msg == 3) {
+					$("#pushNotification").val(1);
+				}
+			} else if (msg == 2) {
+				if (pushNotification == 1) {
+					$("#msg").val(3);
+				} else if (pushNotification == 3) {
+					$("#msg").val(1);
+				}
+			}
+		} else if (calls == 3) {
+			if (pushNotification == 3) {
+				if (msg == 1) {
+					$("#pushNotification").val(2);
+				} else if (msg == 2) {
+					$("#pushNotification").val(1);
+				}
+			} else if (msg == 3) {
+				if (pushNotification == 1) {
+					$("#msg").val(2);
+				} else if (pushNotification == 2) {
+					$("#msg").val(1);
+				}
+			}
 		}
 	}
 </script>

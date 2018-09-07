@@ -3,6 +3,7 @@ package com.ghosh.jaagteyRaho.controller;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -106,6 +107,7 @@ public class AdminController {
 		mv.addObject("endDate", td + "/" + (tm + 1) + "/" + ty);
 		mv.addObject("sent", sent);
 		mv.addObject("received", received);
+		Collections.reverse(pushNotificationsStatus);
 		mv.addObject("pushNotificationsStatus", pushNotificationsStatus);
 		mv.addObject("clients", clients);
 
@@ -206,6 +208,10 @@ public class AdminController {
 
 		String passCode = "";
 		User user2 = userDAO.getByEmail(user.getEmail());
+		if (user.getEmail().equals("") || user.getEmail() == null) {
+			user2 = null;
+		}
+		System.out.println("---------------" + user.getEmail());
 		User user3 = userDAO.getUserByMobileNo(user.getContactNumber());
 		boolean status = false;
 		if (user2 == null && user3 == null) {
@@ -356,6 +362,7 @@ public class AdminController {
 		AutoCheckinSetting autoCheckinSetting = new AutoCheckinSetting();
 		autoCheckinSetting.setPushNotification(1);
 		autoCheckinSetting.setMsg(2);
+		autoCheckinSetting.setCalls(3);
 
 		List<Client> allClients = clientManagementDao.getAllClients();
 		List<User> employees = new ArrayList<User>();
@@ -983,6 +990,7 @@ public class AdminController {
 		mv.addObject("endDate", td + "/" + (tm + 1) + "/" + ty);
 		mv.addObject("sent", sent);
 		mv.addObject("received", received);
+		Collections.reverse(pushNotificationsStatus);
 		mv.addObject("pushNotificationsStatus", pushNotificationsStatus);
 		mv.addObject("clients", clients);
 		mv.addObject("title", "REPORT");
@@ -1121,6 +1129,7 @@ public class AdminController {
 			}
 		}
 
+		Collections.reverse(pushNotificationsStatus);
 		mv.addObject("clientid", clientid);
 		mv.addObject("siteId", siteId);
 		mv.addObject("empId", empId);

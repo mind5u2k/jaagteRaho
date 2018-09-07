@@ -38,6 +38,8 @@ public class AutoCheckinSetting implements Serializable {
 
 	private Integer msg;
 
+	private Integer calls;
+
 	public String getGeoRadius() {
 		return geoRadius;
 	}
@@ -116,6 +118,14 @@ public class AutoCheckinSetting implements Serializable {
 
 	public void setMsg(Integer msg) {
 		this.msg = msg;
+	}
+
+	public Integer getCalls() {
+		return calls;
+	}
+
+	public void setCalls(Integer calls) {
+		this.calls = calls;
 	}
 
 }

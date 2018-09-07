@@ -3,10 +3,9 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans  
      http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="fiveMinIntervalJob"
-		class="com.ghosh.jaagteyRaho.service.quartzServices.FiveMinIntervalJob" />
-	<bean id="tenMinIntervalJob"
-		class="com.ghosh.jaagteyRaho.service.quartzServices.TenMinIntervalJob" />
+	<!-- <bean id="fiveMinIntervalJob" class="com.ghosh.jaagteyRaho.service.quartzServices.FiveMinIntervalJob" 
+		/> <bean id="tenMinIntervalJob" class="com.ghosh.jaagteyRaho.service.quartzServices.TenMinIntervalJob" 
+		/> -->
 	<bean id="fifteenMinIntervalJob"
 		class="com.ghosh.jaagteyRaho.service.quartzServices.FifteenMinIntervalJob" />
 	<bean id="twentyMinIntervalJob"
@@ -20,29 +19,15 @@
 	<bean id="threeHrsIntervalJob"
 		class="com.ghosh.jaagteyRaho.service.quartzServices.ThreeHrsIntervalJob" />
 
-	<bean id="myJob1"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="fiveMinIntervalJob" />
-		<property name="targetMethod" value="execute" />
-	</bean>
-
-	<bean id="simpleTrigger1"
-		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-		<property name="jobDetail" ref="myJob1" />
-		<property name="cronExpression" value="0 0/5 * 1/1 * ? *" />
-	</bean>
-
-	<bean id="myJob2"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="tenMinIntervalJob" />
-		<property name="targetMethod" value="execute" />
-	</bean>
-
-	<bean id="simpleTrigger2"
-		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-		<property name="jobDetail" ref="myJob2" />
-		<property name="cronExpression" value="0 0/10 * 1/1 * ? *" />
-	</bean>
+	<!-- <bean id="myJob1" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"> 
+		<property name="targetObject" ref="fiveMinIntervalJob" /> <property name="targetMethod" 
+		value="execute" /> </bean> <bean id="simpleTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean"> 
+		<property name="jobDetail" ref="myJob1" /> <property name="cronExpression" 
+		value="0 0/5 * 1/1 * ? *" /> </bean> <bean id="myJob2" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"> 
+		<property name="targetObject" ref="tenMinIntervalJob" /> <property name="targetMethod" 
+		value="execute" /> </bean> <bean id="simpleTrigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean"> 
+		<property name="jobDetail" ref="myJob2" /> <property name="cronExpression" 
+		value="0 0/10 * 1/1 * ? *" /> </bean> -->
 	<bean id="myJob3"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="fifteenMinIntervalJob" />
@@ -116,8 +101,7 @@
 		</property>
 		<property name="jobDetails">
 			<list>
-				<ref bean="myJob1" />
-				<ref bean="myJob2" />
+				<!-- <ref bean="myJob1" /> <ref bean="myJob2" /> -->
 				<ref bean="myJob3" />
 				<ref bean="myJob4" />
 				<ref bean="myJob5" />
@@ -128,8 +112,7 @@
 		</property>
 		<property name="triggers">
 			<list>
-				<ref bean="simpleTrigger1" />
-				<ref bean="simpleTrigger2" />
+				<!-- <ref bean="simpleTrigger1" /> <ref bean="simpleTrigger2" /> -->
 				<ref bean="simpleTrigger3" />
 				<ref bean="simpleTrigger4" />
 				<ref bean="simpleTrigger5" />

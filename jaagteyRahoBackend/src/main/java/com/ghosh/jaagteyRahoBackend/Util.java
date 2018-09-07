@@ -32,6 +32,7 @@ public class Util {
 
 	public static final String MSG = "Msg";
 	public static final String NOTIFICATION = "Notification";
+	public static final String CALL = "Call";
 
 	public static final String SUCCESS = "SUCCESS";
 	public static final String FAILURE = "FAILURE";
@@ -64,6 +65,7 @@ public class Util {
 		List<Integer> priorities = new ArrayList<Integer>();
 		priorities.add(1);
 		priorities.add(2);
+		priorities.add(3);
 		return priorities;
 	}
 

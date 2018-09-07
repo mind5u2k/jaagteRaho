@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import org.supercsv.cellprocessor.Optional;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanWriter;
@@ -55,11 +55,12 @@ public class FileDownloadController {
 			@RequestParam(name = "clientid", required = false) Integer clientid,
 			@RequestParam(name = "siteId", required = false) Integer siteId,
 			@RequestParam(name = "empId", required = false) Integer empId,
-			@RequestParam(name = "date", required = false) String date,
+			@RequestParam(name = "startDate", required = false) String startDate,
+			@RequestParam(name = "endDate", required = false) String endDate,
 			HttpServletResponse response) throws IOException {
 
 		System.out.println("selected emp Id is[" + empId
-				+ "] and selected date is [" + date + "]");
+				+ "] and selected start date is [" + startDate + "]");
 
 		List<User> users = new ArrayList<User>();
 		if (clientid == 0) {
@@ -97,10 +98,15 @@ public class FileDownloadController {
 
 		}
 
-		String[] dateArray = date.split("/");
-		int td = Integer.parseInt(dateArray[0]);
-		int tm = Integer.parseInt(dateArray[1]);
-		int ty = Integer.parseInt(dateArray[2]);
+		String[] startDateArray = startDate.split("/");
+		int td = Integer.parseInt(startDateArray[0]);
+		int tm = Integer.parseInt(startDateArray[1]);
+		int ty = Integer.parseInt(startDateArray[2]);
+
+		String[] endDateArray = endDate.split("/");
+		int tdend = Integer.parseInt(endDateArray[0]);
+		int tmend = Integer.parseInt(endDateArray[1]);
+		int tyend = Integer.parseInt(endDateArray[2]);
 
 		List<PushNotificationsStatus> pushNotificationsStatus = new ArrayList<PushNotificationsStatus>();
 
@@ -118,7 +124,8 @@ public class FileDownloadController {
 						int m = cal.get(Calendar.MONTH);
 						int y = cal.get(Calendar.YEAR);
 
-						if (d == td && m == (tm - 1) && y == ty) {
+						if (d >= td && m >= (tm - 1) && y >= ty && d <= tdend
+								&& m <= (tmend - 1) && y <= tyend) {
 							if (s.getSentStatus() != null) {
 								if (s.getSentStatus().equals(Util.SUCCESS)) {
 								}
@@ -134,6 +141,7 @@ public class FileDownloadController {
 				}
 			}
 		}
+		Collections.reverse(pushNotificationsStatus);
 		DownloadExcel.downloadExcelReport(response, pushNotificationsStatus);
 	}
 
